@@ -7,7 +7,7 @@
 //                    Copyright (c) 2003 Derya Kiran                         //
 //  ------------------------------------------------------------------------ //
 //  Based on Coppermine Photo Gallery 1.10 http://coppermine.sourceforge.net///
-//                      developed by Grégory DEMAR                           //
+//                      developed by Grï¿½gory DEMAR                           //
 //  ------------------------------------------------------------------------ //
 //  This program is free software; you can redistribute it and/or modify     //
 //  it under the terms of the GNU General Public License as published by     //
@@ -136,7 +136,7 @@ $DOC_TYPES = array(1 => 'DOC',
 
 // Include config and functions files
 $xcgalDir = basename(dirname(dirname(__FILE__)));
-require ICMS_ROOT_PATH."/modules/".$xcgalDir."/include/functions.inc.php";
+require ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/include/functions.inc.php";
 
 // Parse cookie stored user profile
 user_get_profile();
