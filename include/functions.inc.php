@@ -152,10 +152,16 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 	global $GLOBALS;
 	global $xoopsDB, $xoopsModule, $xoopsConfig;
 	$myts = & MyTextSanitizer::getInstance(); // MyTextSanitizer object
-	$sort_array = array ('na' => 'filename ASC','nd' => 'filename DESC','da' => 'pid ASC','dd' => 'pid DESC'
+	$sort_array = array(
+			'na' => 'filename ASC',
+			'nd' => 'filename DESC',
+			'da' => 'pid ASC',
+			'dd' => 'pid DESC'
 	);
 	$sort_code = isset($USER['sort']) ? $USER['sort'] : $xoopsModuleConfig['default_sort_order'];
-	$sort_order = isset($sort_array[$sort_code]) ? $sort_array[$sort_code] : $sort_array[$xoopsModuleConfig['default_sort_order']];
+	$sort_order = isset($sort_array[$sort_code])
+		? $sort_array[$sort_code]
+		: $sort_array[$xoopsModuleConfig['default_sort_order']];
 	$limit = ($limit1 != -1) ? ' LIMIT ' . $limit1 : '';
 	$limit .= ($limit2 != -1) ? ' ,' . $limit2 : '';
 	
