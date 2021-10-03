@@ -1,6 +1,4 @@
 <?php
-// $Id$
-
 /**
  * ************************************************************************
  * Function for managing cookie saved user profile

@@ -1,5 +1,4 @@
 <?php
-// $Id$
 //  ------------------------------------------------------------------------ //
 //                    xcGal 2.0 - XOOPS Gallery Modul                        //
 //  ------------------------------------------------------------------------ //
@@ -7,7 +6,7 @@
 //                    Copyright (c) 2003 Derya Kiran                         //
 //  ------------------------------------------------------------------------ //
 //  Based on Coppermine Photo Gallery 1.10 http://coppermine.sourceforge.net///
-//                      developed by Grégory DEMAR                           //
+//                      developed by Grï¿½gory DEMAR                           //
 //  ------------------------------------------------------------------------ //
 //  This program is free software; you can redistribute it and/or modify     //
 //  it under the terms of the GNU General Public License as published by     //

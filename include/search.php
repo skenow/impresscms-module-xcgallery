@@ -1,6 +1,4 @@
 <?php
-// $Id$
-
 function xcgal_search($queryarray, $andor, $limit, $offset, $userid){
 	global $xoopsDB, $ALBUM_SET_SEARCH;
 	$xcgalCon = search_album_set();
