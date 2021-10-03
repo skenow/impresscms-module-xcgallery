@@ -79,31 +79,28 @@ function update_cat_order() {
 
 function cat_list_box($highlight = 0, $curr_cat, $on_change_refresh = true) {
 	global $CAT_LIST, $PHP_SELF, $myts;
-
-	if ($on_change_refresh) {
+	
+	if($on_change_refresh){
 		$lb = <<< EOT
-		                        <select onChange="if(this.options[this.selectedIndex].value) window.location.href='$PHP_SELF?op=setparent&cid=$curr_cat&parent='+this.options[this.selectedIndex].value;"  name="parent" class="listbox">
-		
-		EOT;
+                        <select onChange="if(this.options[this.selectedIndex].value) window.location.href='$PHP_SELF?op=setparent&cid=$curr_cat&parent='+this.options[this.selectedIndex].value;"  name="parent" class="listbox">
+EOT;
 	} else {
 		$lb = <<< EOT
-		                        <select name="parent" class="listbox">
-		
-		EOT;
+                        <select name="parent" class="listbox">
+EOT;
 	}
-	$lb .= '                        <option value="0"' . ($highlight == 0 ? ' selected="selected"' : '') . ">" . _AM_CAT_NOCAT . "</option>\n";
-	foreach ($CAT_LIST as $category)
-		if ($category['cid'] != 1 && $category['cid'] != $curr_cat) {
-			$lb .= '                        <option value="' . $category['cid'] . '"' . ($highlight == $category['cid'] ? ' selected="selected"' : '') . ">" . $category['name'] . "</option>\n";
-		} elseif ($category['cid'] != 1 && $category['cid'] == $curr_cat) {
-			$lb .= '                        <option value="' . $category['parent'] . '"' . ($highlight == $category['cid'] ? ' selected="selected"' : '') . ">" . $category['name'] . "</option>\n";
-		}
-
-	$lb .= <<<EOT
-	                        </select>
+	$lb .= '                        <option value="0"'.($highlight == 0 ? ' selected="selected"': '').">"._AM_CAT_NOCAT."</option>\n";
+	foreach($CAT_LIST as $category) if ($category['cid'] != 1 && $category['cid'] != $curr_cat) {
+		$lb .= '                        <option value="'.$category['cid'].'"'.($highlight == $category['cid'] ? ' selected="selected"': '').">".$category['name']."</option>\n";
+	} elseif ($category['cid'] != 1 && $category['cid'] == $curr_cat){
+		$lb .= '                        <option value="'.$category['parent'].'"'.($highlight == $category['cid'] ? ' selected="selected"': '').">".$category['name']."</option>\n";
+	}
 	
-	EOT;
-
+	$lb .= <<<EOT
+                        </select>
+                        
+EOT;
+	
 	return $lb;
 }
 
@@ -113,30 +110,30 @@ function display_cat_list() {
 	$CAT_LIST3 = $CAT_LIST;
 
 	foreach ($CAT_LIST3 as $key => $category) {
-		echo "        <tr>\n";
-		echo '                <td class="even" width="80%"><b>' . $category['name'] . '</b></td>' . "\n";
+		echo "<tr>\n";
+		echo '<td class="even" width="80%"><b>' . $category['name'] . '</b></td>' . "\n";
 
 		if ($category['pos'] > 0) {
-			echo '                <td class="odd" width="4%"><a href="' . $PHP_SELF . '?op=move&cid1=' . $category['cid'] . '&pos1=' . ($category['pos'] - 1) . '&cid2=' . $category['prev'] . '&pos2=' . ($category['pos']) . '">' . '<img src="../images/up.gif"  border="0">' . '</a></td>' . "\n";
+			echo '<td class="odd" width="4%"><a href="' . $PHP_SELF . '?op=move&cid1=' . $category['cid'] . '&pos1=' . ($category['pos'] - 1) . '&cid2=' . $category['prev'] . '&pos2=' . ($category['pos']) . '">' . '<img src="../images/up.gif"  border="0">' . '</a></td>' . "\n";
 		} else {
-			echo '                <td class="odd" width="4%">' . '&nbsp;' . '</td>' . "\n";
+			echo '<td class="odd" width="4%">' . '&nbsp;' . '</td>' . "\n";
 		}
 
 		if ($category['pos'] < $category['cat_count'] - 1) {
-			echo '                <td class="odd" width="4%"><a href="' . $PHP_SELF . '?op=move&cid1=' . $category['cid'] . '&pos1=' . ($category['pos'] + 1) . '&cid2=' . $category['next'] . '&pos2=' . ($category['pos']) . '">' . '<img src="../images/down.gif"  border="0">' . '</a></td>' . "\n";
+			echo '<td class="odd" width="4%"><a href="' . $PHP_SELF . '?op=move&cid1=' . $category['cid'] . '&pos1=' . ($category['pos'] + 1) . '&cid2=' . $category['next'] . '&pos2=' . ($category['pos']) . '">' . '<img src="../images/down.gif"  border="0">' . '</a></td>' . "\n";
 		} else {
-			echo '                <td class="odd" width="4%">' . '&nbsp;' . '</td>' . "\n";
+			echo '<td class="odd" width="4%">' . '&nbsp;' . '</td>' . "\n";
 		}
 
 		if ($category['cid'] != 1) {
-			echo '                <td class="odd" width="4%"><a href="' . $PHP_SELF . '?op=deletecat&cid=' . $category['cid'] . '" onClick="return confirmDel(\'' . str_replace('&nbsp;', '', icms_core_DataFilter::htmlSpecialchars($category['name'])) . '\')">' . '<img src="../images/delete.gif"  border="0">' . '</a></td>' . "\n";
+			echo '<td class="odd" width="4%"><a href="' . $PHP_SELF . '?op=deletecat&cid=' . $category['cid'] . '" onClick="return confirmDel(\'' . str_replace('&nbsp;', '', icms_core_DataFilter::htmlSpecialchars($category['name'])) . '\')">' . '<img src="../images/delete.gif"  border="0">' . '</a></td>' . "\n";
 		} else {
-			echo '                <td class="odd" width="4%">' . '&nbsp;' . '</td>' . "\n";
+			echo '<td class="odd" width="4%">' . '&nbsp;' . '</td>' . "\n";
 		}
 
-		echo '                <td class="odd" width="4%">' . '<a href="' . $PHP_SELF . '?op=editcat&cid=' . $category['cid'] . '">' . '<img src="../images/edit.gif" border="0">' . '</a></td>' . "\n";
-		echo '                <td class="odd" width="4%">' . "\n" . cat_list_box($category['parent'], $category['cid']) . "\n" . '</td>' . "\n";
-		echo "        </tr>\n";
+		echo '<td class="odd" width="4%">' . '<a href="' . $PHP_SELF . '?op=editcat&cid=' . $category['cid'] . '">' . '<img src="../images/edit.gif" border="0">' . '</a></td>' . "\n";
+		echo '<td class="odd" width="4%">' . "\n" . cat_list_box($category['parent'], $category['cid']) . "\n" . '</td>' . "\n";
+		echo "</tr>\n";
 	}
 }
 
