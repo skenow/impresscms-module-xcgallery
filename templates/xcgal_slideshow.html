@@ -63,27 +63,30 @@ function endSlideShow(){
 preLoadPic(j)
 
 </script>
-<table align="center" width="100%" cellspacing="1" cellpadding="0" class="outer">
-<tr>
-                <td align="center" class="odd" height="<{$cell_height}>" style="white-space: nowrap; padding: 0px; vertical-align: middle;">
-                        <table cellspacing="2" cellpadding="0" style="border: 1px solid #000000; background-color: #FFFFFF; margin-top: 30px; margin-bottom: 30px;width: auto;">
-                                <tr>
-                                        <td>
-                                                <img src="<{$start_img}>" name="SlideShow" class="image" alt=""/><br />
-                                        </td>
-                                </tr>
-                        </table>
+<table align="center" width="100%" cellspacing="1" cellpadding="0"
+	class="outer">
+	<tr>
+		<td align="center" class="odd" height="<{$cell_height}>"
+			style="white-space: nowrap; padding: 0px; vertical-align: middle;">
+			<table cellspacing="2" cellpadding="0"
+				style="border: 1px solid #000000; background-color: #FFFFFF; margin-top: 30px; margin-bottom: 30px; width: auto;">
+				<tr>
+					<td><img src="<{$start_img}>" name="SlideShow" class="image"
+						alt="" /><br /></td>
+				</tr>
+			</table>
 
-                </td>
-        </tr>
+		</td>
+	</tr>
 
 </table>
-<table align="center" width="100%" cellspacing="1" cellpadding="0" class="outer">
-<tr>
-                <td align="center" class="navmenu" style="white-space: nowrap;">
-                <script language="JavaScript" type="text/JavaScript">runSlideShow()</script>
-                        <a href="javascript:endSlideShow()" class="navmenu"><{$lang_stop_slideshow}></a>
-                </td>
-        </tr>
+<table align="center" width="100%" cellspacing="1" cellpadding="0"
+	class="outer">
+	<tr>
+		<td align="center" class="navmenu" style="white-space: nowrap;">
+			<script language="JavaScript" type="text/JavaScript">runSlideShow()</script>
+			<a href="javascript:endSlideShow()" class="navmenu"><{$lang_stop_slideshow}></a>
+		</td>
+	</tr>
 </table>
 <{include file="db:xcgal_footer.html"}>

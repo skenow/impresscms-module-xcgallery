@@ -1,34 +1,33 @@
 <?php
-//  ------------------------------------------------------------------------ //
-//                    xcGal 2.0 - XOOPS Gallery Modul                        //
-//  ------------------------------------------------------------------------ //
-//  Based on      xcGallery 1.1 RC1 - XOOPS Gallery Modul                    //
-//                    Copyright (c) 2003 Derya Kiran                         //
-//  ------------------------------------------------------------------------ //
-//  Based on Coppermine Photo Gallery 1.10 http://coppermine.sourceforge.net///
-//                      developed by Gr�gory DEMAR                           //
-//  ------------------------------------------------------------------------ //
-//  This program is free software; you can redistribute it and/or modify     //
-//  it under the terms of the GNU General Public License as published by     //
-//  the Free Software Foundation; either version 2 of the License, or        //
-//  (at your option) any later version.                                      //
-//                                                                           //
-//  You may not change or alter any portion of this comment or credits       //
-//  of supporting developers from this source code or any supporting         //
-//  source code which is considered copyrighted (c) material of the          //
-//  original comment or credit authors.                                      //
-//                                                                           //
-//  This program is distributed in the hope that it will be useful,          //
-//  but WITHOUT ANY WARRANTY; without even the implied warranty of           //
-//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            //
-//  GNU General Public License for more details.                             //
-//                                                                           //
-//  You should have received a copy of the GNU General Public License        //
-//  along with this program; if not, write to the Free Software              //
-//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA //
-//  ------------------------------------------------------------------------ //
-
-define("_MI_XCGAL_NAME","xcGallery");
+// ------------------------------------------------------------------------ //
+// xcGal 2.0 - XOOPS Gallery Modul //
+// ------------------------------------------------------------------------ //
+// Based on xcGallery 1.1 RC1 - XOOPS Gallery Modul //
+// Copyright (c) 2003 Derya Kiran //
+// ------------------------------------------------------------------------ //
+// Based on Coppermine Photo Gallery 1.10 http://coppermine.sourceforge.net///
+// developed by Gr�gory DEMAR //
+// ------------------------------------------------------------------------ //
+// This program is free software; you can redistribute it and/or modify //
+// it under the terms of the GNU General Public License as published by //
+// the Free Software Foundation; either version 2 of the License, or //
+// (at your option) any later version. //
+// //
+// You may not change or alter any portion of this comment or credits //
+// of supporting developers from this source code or any supporting //
+// source code which is considered copyrighted (c) material of the //
+// original comment or credit authors. //
+// //
+// This program is distributed in the hope that it will be useful, //
+// but WITHOUT ANY WARRANTY; without even the implied warranty of //
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the //
+// GNU General Public License for more details. //
+// //
+// You should have received a copy of the GNU General Public License //
+// along with this program; if not, write to the Free Software //
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA //
+// ------------------------------------------------------------------------ //
+define("_MI_XCGAL_NAME", "xcGallery");
 define("_MI_XCGAL_ADMENU1", "Admin overview");
 define("_MI_XCGAL_ADMENU2", "Categories");
 define("_MI_XCGAL_ADMENU3", "Users");
@@ -36,10 +35,10 @@ define("_MI_XCGAL_ADMENU4", "Groups");
 define("_MI_XCGAL_ADMENU5", "Ecards");
 define("_MI_XCGAL_ADMENU6", "Batch Add Pictures");
 
-define("_MI_XCGAL_SCROLL","Scrolling Thumbnails");
-define("_MI_XCGAL_CATMENU","xcGallery Categories");
-define("_MI_XCGAL_STATIC","Static Thumbnails");
-define("_MI_XCGAL_METAALB","Meta Albums");
+define("_MI_XCGAL_SCROLL", "Scrolling Thumbnails");
+define("_MI_XCGAL_CATMENU", "xcGallery Categories");
+define("_MI_XCGAL_STATIC", "Static Thumbnails");
+define("_MI_XCGAL_METAALB", "Meta Albums");
 
 define("_MI_ANONSEE", "Allow anonymous users to see Pictures?");
 define("_MI_SUBCAT_LEVEL", "Album list view: Number of levels of categories to display");
@@ -92,13 +91,12 @@ define("_MI_TEXT_CARD", "Text");
 define("_MI_HTML_CARD", "Html");
 define("_MI_ECRAD_PER_HOUR", "Allowed ecards, that a user can send per hour");
 define("_MI_ECRAD_SAVE", "How long should ecards be saved in db (days)");
-define("_MI_ECRAD_TEXT","Ecard text");
-define("_MI_ECRAD_TEXTDESC","(for text ecards and as alternative text for html ecards)<br /><b>Useful Tags</b><br />{X_SITEURL} will print ".ICMS_URL."<br />{X_SITENAME} will print the site name<br />{R_NAME} will print recipient name<br />{R_MAIL} will print recipient email<br />{S_NAME} will print sender name<br />{S_MAIL} will print sender email<br />{SAVE_DAYS} will print number of day an ecard is saved in db<br />{CARD_LINK} will print the ecard pick-up url");
-define("_MI_ECRAD_TEXT_VALUE","Dear {R_NAME},\n\n{S_NAME}({S_MAIL}) has sent an ecard for you.\nPlease, pick it up at {CARD_LINK}.\nYour ecard will be saved {SAVE_DAYS} days in our database.\n\nregards\n{X_SITENAME} team ({X_SITEURL})");
+define("_MI_ECRAD_TEXT", "Ecard text");
+define("_MI_ECRAD_TEXTDESC", "(for text ecards and as alternative text for html ecards)<br /><b>Useful Tags</b><br />{X_SITEURL} will print " . ICMS_URL . "<br />{X_SITENAME} will print the site name<br />{R_NAME} will print recipient name<br />{R_MAIL} will print recipient email<br />{S_NAME} will print sender name<br />{S_MAIL} will print sender email<br />{SAVE_DAYS} will print number of day an ecard is saved in db<br />{CARD_LINK} will print the ecard pick-up url");
+define("_MI_ECRAD_TEXT_VALUE", "Dear {R_NAME},\n\n{S_NAME}({S_MAIL}) has sent an ecard for you.\nPlease, pick it up at {CARD_LINK}.\nYour ecard will be saved {SAVE_DAYS} days in our database.\n\nregards\n{X_SITENAME} team ({X_SITEURL})");
 define("_MI_KEEP_VOTES", "How long should votes be saved in db (days) (0 if they should not be deleted");
 define("_MI_SEARCH_THUMB", "Show thumbnail instead of xcGallery icon on search and userinfo pages");
 define("_MI_WATERMARKING", "Use watermarking for JPG");
 define("_MI_WATERMARK_TEXTDESC", "Watermark must be saved at xcgal/images/watermark.png");
 define("_MI_BATCHSHOWALL", "Batchupload - Show all");
 define("_MI_BATCHSHOWALLDESC", "All files are shown, also files that are already in an album. For NO only new files are displayed");
-?>

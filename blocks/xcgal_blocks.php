@@ -498,4 +498,3 @@ function block_album_set() {
 		$xoopsDB->freeRecordSet($result);
 	}
 }
-?>

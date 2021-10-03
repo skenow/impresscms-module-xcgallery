@@ -266,66 +266,71 @@
     }
 -->
 </script>
-<form name="album_menu" method="post" style="margin: 0; padding: 0;" action="delete.php?what=albmgr" onSubmit="return CheckAlbumForm(this);">
-<table border="0" align="center" width="100%" cellspacing="1" cellpadding="0" class="outer">
-  <tr>
-    <th><h2><{$alb_mrg}></h2></th>
-  </tr>
-  <tr>
-	<td class="odd" valign="top" align="center">
-	    <input type="hidden" name="delete_album" value="" />
-	    <input type="hidden" name="sort_order" value="<{$sort_order}>" />
-		<br />
-		<table style="width: 300px" width="300" border="0" cellspacing="0" cellpadding="0">
-          <{if $admin_mo==1}>
-          <tr>
-			<td>
-			  <b><{$select_category}></b>
-			  <select onChange="if(this.options[this.selectedIndex].value) window.location.href='albmgr.php?cat='+this.options[this.selectedIndex].value;"  name="cat" class="listbox">
-                <{$options}>
-              </select>
-			  <br /><br />
-			</td>
-		</tr>
-		<{/if}>
-        <tr>
-			<td>
-			  <select id="to" name="to[]" size="<{$size}>" multiple="multiple" onChange="Album_Select(this.selectedIndex);" class="listbox2" style="width: 300px;">
-               <{$lb}>
-              </select>
-			</td>
+<form name="album_menu" method="post" style="margin: 0; padding: 0;"
+	action="delete.php?what=albmgr" onSubmit="return CheckAlbumForm(this);">
+	<table border="0" align="center" width="100%" cellspacing="1"
+		cellpadding="0" class="outer">
+		<tr>
+			<th><h2><{$alb_mrg}></h2></th>
 		</tr>
 		<tr>
-			<td>
-				<table style="width: 300px;text-align: left;" border="0" cellspacing="0" cellpadding="0">
-                <tr>
-					<td><a href="javascript:Moveup_Option();"><img src="images/move_up.gif" width="26" height="21" border="0" alt=""/></a><a href="javascript:Movedown_Option();"><img src="images/move_down.gif" width="26" height="21" border="0" alt=""/></a>
-					</td>
-					<td align="center" style="background-color: #D4D0C8; width: 80px; height: 21px; border-top: 1px solid White; border-left: 1px solid White; border-right: 1px solid #808080; border-bottom: 1px solid #808080;"><a href="javascript:Album_Delete();" style="color: Black; font-weight: bold;"><{$delete}></a>
-					</td>
-					<td align="center" style="width: 1px;"><img src="images/spacer.gif" width="1" alt=""/><br />
-					</td>
-					<td align="center" style="background-color: #D4D0C8; width: 80px; height: 21px; border-top: 1px solid White; border-left: 1px solid White; border-right: 1px solid #808080; border-bottom: 1px solid #808080;"><a href="javascript:Album_Create();" style="color: Black; font-weight: bold;"><{$new}></a>
-					</td>
-				</tr>
-				</table>
-			</td>
+			<td class="odd" valign="top" align="center"><input type="hidden"
+				name="delete_album" value="" /> <input type="hidden"
+				name="sort_order" value="<{$sort_order}>" /> <br />
+				<table style="width: 300px" width="300" border="0" cellspacing="0"
+					cellpadding="0">
+					<{if $admin_mo==1}>
+					<tr>
+						<td><b><{$select_category}></b> <select
+							onChange="if(this.options[this.selectedIndex].value) window.location.href='albmgr.php?cat='+this.options[this.selectedIndex].value;"
+							name="cat" class="listbox"> <{$options}>
+						</select> <br />
+						<br /></td>
+					</tr>
+					<{/if}>
+					<tr>
+						<td><select id="to" name="to[]" size="<{$size}>"
+							multiple="multiple" onChange="Album_Select(this.selectedIndex);"
+							class="listbox2" style="width: 300px;"> <{$lb}>
+						</select></td>
+					</tr>
+					<tr>
+						<td>
+							<table style="width: 300px; text-align: left;" border="0"
+								cellspacing="0" cellpadding="0">
+								<tr>
+									<td><a href="javascript:Moveup_Option();"><img
+											src="images/move_up.gif" width="26" height="21" border="0"
+											alt="" /></a><a href="javascript:Movedown_Option();"><img
+											src="images/move_down.gif" width="26" height="21" border="0"
+											alt="" /></a></td>
+									<td align="center"
+										style="background-color: #D4D0C8; width: 80px; height: 21px; border-top: 1px solid White; border-left: 1px solid White; border-right: 1px solid #808080; border-bottom: 1px solid #808080;"><a
+										href="javascript:Album_Delete();"
+										style="color: Black; font-weight: bold;"><{$delete}></a></td>
+									<td align="center" style="width: 1px;"><img
+										src="images/spacer.gif" width="1" alt="" /><br /></td>
+									<td align="center"
+										style="background-color: #D4D0C8; width: 80px; height: 21px; border-top: 1px solid White; border-left: 1px solid White; border-right: 1px solid #808080; border-bottom: 1px solid #808080;"><a
+										href="javascript:Album_Create();"
+										style="color: Black; font-weight: bold;"><{$new}></a></td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td><br /> <input type="text" name="album_nm" size="27"
+							maxlength="80" class="textinput" style="width: 300px;"
+							onChange="Album_NameChange(this.value);"
+							onKeyUp="Album_NameChange(this.value);" /> <br /> <br /></td>
+					</tr>
+				</table></td>
 		</tr>
 		<tr>
-			<td><br />
-				<input type="text" name="album_nm" size="27" maxlength="80" class="textinput" style="width: 300px;" onChange="Album_NameChange(this.value);" onKeyUp="Album_NameChange(this.value);" />
-				<br />
-				<br />
-			</td>
-		</tr>
-        </table>
-	</td>
-</tr>
-<tr>
-	<td colspan="2" align="center" class="foot">
-	<input type="submit" class="button" value="<{$apply_modifs}>" />
-	</td>
+			<td colspan="2" align="center" class="foot"><input type="submit"
+				class="button" value="<{$apply_modifs}>" /></td>
 
-</tr>
-</table></form>
+		</tr>
+	</table>
+</form>
 <{include file="db:xcgal_footer.html"}>
