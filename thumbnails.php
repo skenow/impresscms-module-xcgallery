@@ -1,5 +1,4 @@
 <?php
-// $Id$
 // ------------------------------------------------------------------------ //
 // xcGal 2.0 - XOOPS Gallery Modul //
 // ------------------------------------------------------------------------ //
@@ -33,11 +32,11 @@ include "../../mainfile.php";
 define('IN_XCGALLERY', true);
 
 require 'include/init.inc.php';
-$myts = & MyTextSanitizer::getInstance();
- // MyTextSanitizer object
+$myts = icms_core_Textsanitizer::getInstance();
+
 function get_subcat_data($parent, &$album_set_array, $level) {
 	global $xoopsDB;
-	
+
 	$result = $xoopsDB->query("SELECT cid, name, description FROM " . $xoopsDB->prefix("xcgal_categories") . " WHERE parent = '$parent'");
 	if ($xoopsDB->getRowsNum($result) > 0) {
 		$rowset = db_fetch_rowset($result);
@@ -79,7 +78,7 @@ if (isset($_GET['page'])) {
 
 $breadcrumb = '';
 $breadcrumb_text = '';
-$cat_data = array ();
+$cat_data = array();
 
 // Build the private album set
 if (!GALLERY_ADMIN_MODE && $xoopsModuleConfig['allow_private_albums']) get_private_album_set();
@@ -104,19 +103,19 @@ if (is_numeric($album)) {
 		$ALBUM_SET .= 'AND aid IN (' . (-$cat) . ') ';
 		breadcrumb($actual_cat, $breadcrumb, $breadcrumb_text);
 	} else {
-		$album_set_array = array ();
+		$album_set_array = array();
 		if ($cat == USER_GAL_CAT)
 			$where = 'category > ' . FIRST_USER_CAT;
 		else
 			$where = "category = '$cat'";
-		
+
 		$result = $xoopsDB->query("SELECT aid FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE $where");
 		while ($row = $xoopsDB->fetchArray($result)) {
 			$album_set_array[] = $row['aid'];
 		} // while
 		if ($cat >= FIRST_USER_CAT) {
 			$user_handler = icms::handler('icms_member');
-			$alb_owner = & $user_handler->getUser($cat - FIRST_USER_CAT);
+			$alb_owner = &$user_handler->getUser($cat - FIRST_USER_CAT);
 			if (is_object($alb_owner))
 				$CURRENT_CAT_NAME = sprintf(_MD_INDEX_USERS_GAL, $alb_owner->uname());
 			else
@@ -128,7 +127,7 @@ if (is_numeric($album)) {
 			$CURRENT_CAT_NAME = icms_core_DataFilter::htmlSpecialchars($row['name']);
 		}
 		get_subcat_data($cat, $album_set_array, $xoopsModuleConfig['subcat_level']);
-		
+
 		// Treat the album set
 		if (count($album_set_array)) {
 			$set = '';
@@ -136,7 +135,7 @@ if (is_numeric($album)) {
 				$set .= ($set == '') ? $album_id : ',' . $album_id;
 			$ALBUM_SET .= "AND aid IN ($set) ";
 		}
-		
+
 		breadcrumb($cat, $breadcrumb, $breadcrumb_text);
 	}
 }

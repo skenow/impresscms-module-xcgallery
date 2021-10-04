@@ -1,5 +1,4 @@
 <?php
-// $Id$
 
 /**
  * ************************************************************************
@@ -10,17 +9,16 @@
 // Decode the user profile contained in a cookie
 function user_get_profile() {
 	global $xoopsModuleConfig, $USER, $_COOKIE, $xoopsUser;
-	
+
 	if (isset($_COOKIE[$xoopsModuleConfig['cookie_name'] . '_data'])) {
 		$USER = @unserialize(@base64_decode($_COOKIE[$xoopsModuleConfig['cookie_name'] . '_data']));
 	}
-	
+
 	if (!isset($USER['ID']) || strlen($USER['ID']) != 32) {
-		list ( $usec, $sec ) = explode(' ', microtime());
+		list($usec, $sec) = explode(' ', microtime());
 		$seed = (float) $sec + ((float) $usec * 100000);
 		srand($seed);
-		$USER = array ('ID' => md5(uniqid(rand(), 1))
-		);
+		$USER = array('ID' => md5(uniqid(rand(), 1)));
 	} else {
 		$USER['ID'] = addslashes($USER['ID']);
 	}
@@ -31,7 +29,7 @@ function user_get_profile() {
 function user_save_profile() {
 	global $xoopsModuleConfig, $USER, $_SERVER;
 	static $profile_saved = 0;
-	
+
 	if (!$profile_saved) {
 		$data = base64_encode(serialize($USER));
 		setcookie($xoopsModuleConfig['cookie_name'] . '_data', $data, time() + 86400 * 30, $xoopsModuleConfig['cookie_path']);
@@ -48,11 +46,11 @@ function user_save_profile() {
 // Fetch all rows in an array
 function db_fetch_rowset($result) {
 	global $xoopsDB;
-	$rowset = array ();
-	
+	$rowset = array();
+
 	while ($row = $xoopsDB->fetchArray($result))
 		$rowset[] = $row;
-	
+
 	return $rowset;
 }
 
@@ -76,18 +74,18 @@ function path2url($path) {
 // 'inactive_tab' => );
 function create_tabs($items, $curr_page, $total_pages, $template) {
 	global $xoopsModuleConfig;
-	
+
 	if (function_exists('theme_create_tabs')) {
 		theme_create_tabs($items, $curr_page, $total_pages, $template);
 		return;
 	}
-	
+
 	$maxTab = $xoopsModuleConfig['max_tabs'];
-	
+
 	$tabs = sprintf($template['left_text'], $items, $total_pages, 1);
-	
+
 	if (($total_pages == 1)) return $tabs;
-	
+
 	$tabs .= $template['tab_header'];
 	if ($curr_page == 1) {
 		$tabs .= sprintf($template['active_tab'], 1);
@@ -102,7 +100,7 @@ function create_tabs($items, $curr_page, $total_pages, $template) {
 		$start = 2;
 		$end = $total_pages - 1;
 	}
-	for ($page = $start; $page <= $end; $page++) {
+	for ($page = $start; $page <= $end; $page++ ) {
 		if ($page == $curr_page) {
 			$tabs .= sprintf($template['active_tab'], $page);
 		} else {
@@ -133,7 +131,7 @@ function get_private_album_set() {
 		$usergroup = implode(",", $usergroups);
 	} else
 		$usergroup = XOOPS_GROUP_ANONYMOUS;
-	
+
 	$result = $xoopsDB->query("SELECT aid FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE visibility NOT IN ($usergroup, 0," . (FIRST_USER_CAT + USER_ID) . ")");
 	if (($xoopsDB->getRowsNum($result))) {
 		$set = '';
@@ -151,43 +149,36 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 	global $USER, $xoopsModuleConfig, $ALBUM_SET, $CURRENT_CAT_NAME, $HTML_SUBST, $THEME_DIR;
 	global $GLOBALS;
 	global $xoopsDB, $xoopsModule, $xoopsConfig;
-	$myts = & MyTextSanitizer::getInstance(); // MyTextSanitizer object
-	$sort_array = array(
-			'na' => 'filename ASC',
-			'nd' => 'filename DESC',
-			'da' => 'pid ASC',
-			'dd' => 'pid DESC'
-	);
+	$myts = icms_core_Textsanitizer::getInstance();
+	$sort_array = array('na' => 'filename ASC', 'nd' => 'filename DESC', 'da' => 'pid ASC', 'dd' => 'pid DESC');
 	$sort_code = isset($USER['sort']) ? $USER['sort'] : $xoopsModuleConfig['default_sort_order'];
-	$sort_order = isset($sort_array[$sort_code])
-		? $sort_array[$sort_code]
-		: $sort_array[$xoopsModuleConfig['default_sort_order']];
+	$sort_order = isset($sort_array[$sort_code]) ? $sort_array[$sort_code] : $sort_array[$xoopsModuleConfig['default_sort_order']];
 	$limit = ($limit1 != -1) ? ' LIMIT ' . $limit1 : '';
 	$limit .= ($limit2 != -1) ? ' ,' . $limit2 : '';
-	
+
 	if ($limit2 == 1) {
 		$select_columns = '*';
 	} else {
 		$select_columns = 'pid, filepath, filename, url_prefix, filesize, pwidth, pheight, ctime';
 	}
-	
+
 	// Regular albums
 	if ((is_numeric($album))) {
 		$album_name = get_album_name($album);
-		
+
 		$approved = GALLERY_ADMIN_MODE ? '' : 'AND approved=\'YES\'';
-		
+
 		$result = $xoopsDB->query("SELECT count(*) from " . $xoopsDB->prefix("xcgal_pictures") . " WHERE aid='$album' $approved $ALBUM_SET");
 		$nbEnr = $xoopsDB->fetchArray($result);
 		$count = $nbEnr['count(*)'];
 		$xoopsDB->freeRecordSet($result);
-		
+
 		if ($select_columns != '*') $select_columns .= ', title, caption, owner_id';
-		
+
 		$result = $xoopsDB->query("SELECT $select_columns from " . $xoopsDB->prefix("xcgal_pictures") . " WHERE aid='$album' $approved $ALBUM_SET ORDER BY $sort_order $limit");
 		$rowset = db_fetch_rowset($result);
 		$xoopsDB->freeRecordSet($result);
-		
+
 		// Set picture caption
 		if ($set_caption) foreach ($rowset as $key => $row) {
 			$caption = $rowset[$key]['title'] ? "<span class=\"thumb_title\">" . $rowset[$key]['title'] . "</span>" : '';
@@ -200,10 +191,10 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 			}
 			$rowset[$key]['caption_text'] = $caption;
 		}
-		
+
 		return $rowset;
 	}
-	
+
 	// Meta albums
 	switch ($album) {
 		case 'lastcom': // Last comments
@@ -216,7 +207,7 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 			$nbEnr = $xoopsDB->fetchArray($result);
 			$count = $nbEnr['count(*)'];
 			$xoopsDB->freeRecordSet($result);
-			
+
 			if ($select_columns != '*') {
 				$select_columns = $select_columns . ', com_id, com_uid,com_itemid,com_rootid, com_exparams, com_created, com_title';
 			}
@@ -228,7 +219,7 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 			$comment_config = $xoopsModule->getInfo('comments');
 			if ($set_caption) foreach ($rowset as $key => $row) {
 				if ($row['com_uid'] > 0) {
-					$poster = & $member_handler->getUser($row['com_uid']);
+					$poster = &$member_handler->getUser($row['com_uid']);
 					if (is_object($poster)) {
 						$posters = '<a href="' . ICMS_URL . '/userinfo.php?uid=' . $row['com_uid'] . '">' . $poster->getVar('uname') . '</a>';
 					} else {
@@ -242,7 +233,7 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 			}
 			return $rowset;
 			break;
-		
+
 		case 'lastup': // Last uploads
 			if ($ALBUM_SET && $CURRENT_CAT_NAME) {
 				$album_name = _MD_LASTUP . ' - ' . $CURRENT_CAT_NAME;
@@ -253,15 +244,15 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 			$nbEnr = $xoopsDB->fetchArray($result);
 			$count = $nbEnr['count(*)'];
 			$xoopsDB->freeRecordSet($result);
-			
+
 			if ($select_columns != '*') $select_columns .= ', owner_id';
-			
+
 			$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' $ALBUM_SET ORDER BY pid DESC $limit");
 			$rowset = db_fetch_rowset($result);
 			$xoopsDB->freeRecordSet($result);
 			if ($set_caption) foreach ($rowset as $key => $row) {
 				$user_handler = icms::handler('icms_member');
-				$pic_owner = & $user_handler->getUser($row['owner_id']);
+				$pic_owner = &$user_handler->getUser($row['owner_id']);
 				if (is_object($pic_owner)) {
 					$user_link = '<br /><a href ="' . ICMS_URL . '/userinfo.php?uid=' . $pic_owner->uid() . '">' . $pic_owner->uname() . '</a>';
 				} else {
@@ -270,10 +261,10 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 				$caption = "<span class=\"thumb_caption\">" . formatTimestamp($row['ctime'], 'm') . $user_link . '</span>';
 				$rowset[$key]['caption_text'] = $caption;
 			}
-			
+
 			return $rowset;
 			break;
-		
+
 		case 'topn': // Most viewed pictures
 			if ($ALBUM_SET && $CURRENT_CAT_NAME) {
 				$album_name = _MD_TOPN . ' - ' . $CURRENT_CAT_NAME;
@@ -284,21 +275,21 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 			$nbEnr = $xoopsDB->fetchArray($result);
 			$count = $nbEnr['count(*)'];
 			$xoopsDB->freeRecordSet($result);
-			
+
 			if ($select_columns != '*') $select_columns .= ', hits';
-			
+
 			$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' AND hits > 0 $ALBUM_SET ORDER BY hits DESC, ctime, mtime $limit");
 			$rowset = db_fetch_rowset($result);
 			$xoopsDB->freeRecordSet($result);
-			
+
 			if ($set_caption) foreach ($rowset as $key => $row) {
 				$caption = "<span class=\"thumb_caption\">" . sprintf(_MD_FUNC_VIEW, $row['hits']) . '</span>';
 				$rowset[$key]['caption_text'] = $caption;
 			}
-			
+
 			return $rowset;
 			break;
-		
+
 		case 'toprated': // Top rated pictures
 			if ($ALBUM_SET && $CURRENT_CAT_NAME) {
 				$album_name = _MD_TOPRATED . ' - ' . $CURRENT_CAT_NAME;
@@ -309,13 +300,13 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 			$nbEnr = $xoopsDB->fetchArray($result);
 			$count = $nbEnr['count(*)'];
 			$xoopsDB->freeRecordSet($result);
-			
+
 			if ($select_columns != '*') $select_columns .= ', pic_rating, votes';
-			
+
 			$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' AND votes >= '{$xoopsModuleConfig['min_votes_for_rating']}' $ALBUM_SET ORDER BY ROUND((pic_rating+1)/2000) DESC, votes DESC $limit");
 			$rowset = db_fetch_rowset($result);
 			$xoopsDB->freeRecordSet($result);
-			
+
 			if ($set_caption) foreach ($rowset as $key => $row) {
 				if (defined('THEME_HAS_RATING_GRAPHICS')) {
 					$prefix = $THEME_DIR;
@@ -327,7 +318,7 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 			}
 			return $rowset;
 			break;
-		
+
 		case 'lasthits': // Last viewed pictures
 			if ($ALBUM_SET && $CURRENT_CAT_NAME) {
 				$album_name = _MD_LASTHITS . ' - ' . $CURRENT_CAT_NAME;
@@ -338,20 +329,20 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 			$nbEnr = $xoopsDB->fetchArray($result);
 			$count = $nbEnr['count(*)'];
 			$xoopsDB->freeRecordSet($result);
-			
+
 			if ($select_columns != '*') $select_columns .= ', mtime';
-			
+
 			$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' $ALBUM_SET ORDER BY mtime DESC $limit");
 			$rowset = db_fetch_rowset($result);
 			$xoopsDB->freeRecordSet($result);
-			
+
 			if ($set_caption) foreach ($rowset as $key => $row) {
 				$caption = "<span class=\"thumb_caption\">" . formatTimestamp($row['mtime'], 'm') . '</span>';
 				$rowset[$key]['caption_text'] = $caption;
 			}
 			return $rowset;
 			break;
-		
+
 		case 'random': // Random pictures
 			if ($ALBUM_SET && $CURRENT_CAT_NAME) {
 				$album_name = _MD_RANDOM . ' - ' . $CURRENT_CAT_NAME;
@@ -362,7 +353,7 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 			$nbEnr = $xoopsDB->fetchArray($result);
 			$pic_count = $nbEnr['count(*)'];
 			$xoopsDB->freeRecordSet($result);
-			
+
 			// if we have more than 1000 pictures, we limit the number of picture returned
 			// by the SELECT statement as ORDER BY RAND() is time consuming
 			if ($pic_count > 1000) {
@@ -370,42 +361,42 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 				$nbEnr = $xoopsDB->fetchArray($result);
 				$total_count = $nbEnr['count(*)'];
 				$xoopsDB->freeRecordSet($result);
-				
+
 				$granularity = floor($total_count / RANDPOS_MAX_PIC);
 				$cor_gran = ceil($total_count / $pic_count);
 				srand(time());
-				for ($i = 1; $i <= $cor_gran; $i++)
+				for ($i = 1; $i <= $cor_gran; $i++ )
 					$random_num_set = rand(0, $granularity) . ', ';
 				$random_num_set = substr($random_num_set, 0, -2);
 				$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE  randpos IN ($random_num_set) AND approved = 'YES' $ALBUM_SET ORDER BY RAND() LIMIT $limit2");
 			} else {
 				$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' $ALBUM_SET ORDER BY RAND() LIMIT $limit2");
 			}
-			
-			$rowset = array ();
+
+			$rowset = array();
 			while ($row = $xoopsDB->fetchArray($result)) {
 				$row['caption_text'] = '';
 				$rowset[-$row['pid']] = $row;
 			}
 			$xoopsDB->freeRecordSet($result);
-			
+
 			return $rowset;
 			break;
-		
+
 		case 'search': // Search results
 			if (isset($USER['search'])) {
 				$search_string = ($USER['search']);
 			} else {
 				$search_string = '';
 			}
-			
+
 			if (substr($search_string, 0, 3) == '###') {
 				$query_all = 1;
 				$search_string = substr($search_string, 3);
 			} else {
 				$query_all = 0;
 			}
-			
+
 			if ($ALBUM_SET && $CURRENT_CAT_NAME) {
 				$album_name = _MD_SEARCH . ' - ' . $CURRENT_CAT_NAME;
 			} else {
@@ -414,7 +405,7 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 			// var_dump(htmlspecialchars($search_string));
 			// $search_string = utf8Encode($search_string);
 			include 'include/search.inc.php';
-			
+
 			return $rowset;
 			break;
 		case 'usearch': // User pics search results
@@ -427,13 +418,13 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 			$nbEnr = $xoopsDB->fetchArray($result);
 			$count = $nbEnr['count(*)'];
 			$xoopsDB->freeRecordSet($result);
-			
+
 			if ($select_columns != '*') $select_columns .= ', pic_rating, votes';
-			
+
 			$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' AND owner_id = '{$USER['suid']}' $ALBUM_SET ORDER BY ctime DESC $limit");
 			$rowset = db_fetch_rowset($result);
 			$xoopsDB->freeRecordSet($result);
-			
+
 			if ($set_caption) foreach ($rowset as $key => $row) {
 				$caption = "<span class=\"thumb_caption\">" . formatTimestamp($row['ctime'], 'm') . "</span>";
 				$rowset[$key]['caption_text'] = $caption;
@@ -450,30 +441,31 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 			$nbEnr = $xoopsDB->fetchArray($result);
 			$count = $nbEnr['count(*)'];
 			$xoopsDB->freeRecordSet($result);
-			
+
 			if ($select_columns != '*') $select_columns .= ', sent_card';
-			
+
 			$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' AND sent_card >0 $ALBUM_SET ORDER BY sent_card DESC $limit");
 			$rowset = db_fetch_rowset($result);
 			$xoopsDB->freeRecordSet($result);
-			
+
 			if ($set_caption) foreach ($rowset as $key => $row) {
 				$caption = "<span class=\"thumb_caption\">" . sprintf(_MD_FUNC_SEND, $row['sent_card']) . '</span>';
 				$rowset[$key]['caption_text'] = $caption;
 			}
 			return $rowset;
 			break;
-		
+
 		default: // Invalid meta album
 			redirect_header('index.php', 2, _MD_NON_EXIST_AP);
 	}
 }
- // End of get_pic_data
-  
+
+// End of get_pic_data
+
 // Get the name of an album
 function get_album_name($aid) {
 	global $xoopsDB;
-	
+
 	$result = $xoopsDB->query("SELECT title from " . $xoopsDB->prefix("xcgal_albums") . " WHERE aid='$aid'");
 	$count = $xoopsDB->getRowsNum($result);
 	if ($count > 0) {
@@ -494,23 +486,22 @@ function add_hit($pid) {
 function breadcrumb($cat, &$breadcrumb, &$BREADCRUMB_TEXT) {
 	global $xoopsModule;
 	global $CURRENT_CAT_NAME, $xoopsDB;
-	
-	$myts = & MyTextSanitizer::getInstance(); // MyTextSanitizer object
+
+	$myts = icms_core_Textsanitizer::getInstance();
 	$breadcrumb = '';
 	if ($cat != 0) {
-		$breadcrumb_array = array ();
+		$breadcrumb_array = array();
 		if ($cat >= FIRST_USER_CAT) {
-			$row = array ();
+			$row = array();
 			$user_handler = icms::handler('icms_member');
-			$alb_owner = & $user_handler->getUser($cat - FIRST_USER_CAT);
+			$alb_owner = &$user_handler->getUser($cat - FIRST_USER_CAT);
 			if (!is_object($alb_owner) && !USER_IS_ADMIN)
 				redirect_header('index.php', 2, _MD_NO_EXIST_CAT);
 			elseif (!is_object($alb_owner))
 				$row['uname'] = _MD_FUNC_DELUSER . " uid=" . ($cat - FIRST_USER_CAT);
 			else
 				$row['uname'] = $alb_owner->uname();
-			$breadcrumb_array[] = array ($cat,$row['uname']
-			);
+			$breadcrumb_array[] = array($cat, $row['uname']);
 			$CURRENT_CAT_NAME = sprintf(_MD_INDEX_USERS_GAL, $row['uname']);
 			$row['parent'] = 1;
 			if (isset($result)) $xoopsDB->freeRecordSet($result);
@@ -519,8 +510,7 @@ function breadcrumb($cat, &$breadcrumb, &$BREADCRUMB_TEXT) {
 			if ($xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_NO_EXIST_CAT);
 			$row = $xoopsDB->fetchArray($result);
 			$row['name'] = icms_core_DataFilter::htmlSpecialchars($row['name']);
-			$breadcrumb_array[] = array ($cat,$row['name']
-			);
+			$breadcrumb_array[] = array($cat, $row['name']);
 			$CURRENT_CAT_NAME = $row['name'];
 			$xoopsDB->freeRecordSet($result);
 		}
@@ -529,11 +519,10 @@ function breadcrumb($cat, &$breadcrumb, &$BREADCRUMB_TEXT) {
 			if ($xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_ORPHAN_CAT);
 			$row = $xoopsDB->fetchArray($result);
 			$row['name'] = icms_core_DataFilter::htmlSpecialchars($row['name']);
-			$breadcrumb_array[] = array ($row['cid'],$row['name']
-			);
+			$breadcrumb_array[] = array($row['cid'], $row['name']);
 			$xoopsDB->freeRecordSet($result);
 		} // while
-		
+
 		$breadcrumb_array = array_reverse($breadcrumb_array);
 		$breadcrumb = '<a href=index.php>' . $xoopsModule->getVar('name') . '</a>';
 		$BREADCRUMB_TEXT = $xoopsModule->getVar('name');
@@ -561,30 +550,30 @@ function compute_img_size($width, $height, $max) {
 	$image_size['width'] = ceil($width / $ratio);
 	$image_size['height'] = ceil($height / $ratio);
 	$image_size['geom'] = 'width="' . $image_size['width'] . '" height="' . $image_size['height'] . '"';
-	
+
 	return $image_size;
 }
 
 // Prints thumbnails of pictures in an album
 function display_thumbnails($album, $cat, $page, $thumbcols, $thumbrows, $display_tabs) {
 	global $xoopsModuleConfig, $xoopsTpl;
-	$myts = & MyTextSanitizer::getInstance(); // MyTextSanitizer object
-	
+	$myts = icms_core_Textsanitizer::getInstance();
+
 	$thumb_per_page = $thumbcols * $thumbrows;
 	$lower_limit = ($page - 1) * $thumb_per_page;
-	
+
 	$pic_data = get_pic_data($album, $thumb_count, $album_name, $lower_limit, $thumb_per_page);
 	$total_pages = ceil($thumb_count / $thumb_per_page);
-	
+
 	$i = 0;
 	if (count($pic_data) > 0) {
 		foreach ($pic_data as $key => $row) {
-			$i++;
-			
+			$i++ ;
+
 			$image_size = compute_img_size($row['pwidth'], $row['pheight'], $xoopsModuleConfig['thumb_width']);
-			
+
 			$pic_title = _MD_FUNC_FNAME . icms_core_DataFilter::htmlSpecialchars($row['filename']) . "\n" . _MD_FUNC_FSIZE . ($row['filesize'] >> 10) . _MD_KB . "\n" . _MD_FUNC_DIM . $row['pwidth'] . "x" . $row['pheight'] . "\n" . _MD_FUNC_DATE . formatTimestamp($row['ctime'], 'm');
-			
+
 			$thumb_list[$i]['pos'] = $key < 0 ? $key : $i - 1 + $lower_limit;
 			$thumb_list[$i]['image'] = "<img src=\"" . get_pic_url($row, 'thumb') . "\" class=\"image\" {$image_size['geom']} border=\"0\" alt=\"{$row['filename']}\" title=\"$pic_title\" />"; // deleted </a> at end mcleines
 			$thumb_list[$i]['caption'] = ($row['caption_text']);
@@ -603,18 +592,16 @@ function display_thumbnails($album, $cat, $page, $thumbcols, $thumbrows, $displa
 // Return the url for a picture, allows to have pictures spreaded over multiple servers
 function get_pic_url(&$pic_row, $mode) {
 	global $xoopsModuleConfig, $xoopsModule;
-	
-	static $pic_prefix = array ();
-	static $url_prefix = array ();
-	
+
+	static $pic_prefix = array();
+	static $url_prefix = array();
+
 	if (!count($pic_prefix)) {
-		$pic_prefix = array ('thumb' => $xoopsModuleConfig['thumb_pfx'],'normal' => $xoopsModuleConfig['normal_pfx'],'fullsize' => ''
-		);
-		
-		$url_prefix = array (0 => $xoopsModuleConfig['fullpath']
-		);
+		$pic_prefix = array('thumb' => $xoopsModuleConfig['thumb_pfx'], 'normal' => $xoopsModuleConfig['normal_pfx'], 'fullsize' => '');
+
+		$url_prefix = array(0 => $xoopsModuleConfig['fullpath']);
 	}
-	
+
 	// watermarking for JPG
 	$ext = strrchr($pic_row['filename'], ".");
 	if ((strtolower($ext) == ".jpg" or strtolower($ext) == ".jpeg") and $xoopsModuleConfig['watermarking']) {
@@ -626,27 +613,25 @@ function get_pic_url(&$pic_row, $mode) {
 
 function clean_words(&$entry) {
 	// global $charset, $multibyte_charset;
-	static $drop_char_match = array ('^','$','(',')','<','>','`','\'','"','|',',','@','_','?','%','~','.','[',']','{','}',':','\\','/','=','\'','!'
-	);
-	static $drop_char_replace = array (' ',' ',' ',' ',' ',' ',' ','','',' ',' ',' ',' ','',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '
-	);
-	
+	static $drop_char_match = array('^', '$', '(', ')', '<', '>', '`', '\'', '"', '|', ',', '@', '_', '?', '%', '~', '.', '[', ']', '{', '}', ':', '\\', '/', '=', '\'', '!');
+	static $drop_char_replace = array(' ', ' ', ' ', ' ', ' ', ' ', ' ', '', '', ' ', ' ', ' ', ' ', '', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
+
 	$entry = ' ' . strtolower($entry) . ' ';
-	
+
 	// Replace line endings by a space
 	$entry = preg_replace('/[\n\r]/is', ' ', $entry);
-	
+
 	// + and - becomes and & not
 	$entry = str_replace(' +', ' and ', $entry);
 	$entry = str_replace(' -', ' not ', $entry);
-	
+
 	//
 	// Filter out strange characters like ^, $, &, change "it's" to "its"
 	//
-	if (XOOPS_USE_MULTIBYTES == 0) for ($i = 0; $i < count($drop_char_match); $i++) {
+	if (XOOPS_USE_MULTIBYTES == 0) for ($i = 0; $i < count($drop_char_match); $i++ ) {
 		$entry = str_replace($drop_char_match[$i], $drop_char_replace[$i], $entry);
 	}
-	
+
 	return $entry;
 }
 
@@ -655,7 +640,7 @@ function file_type_test($file, $types) {
 	if (!is_array($file)) $file = explode('.', $file); // explode the filename
 	$EOA = count($file) - 1; // use the last element as the extension (END OF ARRAY)
 	if ($EOA > 0) // If not EOA (extension exists) test extension
-foreach ($types as $extension) {
+	foreach ($types as $extension) {
 		if (strcasecmp($file[$EOA], $extension) == 0) return strtolower($extension);
 	}
 	return false;
@@ -686,8 +671,7 @@ function is_known_filetype(&$file) {
 }
 
 function get_media_type(&$file) {
-	foreach (array ('image','movie','audio','document'
-	) as $type) {
+	foreach (array('image', 'movie', 'audio', 'document') as $type) {
 		eval("\$file_type = is_$type(\$file);");
 		if ($file_type) return $type;
 	}
@@ -696,7 +680,7 @@ function get_media_type(&$file) {
 
 function get_real_path() {
 	global $xoopsModuleConfig;
-	
+
 	if (empty($xoopsModuleConfig['realpath']))
 		return $xoopsModuleConfig['fullpath'];
 	else
@@ -706,7 +690,7 @@ function get_real_path() {
 function get_full_real_path() {
 	global $xoopsModuleConfig;
 	$xcgalDir = basename(dirname(dirname(__FILE__)));
-	
+
 	if (empty($xoopsModuleConfig['realpath']))
 		return ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/" . $xoopsModuleConfig['fullpath'];
 	else

@@ -43,12 +43,13 @@
                 <tr>
                   <td>
                         <{if $file_type=='image'}>
-                        <{if $reduced==1}>
-                        <a href="javascript:;" onClick="MM_openBrWindow('displayimage.php?pid=<{$pid}>&amp;fullsize=1','<{$uniqid_rand}>','scrollbars=yes,toolbar=yes,status=yes,resizable=yes,width=<{$winsizeX}>,height=<{$winsizeY}>');">
-                      <img src="<{$picture_url}>" <{$image_size}> class="image" border="0" alt="<{$lang_view_fs}>" /><br />
+                        <{if $reduced==1}> 
+<a href="<{$pic_url}>" rel="lightbox" title="<{$album_title}> - <{$pic_title}>">
+
+                      <img src="<{$picture_url}>" <{$image_size}> class="image" border="0" title="" alt="<{$pic_title}>"/><br />
                     </a>
                         <{else}>
-                        <img src="<{$picture_url}>" <{$image_size}> class="image" border="0" alt=""/><br />
+                        <img src="<{$picture_url}>" <{$image_size}> class="image" border="0" alt="<{$pic_title}>"/><br />
                         <{/if}>
                         <{else}>
                         <object <{$image_size}>><param name="<{$file_type}>" value="<{$picture_url}>"><embed <{$image_size}> src="<{$picture_url}>"></embed></object>
