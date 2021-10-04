@@ -33,7 +33,6 @@ if (file_exists("../../mainfile.php"))
 else
 	include_once "../../../mainfile.php";
 
-// include_once ICMS_ROOT_PATH."/class/xoopsmodule.php";
 if (!defined('IN_XCGALLERY')) redirect_header(ICMS_URL . "/", 3, _NOPERM);
 
 if (ini_get('safe_mode') == 1) {
@@ -137,7 +136,7 @@ if (is_object($xoopsUser)) {
 		if ($ugroup['priv_upl_need_approval'] == 0) $USER_DATA['priv_upl_need_approval'] = $ugroup['priv_upl_need_approval']; # mcleines
 		if ($ugroup['group_quota'] > $USER_DATA['group_quota']) $USER_DATA['group_quota'] = $ugroup['group_quota'];
 	} // while
-	$xoopsModule = XoopsModule::getByDirname($xcgalDir);
+	$xoopsModule = XoopsModule::getByDirname($xcgalDir); // icms::$module; @todo the page fails when using this
 	if ($xoopsUser->isAdmin($xoopsModule->getVar('mid')))
 		define('USER_IS_ADMIN', 1);
 	else

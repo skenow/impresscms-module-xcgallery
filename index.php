@@ -152,7 +152,7 @@ function get_cat_list(&$breadcrumb, &$cat_data, &$statistics) {
 		$picture_count = $xoopsDB->getRowsNum($result);
 		$xoopsDB->freeRecordSet($result);
 
-		$comment_count = xoops_comment_count($xoopsModule->mid());
+		$comment_count = xoops_comment_count($xoopsModule->getVar('mid'));
 
 		$result = $xoopsDB->query("SELECT * FROM " . $xoopsDB->prefix("xcgal_categories") . " WHERE 1");
 		$cat_count = $xoopsDB->getRowsNum($result) - $HIDE_USER_CAT;
@@ -194,7 +194,7 @@ function get_cat_list(&$breadcrumb, &$cat_data, &$statistics) {
 function list_users() {
 	global $xoopsModuleConfig, $PAGE, $FORBIDDEN_SET, $xoopsDB, $myts;
 
-	$sql = "SELECT category, COUNT(DISTINCT a.aid) as alb_count," . "                COUNT(DISTINCT pid) as pic_count," . "                MAX(pid) as thumb_pid " . "FROM " . $xoopsDB->prefix("xcgal_albums") . " AS a, " . "" . $xoopsDB->prefix("xcgal_pictures") . " AS p WHERE category > " . FIRST_USER_CAT . " AND p.aid = a.aid " . "AND approved = 'YES' " . "$FORBIDDEN_SET " . "GROUP BY category " . "ORDER BY category ";
+	$sql = "SELECT category, COUNT(DISTINCT a.aid) as alb_count," . " COUNT(DISTINCT pid) as pic_count," . " MAX(pid) as thumb_pid " . "FROM " . $xoopsDB->prefix("xcgal_albums") . " AS a, " . "" . $xoopsDB->prefix("xcgal_pictures") . " AS p WHERE category > " . FIRST_USER_CAT . " AND p.aid = a.aid " . "AND approved = 'YES' " . "$FORBIDDEN_SET " . "GROUP BY category " . "ORDER BY category ";
 	$result = $xoopsDB->query($sql);
 
 	$user_count = $xoopsDB->getRowsNum($result);
@@ -427,9 +427,9 @@ main_menu();
 // $xoopsTpl->assign('xcgal_footer', pagefooter());
 do_footer();
 if ($cat != 0) {
-	$xoopsTpl->assign('xoops_pagetitle', icms_core_DataFilter::htmlSpecialchars($CURRENT_CAT_NAME) . ' : ' . icms_core_DataFilter::htmlSpecialchars($xoopsModule->name()));
+	$xoopsTpl->assign('xoops_pagetitle', icms_core_DataFilter::htmlSpecialchars($CURRENT_CAT_NAME) . ' : ' . icms_core_DataFilter::htmlSpecialchars($xoopsModule->getVar('name')));
 } else {
-	$xoopsTpl->assign('xoops_pagetitle', icms_core_DataFilter::htmlSpecialchars($xoopsModule->name()));
+	$xoopsTpl->assign('xoops_pagetitle', icms_core_DataFilter::htmlSpecialchars($xoopsModule->getVar('name')));
 }
 include_once "../../footer.php";
 // Speed-up the random image query by 'keying' the image table
