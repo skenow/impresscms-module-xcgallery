@@ -32,7 +32,7 @@ define('IN_XCGALLERY', true);
 $xcgalDir = basename(dirname(__FILE__));
 require ('include/init.inc.php');
 # include('include/htmlMimeMail.php');
-$myts = &MyTextSanitizer::getInstance(); // MyTextSanitizer object
+$myts = icms_core_Textsanitizer::getInstance();
 $xoopsMailer = &getMailer();
 if (!USER_CAN_SEND_ECARDS) redirect_header('index.php', 2, _MD_ACCESS_DENIED);
 
@@ -81,7 +81,7 @@ function send_ecard($recipient_email, $recipient_name, $greetings, $msg_content,
 	$USER['ecard'][] = time();
 	user_save_profile();
 
-	$myts = &MyTextSanitizer::getInstance();
+	$myts = icms_core_Textsanitizer::getInstance();
 	$xoopsMailer = &getMailer();
 
 	$xoopsMailer->setFromEmail($sender_email);
@@ -244,7 +244,7 @@ $xoopsTpl->assign('lang_ecard_greetings', _MD_CARD_GREETINGS);
 $xoopsTpl->assign('greetings', $greetings);
 $xoopsTpl->assign('lang_ecard_message', _MD_CARD_MESSAGE);
 include_once ICMS_ROOT_PATH . "/include/xoopscodes.php";
-$myts = &MyTextSanitizer::getInstance(); // MyTextSanitizer object
+$myts = icms_core_Textsanitizer::getInstance();
 ob_start();
 $GLOBALS["message"] = icms_core_DataFilter::htmlSpecialchars($message);
 xoopsCodeTarea("message", 60, 8);

@@ -36,7 +36,7 @@ require ('include/picmgmt.inc.php');
 if (!isset($_GET['event']) && !isset($_POST['event'])) {
 	redirect_header('index.php', 2, _MD_PARAM_MISSING);
 }
-$myts = &MyTextSanitizer::getInstance(); // MyTextSanitizer object
+$myts = icms_core_Textsanitizer::getInstance();
 $event = isset($_POST['event']) ? $_POST['event'] : $_GET['event'];
 switch ($event) {
 

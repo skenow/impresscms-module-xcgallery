@@ -149,7 +149,7 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 	global $USER, $xoopsModuleConfig, $ALBUM_SET, $CURRENT_CAT_NAME, $HTML_SUBST, $THEME_DIR;
 	global $GLOBALS;
 	global $xoopsDB, $xoopsModule, $xoopsConfig;
-	$myts = &MyTextSanitizer::getInstance(); // MyTextSanitizer object
+	$myts = icms_core_Textsanitizer::getInstance();
 	$sort_array = array('na' => 'filename ASC', 'nd' => 'filename DESC', 'da' => 'pid ASC', 'dd' => 'pid DESC');
 	$sort_code = isset($USER['sort']) ? $USER['sort'] : $xoopsModuleConfig['default_sort_order'];
 	$sort_order = isset($sort_array[$sort_code]) ? $sort_array[$sort_code] : $sort_array[$xoopsModuleConfig['default_sort_order']];
@@ -487,7 +487,7 @@ function breadcrumb($cat, &$breadcrumb, &$BREADCRUMB_TEXT) {
 	global $xoopsModule;
 	global $CURRENT_CAT_NAME, $xoopsDB;
 
-	$myts = &MyTextSanitizer::getInstance(); // MyTextSanitizer object
+	$myts = icms_core_Textsanitizer::getInstance();
 	$breadcrumb = '';
 	if ($cat != 0) {
 		$breadcrumb_array = array();
@@ -557,7 +557,7 @@ function compute_img_size($width, $height, $max) {
 // Prints thumbnails of pictures in an album
 function display_thumbnails($album, $cat, $page, $thumbcols, $thumbrows, $display_tabs) {
 	global $xoopsModuleConfig, $xoopsTpl;
-	$myts = &MyTextSanitizer::getInstance(); // MyTextSanitizer object
+	$myts = icms_core_Textsanitizer::getInstance();
 
 	$thumb_per_page = $thumbcols * $thumbrows;
 	$lower_limit = ($page - 1) * $thumb_per_page;

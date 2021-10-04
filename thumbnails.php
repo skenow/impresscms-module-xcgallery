@@ -32,9 +32,8 @@ include "../../mainfile.php";
 define('IN_XCGALLERY', true);
 
 require 'include/init.inc.php';
-$myts = &MyTextSanitizer::getInstance();
+$myts = icms_core_Textsanitizer::getInstance();
 
-// MyTextSanitizer object
 function get_subcat_data($parent, &$album_set_array, $level) {
 	global $xoopsDB;
 

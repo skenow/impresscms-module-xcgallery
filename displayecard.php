@@ -32,7 +32,7 @@ include "../../mainfile.php";
 define('IN_XCGALLERY', true);
 $xcgalDir = basename(dirname(__FILE__));
 require ('include/init.inc.php');
-$myts = &MyTextSanitizer::getInstance(); // MyTextSanitizer object
+$myts = icms_core_Textsanitizer::getInstance();
 
 if (!isset($_GET['data'])) redirect_header('index.php', 2, _MD_PARAM_MISSING);
 $data = $_GET['data'];

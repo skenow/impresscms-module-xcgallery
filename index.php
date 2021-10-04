@@ -31,9 +31,8 @@ include "../../mainfile.php";
 define('IN_XCGALLERY', true);
 
 require 'include/init.inc.php';
-$myts = &MyTextSanitizer::getInstance();
+$myts = icms_core_Textsanitizer::getInstance();
 
-// MyTextSanitizer object
 /**
  * ************************************************************************
  * Local functions definition
@@ -253,7 +252,7 @@ function list_users() {
 function list_albums() {
 	global $xoopsModuleConfig, $USER, $PAGE, $lastup_date_fmt, $_GET, $USER_DATA;
 	global $xoopsDB;
-	$myts = &MyTextSanitizer::getInstance(); // MyTextSanitizer object
+	$myts = icms_core_Textsanitizer::getInstance();
 	$cat = isset($_GET['cat']) ? $_GET['cat'] : 0;
 
 	$alb_per_page = $xoopsModuleConfig['albums_per_page'];

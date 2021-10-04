@@ -291,7 +291,7 @@ function xcgal_block_meta_edit($options) {
 
 function get_subcat_data_block($parent, $ident = '') {
 	global $CAT_LIST_BLOCK, $xoopsDB, $myts;
-	$myts = &MyTextSanitizer::getInstance();
+	$myts = icms_core_Textsanitizer::getInstance();
 	$sql = "SELECT cid, name, description " . "FROM " . $xoopsDB->prefix("xcgal_categories") . " " . "WHERE parent = '$parent' " . "ORDER BY pos";
 	$result = $xoopsDB->query($sql);
 

@@ -41,9 +41,8 @@ include_once ICMS_ROOT_PATH . '/class/module.errorhandler.php';
 // $eh = new ErrorHandler;
 $xcgalDir = basename(dirname(__FILE__));
 $alb_path = ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/";
-$myts = &MyTextSanitizer::getInstance();
+$myts = icms_core_Textsanitizer::getInstance();
 
-// MyTextSanitizer object
 /**
  * ************************************************************************
  * Local functions definition

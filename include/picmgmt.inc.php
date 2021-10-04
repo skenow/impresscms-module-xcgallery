@@ -35,7 +35,7 @@ function add_picture($aid, $filepath, $filename, $title = '', $caption = '', $ke
 	global $xoopsDB, $xoopsUser, $picinID, $_SERVER;
 	$xcgalDir = basename(dirname(dirname(__FILE__)));
 
-	$myts = &MyTextSanitizer::getInstance(); // MyTextSanitizer object
+	$myts = icms_core_Textsanitizer::getInstance();
 	$image = $xoopsModuleConfig['fullpath'] . $filepath . $filename;
 	$normal = $xoopsModuleConfig['fullpath'] . $filepath . $xoopsModuleConfig['normal_pfx'] . $filename;
 	$thumb = $xoopsModuleConfig['fullpath'] . $filepath . $xoopsModuleConfig['thumb_pfx'] . $filename;

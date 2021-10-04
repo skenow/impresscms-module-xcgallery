@@ -32,8 +32,7 @@ define('IN_XCGALLERY', true);
 include "../../mainfile.php";
 include_once ICMS_ROOT_PATH . "/class/module.errorhandler.php";
 include_once ICMS_ROOT_PATH . "/include/xoopscodes.php";
-$myts = &MyTextSanitizer::getInstance(); // MyTextSanitizer object
-                                         // $eh = new ErrorHandler; //ErrorHandler object
+$myts = icms_core_Textsanitizer::getInstance();
 
 require ('include/init.inc.php');
 

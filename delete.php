@@ -31,7 +31,7 @@ include "../../mainfile.php";
 define('IN_XCGALLERY', true);
 
 require ('include/init.inc.php');
-$myts = &MyTextSanitizer::getInstance(); // MyTextSanitizer object
+$myts = icms_core_Textsanitizer::getInstance();
 /**
  * ************************************************************************
  * Local functions definition
@@ -121,7 +121,7 @@ function delete_picture($pid) {
 	global $xoopsModuleConfig, $header_printed, $xoopsDB;
 	global $del_pic, $xoopsModule;
 	if (!$header_printed) output_table_header();
-	$myts = &MyTextSanitizer::getInstance(); // MyTextSanitizer object
+	$myts = icms_core_Textsanitizer::getInstance();
 	$green = "<img src=\"images/green.gif\" border=\"0\" width=\"12\" height=\"12\" alt=\"\" /><br />";
 	$red = "<img src=\"images/red.gif\" border=\"0\" width=\"12\" height=\"12\" alt=\"\" /><br />";
 

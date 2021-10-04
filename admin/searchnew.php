@@ -32,9 +32,8 @@ define('IN_XCGALLERY', true);
 include "header.php";
 $xcgalDir = basename(dirname(dirname(__FILE__)));
 $alb_path = ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/";
-$myts = &MyTextSanitizer::getInstance();
+$myts = icms_core_Textsanitizer::getInstance();
 
-// MyTextSanitizer object
 /**
  * ************************************************************************
  * Local functions definition

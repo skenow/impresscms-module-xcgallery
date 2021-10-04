@@ -3,6 +3,7 @@
 	<name>gallery</name>
 	<comment></comment>
 	<projects>
+		<project>impresscms</project>
 	</projects>
 	<buildSpec>
 	</buildSpec>

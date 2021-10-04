@@ -46,9 +46,8 @@ if ($xoopsModuleConfig['read_exif_data'] && function_exists('exif_read_data')) {
 	exit();
 }
 
-$myts = &MyTextSanitizer::getInstance();
+$myts = icms_core_TextSanitizer::getInstance();
 
-// MyTextSanitizer object
 /**
  * ************************************************************************
  * Local functions definition
@@ -333,6 +332,7 @@ $album = isset($_GET['album']) ? $_GET['album'] : '';
 if (!GALLERY_ADMIN_MODE && $xoopsModuleConfig['allow_private_albums']) get_private_album_set();
 
 // Build the album set if required
+// albums can be named - lastup, lastcom, topn, toprated
 if (!is_numeric($album) && $cat) { // Meta albums, we need to restrict the albums to the current category
 	if ($cat < 0) {
 		$ALBUM_SET .= 'AND aid IN (' . (-$cat) . ') ';
