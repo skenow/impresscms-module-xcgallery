@@ -81,7 +81,7 @@ if (GALLERY_ADMIN_MODE) {
 if ($xoopsDB->getRowsNum($public_albums)) {
 	$public_albums_list = db_fetch_rowset($public_albums);
 } else {
-	$public_albums_list = array();
+	$public_albums_list = array ();
 }
 
 if (USER_ID) {
@@ -89,10 +89,10 @@ if (USER_ID) {
 	if ($xoopsDB->getRowsNum($user_albums)) {
 		$user_albums_list = db_fetch_rowset($user_albums);
 	} else {
-		$user_albums_list = array();
+		$user_albums_list = array ();
 	}
 } else {
-	$user_albums_list = array();
+	$user_albums_list = array ();
 }
 get_private_album_set();
 $other_user = $xoopsDB->query("SELECT aid, title, category FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE category > " . FIRST_USER_CAT . " AND uploads='YES' AND category!='" . (FIRST_USER_CAT + USER_ID) . "' $ALBUM_SET ORDER BY category");
@@ -101,7 +101,7 @@ $other_user = $xoopsDB->query("SELECT aid, title, category FROM " . $xoopsDB->pr
 if ($xoopsDB->getRowsNum($other_user)) {
 	$other_user_albums_list = db_fetch_rowset($other_user);
 } else {
-	$other_user_albums_list = array();
+	$other_user_albums_list = array ();
 }
 
 if (!count($public_albums_list) && !count($user_albums_list) && !USER_CAN_CREATE_ALBUMS) {
@@ -115,7 +115,7 @@ if (!count($public_albums_list) && !count($user_albums_list) && !USER_CAN_CREATE
 
 $xoopsOption['template_main'] = 'xcgal_upload.html';
 include ICMS_ROOT_PATH . "/header.php";
-$xoopsTpl->assign('xoops_module_header', $xcgal_module_header);
+$xoopsTpl->assign('icms_module_header', $xcgal_module_header);
 
 ob_start();
 $GLOBALS["caption"] = icms_core_DataFilter::htmlSpecialchars("");

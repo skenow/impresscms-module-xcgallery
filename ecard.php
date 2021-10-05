@@ -144,7 +144,7 @@ function build_html_card($sender_name, $sender_email, $n_picname, $message, $gre
 	$ecardTpl->assign('sender_name', icms_core_DataFilter::htmlSpecialchars($sender_name));
 	$ecardTpl->assign('view_more_tgt', $xoopsModuleConfig['ecards_more_pic_target']);
 	$ecardTpl->assign('view_more_lnk', _MD_CARD_VIEW_MORE_PICS);
-	$ecardTpl->assign('xoops_module_header', $xcgal_module_header);
+	$ecardTpl->assign('icms_module_header', $xcgal_module_header);
 	$ecardTpl->assign('xoops_url', ICMS_URL);
 	$card = $ecardTpl->fetch('db:xcgal_discard.html');
 	return $card;
@@ -222,7 +222,7 @@ if (count($_POST) > 0 && $valid_sender_email && $valid_recipient_email) {
 }
 $xoopsOption['template_main'] = 'xcgal_ecard.html';
 include ICMS_ROOT_PATH . "/header.php";
-$xoopsTpl->assign('xoops_module_header', $xcgal_module_header);
+$xoopsTpl->assign('icms_module_header', $xcgal_module_header);
 $xoopsTpl->assign('ecard_title', _MD_CARD_TITLE);
 $xoopsTpl->assign('lang_ecard_from', _MD_CARD_FROM);
 $xoopsTpl->assign('thumb_url', $thumb_pic_url);

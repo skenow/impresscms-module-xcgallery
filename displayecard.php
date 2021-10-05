@@ -68,7 +68,7 @@ $xoopsTpl->assign('sender_email', icms_core_DataFilter::htmlSpecialchars($row['s
 $xoopsTpl->assign('sender_name', icms_core_DataFilter::htmlSpecialchars($row['sender_name']));
 $xoopsTpl->assign('view_more_tgt', $xoopsModuleConfig['ecards_more_pic_target']);
 $xoopsTpl->assign('view_more_lnk', _MD_CARD_VIEW_MORE_PICS);
-$xoopsTpl->assign('xoops_module_header', $xcgal_module_header);
+$xoopsTpl->assign('icms_module_header', $xcgal_module_header);
 $xoopsTpl->display('db:xcgal_discard.html');
 $xoopsDB->queryf("UPDATE " . $xoopsDB->prefix("xcgal_ecard") . " SET picked=1 WHERE e_id='" . $data . "'");
 

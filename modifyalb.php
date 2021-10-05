@@ -43,7 +43,10 @@ function get_subcat_data($parent, $ident = '') {
 	if ($xoopsDB->getRowsNum($result) > 0) {
 		$rowset = db_fetch_rowset($result);
 		foreach ($rowset as $subcat) {
-			$CAT_LIST[] = array($subcat['cid'], $ident . $subcat['name']);
+			$CAT_LIST[] = array (
+					$subcat['cid'],
+					$ident . $subcat['name']
+			);
 			get_subcat_data($subcat['cid'], $ident . '&nbsp;&nbsp;&nbsp;');
 		}
 	}
@@ -101,7 +104,7 @@ if (!GALLERY_ADMIN_MODE && $ALBUM_DATA['category'] != FIRST_USER_CAT + USER_ID) 
 }
 $xoopsOption['template_main'] = 'xcgal_modifyalb.html';
 include ICMS_ROOT_PATH . "/header.php";
-$xoopsTpl->assign('xoops_module_header', $xcgal_module_header);
+$xoopsTpl->assign('icms_module_header', $xcgal_module_header);
 $album_lb = alb_list_box();
 $xoopsTpl->assign('update', _MD_MODIFYALB_UPDATE);
 $xoopsTpl->assign('album_lb', $album_lb);
@@ -116,8 +119,11 @@ if (!GALLERY_ADMIN_MODE || $ALBUM_DATA['category'] > FIRST_USER_CAT) {
 	$xoopsTpl->assign('user_gal', _MD_MODIFYALB_USER_GAL);
 	$xoopsTpl->assign('album_data_category', $ALBUM_DATA['category']);
 } else {
-	$CAT_LIST = array();
-	$CAT_LIST[] = array(0, _MD_MODIFYALB_NO_CAT);
+	$CAT_LIST = array ();
+	$CAT_LIST[] = array (
+			0,
+			_MD_MODIFYALB_NO_CAT
+	);
 	get_subcat_data(0, '');
 	$cat_list = '';
 	foreach ($CAT_LIST as $category) {
@@ -138,7 +144,9 @@ if ($xoopsDB->getRowsNum($results) == 0) {
 	$xoopsTpl->assign('alb_empty', _MD_MODIFYALB_ALB_EMPTY);
 } else {
 	$initial_thumb_url = 'images/nopic.jpg';
-	$img_list = array(0 => _MD_MODIFYALB_LAST_UPL);
+	$img_list = array (
+			0 => _MD_MODIFYALB_LAST_UPL
+	);
 	$pic_url = '';
 	$xoopsTpl->assign('no_pic', '');
 	while ($picture = $xoopsDB->fetchArray($results)) {
@@ -163,7 +171,10 @@ if (!$xoopsModuleConfig['allow_private_albums']) {
 } else {
 	$xoopsTpl->assign('no_private', '');
 	if (GALLERY_ADMIN_MODE) {
-		$options = array(0 => _MD_MODIFYALB_PUB_ALB, FIRST_USER_CAT + USER_ID => _MD_MODIFYALB_ME_ONLY);
+		$options = array (
+				0 => _MD_MODIFYALB_PUB_ALB,
+				FIRST_USER_CAT + USER_ID => _MD_MODIFYALB_ME_ONLY
+		);
 		if ($ALBUM_DATA['category'] > FIRST_USER_CAT) {
 			$result = $xoopsDB->query("SELECT uname FROM " . $xoopsDB->prefix("users") . " WHERE uid='" . ($ALBUM_DATA['category'] - FIRST_USER_CAT) . "'");
 			if ($xoopsDB->getRowsNum($result)) {
@@ -176,7 +187,10 @@ if (!$xoopsModuleConfig['allow_private_albums']) {
 			$options[$group['group_id']] = sprintf(_MD_MODIFYALB_GROUP_ONLY, $group['group_name']);
 		} // while
 	} else {
-		$options = array(0 => _MD_MODIFYALB_PUB_ALB, FIRST_USER_CAT + USER_ID => _MD_MODIFYALB_ME_ONLY);
+		$options = array (
+				0 => _MD_MODIFYALB_PUB_ALB,
+				FIRST_USER_CAT + USER_ID => _MD_MODIFYALB_ME_ONLY
+		);
 		$member_handler = icms::handler('icms_member');
 		$usergroups = $xoopsUser->getgroups();
 		// var_dump($usergroups);

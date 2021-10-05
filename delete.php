@@ -56,7 +56,7 @@ function output_caption() {
 <tr>
 	<td colspan="6" class="odd"><b><?php
 
-echo _MD_DEL_CAPTION?></b>
+	echo _MD_DEL_CAPTION?></b>
 
 </tr>
 <tr>
@@ -67,49 +67,49 @@ echo _MD_DEL_CAPTION?></b>
 				<td>:</td>
 				<td><?php
 
-echo _MD_DEL_FS_PIC?></td>
+	echo _MD_DEL_FS_PIC?></td>
 				<td width="20">&nbsp;</td>
 				<td><img src="images/green.gif" border="0" width="12" height="12"
 					align="middle" alt="" /></td>
 				<td>:</td>
 				<td><?php
 
-echo _MD_DEL_DEL_SUCCESS?></td>
+	echo _MD_DEL_DEL_SUCCESS?></td>
 			</tr>
 			<tr>
 				<td><b>N</b></td>
 				<td>:</td>
 				<td><?php
 
-echo _MD_DEL_NS_PIC?></td>
+	echo _MD_DEL_NS_PIC?></td>
 				<td width="20">&nbsp;</td>
 				<td><img src="images/red.gif" border="0" width="12" height="12"
 					align="middle" alt="" /></td>
 				<td>:</td>
 				<td><?php
 
-echo _MD_DEL_ERR_DEL?></td>
+	echo _MD_DEL_ERR_DEL?></td>
 			</tr>
 			<tr>
 				<td><b>T</b></td>
 				<td>:</td>
 				<td><?php
 
-echo _MD_DEL_THUMB?></td>
+	echo _MD_DEL_THUMB?></td>
 			</tr>
 			<tr>
 				<td><b>C</b></td>
 				<td>:</td>
 				<td><?php
 
-echo _MD_DEL_COMMENT?></td>
+	echo _MD_DEL_COMMENT?></td>
 			</tr>
 			<tr>
 				<td><b>D</b></td>
 				<td>:</td>
 				<td><?php
 
-echo _MD_DEL_IMGALB?></td>
+	echo _MD_DEL_IMGALB?></td>
 			</tr>
 		</table>
 	</td>
@@ -146,7 +146,11 @@ function delete_picture($pid) {
 
 	$del_pic = "<tr><td class=\"even\">" . icms_core_DataFilter::htmlSpecialchars($file) . "</td>";
 
-	$files = array($dir . $file, $dir . $xoopsModuleConfig['normal_pfx'] . $file, $dir . $xoopsModuleConfig['thumb_pfx'] . $file);
+	$files = array (
+			$dir . $file,
+			$dir . $xoopsModuleConfig['normal_pfx'] . $file,
+			$dir . $xoopsModuleConfig['thumb_pfx'] . $file
+	);
 	foreach ($files as $currFile) {
 		$del_pic .= "<td class=\"even\" align=\"center\">";
 		if (is_file($currFile)) {
@@ -223,13 +227,21 @@ function parse_select_option($value) {
 
 	if (!preg_match("/.+?no=(\d+),album_nm='(.+?)',album_sort=(\d+),action=(\d)/", $value, $matches)) return false;
 
-	return array('album_no' => (int) $matches[1], 'album_nm' => icms_core_DataFilter::htmlSpecialchars($matches[2]), 'album_sort' => (int) $matches[3], 'action' => (int) $matches[4]);
+	return array (
+			'album_no' => (int) $matches[1],
+			'album_nm' => icms_core_DataFilter::htmlSpecialchars($matches[2]),
+			'album_sort' => (int) $matches[3],
+			'action' => (int) $matches[4]
+	);
 }
 
 function parse_orig_sort_order($value) {
 	if (!preg_match("/(\d+)@(\d+)/", $value, $matches)) return false;
 
-	return array('aid' => (int) $matches[1], 'pos' => (int) $matches[2]);
+	return array (
+			'aid' => (int) $matches[1],
+			'pos' => (int) $matches[2]
+	);
 }
 
 function parse_list($value) {
@@ -276,10 +288,13 @@ switch ($what) {
 		}
 
 		$to_delete = parse_list($_POST['delete_album']);
-		$data = array();
+		$data = array ();
 		foreach ($to_delete as $album_id) {
 			delete_album((int) $album_id);
-			$data[] = array('del_message' => $del_message, 'pic_del' => $pic_del);
+			$data[] = array (
+					'del_message' => $del_message,
+					'pic_del' => $pic_del
+			);
 		}
 		$create_update = '';
 		if (isset($_POST['to'])) foreach ($_POST['to'] as $option_value) {
@@ -317,8 +332,11 @@ switch ($what) {
 		$pid = (int) $_POST['id'];
 		$out_caption = _MD_DEL_DELPIC;
 		$aid = delete_picture($pid);
-		$data = array();
-		$data[] = array('del_message' => '', 'pic_del' => $del_pic);
+		$data = array ();
+		$data[] = array (
+				'del_message' => '',
+				'pic_del' => $del_pic
+		);
 		$continueURL = "thumbnails.php?album={$aid}";
 		$create_update = '';
 		break;
@@ -331,8 +349,11 @@ switch ($what) {
 		$aid = (int) $_GET['id'];
 		$out_caption = _MD_DEL_DELALB;
 		delete_album($aid);
-		$data = array();
-		$data[] = array('del_message' => $del_message, 'pic_del' => $pic_del);
+		$data = array ();
+		$data[] = array (
+				'del_message' => $del_message,
+				'pic_del' => $pic_del
+		);
 		$continueURL = 'index.php';
 		$create_update = '';
 		break;
@@ -345,11 +366,14 @@ switch ($what) {
 if ($out_caption) {
 	$xoopsOption['template_main'] = 'xcgal_delete.html';
 	include ICMS_ROOT_PATH . "/header.php";
-	$xoopsTpl->assign('xoops_module_header', $xcgal_module_header);
+	$xoopsTpl->assign('icms_module_header', $xcgal_module_header);
 	$xoopsTpl->assign('table_header', $out_caption);
 	// alb pic
 	foreach ($data as $dels) {
-		$xoopsTpl->append('deletes', array('del_message' => $dels['del_message'], 'pic_del' => $dels['pic_del']));
+		$xoopsTpl->append('deletes', array (
+				'del_message' => $dels['del_message'],
+				'pic_del' => $dels['pic_del']
+		));
 	}
 	if ($header_printed) {
 		$xoopsTpl->assign('lang_pictures', _MD_PICS);

@@ -57,7 +57,7 @@ if (EDIT_PICTURES_MODE) {
 	$actual_cat = $cat;
 	if ($cat != FIRST_USER_CAT + USER_ID && !GALLERY_ADMIN_MODE) redirect_header('index.php', 2, _MD_PERM_DENIED);
 } else {
-	$ALBUM_DATA = array();
+	$ALBUM_DATA = array ();
 }
 
 $THUMB_ROWSPAN = 5;
@@ -66,7 +66,9 @@ if ($xoopsModuleConfig['user_field2_name'] != '') $THUMB_ROWSPAN++ ;
 if ($xoopsModuleConfig['user_field3_name'] != '') $THUMB_ROWSPAN++ ;
 if ($xoopsModuleConfig['user_field4_name'] != '') $THUMB_ROWSPAN++ ;
 
-$USER_ALBUMS_ARRAY = array(0 => array());
+$USER_ALBUMS_ARRAY = array (
+		0 => array ()
+);
 
 function get_post_var($var, $pid) {
 	global $_POST;
@@ -80,7 +82,7 @@ function process_post_data() {
 	global $_POST, $xoopsModuleConfig, $xoopsDB;
 	global $user_albums_list, $xoopsModule, $myts;
 
-	$user_album_set = array();
+	$user_album_set = array ();
 	foreach ($user_albums_list as $album)
 		$user_album_set[$album['aid']] = 1;
 
@@ -148,7 +150,11 @@ function process_post_data() {
 
 			if (!is_writable($dir)) redirect_header('index.php', 2, sprintf(_MD_DIRECTORY_RO, $dir));
 
-			$files = array($dir . $file, $dir . $xoopsModuleConfig['normal_pfx'] . $file, $dir . $xoopsModuleConfig['thumb_pfx'] . $file);
+			$files = array (
+					$dir . $file,
+					$dir . $xoopsModuleConfig['normal_pfx'] . $file,
+					$dir . $xoopsModuleConfig['thumb_pfx'] . $file
+			);
 			foreach ($files as $currFile) {
 				if (is_file($currFile)) @unlink($currFile);
 			}
@@ -228,7 +234,7 @@ function get_user_albums($user_id) {
 		if ($xoopsDB->getRowsNum($user_albums)) {
 			$user_albums_list = db_fetch_rowset($user_albums);
 		} else {
-			$user_albums_list = array();
+			$user_albums_list = array ();
 		}
 		$xoopsDB->freeRecordSet($user_albums);
 		$USER_ALBUMS_ARRAY[$user_id] = $user_albums_list;
@@ -242,11 +248,11 @@ if (USER_IS_ADMIN) {
 	if ($xoopsDB->getRowsNum($public_albums)) {
 		$public_albums_list = db_fetch_rowset($public_albums);
 	} else {
-		$public_albums_list = array();
+		$public_albums_list = array ();
 	}
 	$xoopsDB->freeRecordSet($public_albums);
 } else {
-	$public_albums_list = array();
+	$public_albums_list = array ();
 }
 
 get_user_albums(USER_ID);
@@ -300,7 +306,7 @@ if ($start > 0) {
 $pic_count_text = sprintf(_MD_NPICS, $pic_count);
 $xoopsOption['template_main'] = 'xcgal_editpics.html';
 include ICMS_ROOT_PATH . "/header.php";
-$xoopsTpl->assign('xoops_module_header', $xcgal_module_header);
+$xoopsTpl->assign('icms_module_header', $xcgal_module_header);
 // $xoopsTpl->assign('xcgal_header',pageheader($title));
 $xoopsTpl->assign('title', $title);
 $xoopsTpl->assign('form_target', $form_target);
@@ -354,28 +360,30 @@ while ($CURRENT_PIC = $xoopsDB->fetchArray($result)) {
 	$name_field4 = 'user4' . $CURRENT_PIC['pid'];
 	form_options();
 
-	$xoopsTpl->append('pics', array('current' => $CURRENT_PIC['pid'],
-		'filename' => $filename,
-		'pic_info' => $pic_info,
-		'thumb_url' => $thumb_url,
-		'thumb_link' => $thumb_link,
-		'sel_name' => $sel_name,
-		'alb_opt' => $alb_opt,
-		'title_name' => ('title' . $CURRENT_PIC['pid']),
-		'title_value' => icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC['title']),
-		'xoops_codes' => $xoops_codes,
-		'xoops_smilies' => $smilies,
-		'keywords_value' => icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC['keywords']),
-		'keywords_name' => ('keywords' . $CURRENT_PIC['pid']),
-		'name_field1' => $name_field1,
-		'value_field1' => $value_field1,
-		'name_field2' => $name_field2,
-		'value_field2' => $value_field2,
-		'name_field3' => $name_field3,
-		'value_field3' => $value_field3,
-		'name_field4' => $name_field4,
-		'value_field4' => $value_field4,
-		'pic_opt' => $pic_opt));
+	$xoopsTpl->append('pics', array (
+			'current' => $CURRENT_PIC['pid'],
+			'filename' => $filename,
+			'pic_info' => $pic_info,
+			'thumb_url' => $thumb_url,
+			'thumb_link' => $thumb_link,
+			'sel_name' => $sel_name,
+			'alb_opt' => $alb_opt,
+			'title_name' => ('title' . $CURRENT_PIC['pid']),
+			'title_value' => icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC['title']),
+			'xoops_codes' => $xoops_codes,
+			'xoops_smilies' => $smilies,
+			'keywords_value' => icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC['keywords']),
+			'keywords_name' => ('keywords' . $CURRENT_PIC['pid']),
+			'name_field1' => $name_field1,
+			'value_field1' => $value_field1,
+			'name_field2' => $name_field2,
+			'value_field2' => $value_field2,
+			'name_field3' => $name_field3,
+			'value_field3' => $value_field3,
+			'name_field4' => $name_field4,
+			'value_field4' => $value_field4,
+			'pic_opt' => $pic_opt
+	));
 } // while
 $xoopsDB->freeRecordSet($result);
 $xoopsTpl->assign('form', $form);

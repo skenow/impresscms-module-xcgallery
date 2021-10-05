@@ -78,7 +78,7 @@ if (isset($_GET['page'])) {
 
 $breadcrumb = '';
 $breadcrumb_text = '';
-$cat_data = array();
+$cat_data = array ();
 
 // Build the private album set
 if (!GALLERY_ADMIN_MODE && $xoopsModuleConfig['allow_private_albums']) get_private_album_set();
@@ -103,7 +103,7 @@ if (is_numeric($album)) {
 		$ALBUM_SET .= 'AND aid IN (' . (-$cat) . ') ';
 		breadcrumb($actual_cat, $breadcrumb, $breadcrumb_text);
 	} else {
-		$album_set_array = array();
+		$album_set_array = array ();
 		if ($cat == USER_GAL_CAT)
 			$where = 'category > ' . FIRST_USER_CAT;
 		else
@@ -142,7 +142,7 @@ if (is_numeric($album)) {
 
 $xoopsOption['template_main'] = 'xcgal_index.html';
 include ICMS_ROOT_PATH . "/header.php";
-$xoopsTpl->assign('xoops_module_header', $xcgal_module_header);
+$xoopsTpl->assign('icms_module_header', $xcgal_module_header);
 $xoopsTpl->assign('display_alb_list', '');
 user_save_profile();
 include_once "include/theme_func.php";

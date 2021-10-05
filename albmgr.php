@@ -41,14 +41,17 @@ function get_subcat_data($parent, $ident = '') {
 	if ($xoopsDB->getRowsNum($result) > 0) {
 		$rowset = db_fetch_rowset($result);
 		foreach ($rowset as $subcat) {
-			$CAT_LIST[] = array($subcat['cid'], $ident . $subcat['name']);
+			$CAT_LIST[] = array (
+					$subcat['cid'],
+					$ident . $subcat['name']
+			);
 			get_subcat_data($subcat['cid'], $ident . '&nbsp;&nbsp;&nbsp;');
 		}
 	}
 }
 $xoopsOption['template_main'] = 'xcgal_albmgr.html';
 include ICMS_ROOT_PATH . "/header.php";
-$xoopsTpl->assign('xoops_module_header', $xcgal_module_header);
+$xoopsTpl->assign('icms_module_header', $xcgal_module_header);
 $xoopsTpl->assign('alb_need_name', _MD_ALBMGR_NEED_NAME);
 $xoopsTpl->assign('confirm_modifs', _MD_ALBMGR_CONF_MOD);
 $xoopsTpl->assign('no_change', _MD_ALBMGR_NO_CHANGE);
@@ -77,9 +80,15 @@ $xoopsTpl->assign('sort_order', $sort_order);
 
 if (GALLERY_ADMIN_MODE) {
 
-	$CAT_LIST = array();
-	$CAT_LIST[] = array(FIRST_USER_CAT + USER_ID, _MD_ALBMGR_MY_GAL);
-	$CAT_LIST[] = array(0, _MD_ALBMGR_NO_CAT);
+	$CAT_LIST = array ();
+	$CAT_LIST[] = array (
+			FIRST_USER_CAT + USER_ID,
+			_MD_ALBMGR_MY_GAL
+	);
+	$CAT_LIST[] = array (
+			0,
+			_MD_ALBMGR_NO_CAT
+	);
 	get_subcat_data(0, '');
 
 	$xoopsTpl->assign('select_category', _MD_ALBMGR_SELECT);

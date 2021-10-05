@@ -33,7 +33,7 @@ define('IN_XCGALLERY', true);
 require ('include/init.inc.php');
 $xoopsOption['template_main'] = 'xcgal_search.html';
 include ICMS_ROOT_PATH . "/header.php";
-$xoopsTpl->assign('xoops_module_header', $xcgal_module_header);
+$xoopsTpl->assign('icms_module_header', $xcgal_module_header);
 $xoopsTpl->assign('search_title', _MD_SEARCH_TITLE);
 user_save_profile();
 $xoopsTpl->assign('gallery', $xoopsModule->getVar('name'));

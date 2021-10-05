@@ -70,7 +70,12 @@ function get_subcat_data($parent, &$cat_data, &$album_set_array, $level, $ident 
 				$subcat['description'] = preg_replace("/<br \/>/i", '<br />' . $ident, $myts->makeTareaData4Show($subcat['description']));
 				$link = $ident . "<a href=index.php?cat={$subcat['cid']}>" . icms_core_DataFilter::htmlSpecialchars($subcat['name']) . "</a>";
 				if ($album_count) {
-					$cat_data[] = array($link, $ident . $subcat['description'], $album_count, $pic_count);
+					$cat_data[] = array (
+							$link,
+							$ident . $subcat['description'],
+							$album_count,
+							$pic_count
+					);
 					$HIDE_USER_CAT = 0;
 				} else {
 					$HIDE_USER_CAT = 1;
@@ -91,9 +96,17 @@ function get_subcat_data($parent, &$cat_data, &$album_set_array, $level, $ident 
 				$subcat['description'] = preg_replace("/<br \/>/i", '<br />' . $ident, $myts->makeTareaData4Show($subcat['description']));
 				$link = $ident . "<a href=\"index.php?cat={$subcat['cid']}\">{$subcat['name']}</a>";
 				if ($pic_count == 0 && $album_count == 0) {
-					$cat_data[] = array($link, $ident . $subcat['description']);
+					$cat_data[] = array (
+							$link,
+							$ident . $subcat['description']
+					);
 				} else {
-					$cat_data[] = array($link, $ident . $subcat['description'], $album_count, $pic_count);
+					$cat_data[] = array (
+							$link,
+							$ident . $subcat['description'],
+							$album_count,
+							$pic_count
+					);
 				}
 			}
 
@@ -114,8 +127,8 @@ function get_cat_list(&$breadcrumb, &$cat_data, &$statistics) {
 	breadcrumb($cat, $breadcrumb, $BREADCRUMB_TEXT);
 
 	// Build the category list
-	$cat_data = array();
-	$album_set_array = array();
+	$cat_data = array ();
+	$album_set_array = array ();
 	get_subcat_data($cat, $cat_data, $album_set_array, $xoopsModuleConfig['subcat_level']);
 
 	// Treat the album set
@@ -164,10 +177,21 @@ function get_cat_list(&$breadcrumb, &$cat_data, &$statistics) {
 		$xoopsDB->freeRecordSet($result);
 
 		if (count($cat_data)) {
-			$statistics = strtr(_MD_INDEX_STAT1, array('[pictures]' => $picture_count, '[albums]' => $album_count, '[cat]' => $cat_count, '[comments]' => $comment_count, '[views]' => $hit_count));
+			$statistics = strtr(_MD_INDEX_STAT1, array (
+					'[pictures]' => $picture_count,
+					'[albums]' => $album_count,
+					'[cat]' => $cat_count,
+					'[comments]' => $comment_count,
+					'[views]' => $hit_count
+			));
 		} else {
 			$STATS_IN_ALB_LIST = true;
-			$statistics = strtr(_MD_INDEX_STAT3, array('[pictures]' => $picture_count, '[albums]' => $album_count, '[comments]' => $comment_count, '[views]' => $hit_count));
+			$statistics = strtr(_MD_INDEX_STAT3, array (
+					'[pictures]' => $picture_count,
+					'[albums]' => $album_count,
+					'[comments]' => $comment_count,
+					'[views]' => $hit_count
+			));
 		}
 	} elseif ($cat >= FIRST_USER_CAT && $ALBUM_SET) {
 		$result = $xoopsDB->query("SELECT count(*) FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE 1 $current_album_set");
@@ -185,7 +209,11 @@ function get_cat_list(&$breadcrumb, &$cat_data, &$statistics) {
 		$hit_count = (int) $nbEnr['sum(hits)'];
 		$xoopsDB->freeRecordSet($result);
 
-		$statistics = strtr(_MD_INDEX_STAT2, array('[pictures]' => $picture_count, '[albums]' => $album_count, '[views]' => $hit_count));
+		$statistics = strtr(_MD_INDEX_STAT2, array (
+				'[pictures]' => $picture_count,
+				'[albums]' => $album_count,
+				'[views]' => $hit_count
+		));
 	} else {
 		$statistics = '';
 	}
@@ -213,7 +241,7 @@ function list_users() {
 	$upper_limit = min($user_count, $PAGE * $user_per_page);
 	$limit = "LIMIT " . $lower_limit . "," . ($upper_limit - $lower_limit);
 
-	$user_list = array();
+	$user_list = array ();
 	for ($i = $lower_limit; $i < $upper_limit; $i++ ) {
 		$user = &$rowset[$i];
 		$user_thumb = '<img src="images/nopic.jpg" class="image" border="0" alt=""/>';
@@ -242,7 +270,11 @@ function list_users() {
 			$caption['u_id'] = $alb_owner->uid();
 			$caption['albums'] = $albums_txt;
 			$caption['pictures'] = $pictures_txt;
-			$user_list[] = array('cat' => $user['category'], 'image' => $user_thumb, 'caption' => $caption);
+			$user_list[] = array (
+					'cat' => $user['category'],
+					'image' => $user_thumb,
+					'caption' => $caption
+			);
 		}
 	}
 	theme_display_thumbnails($user_list, $user_count, '', '', 1, $PAGE, $totalPages, false, true, 'user');
@@ -304,7 +336,7 @@ function list_albums() {
 			$alb_stat = $cross_ref[$aid];
 			$count = $alb_stat['pic_count'];
 		} else {
-			$alb_stat = array();
+			$alb_stat = array ();
 			$count = 0;
 		}
 
@@ -370,7 +402,7 @@ if (isset($_GET['cat'])) {
 // Gather data for categories
 if (!GALLERY_ADMIN_MODE && $xoopsModuleConfig['allow_private_albums']) get_private_album_set();
 $breadcrumb = '';
-$cat_data = array();
+$cat_data = array ();
 $statistics = '';
 $STATS_IN_ALB_LIST = false;
 get_cat_list($breadcrumb, $cat_data, $statistics);
@@ -378,7 +410,7 @@ user_save_profile();
 include_once "include/theme_func.php";
 $xoopsOption['template_main'] = 'xcgal_index.html';
 include ICMS_ROOT_PATH . "/header.php";
-$xoopsTpl->assign('xoops_module_header', $xcgal_module_header);
+$xoopsTpl->assign('icms_module_header', $xcgal_module_header);
 $xoopsTpl->assign('display_alb_list', '');
 
 $elements = preg_split("|/|", $xoopsModuleConfig['main_page_layout'], -1, PREG_SPLIT_NO_EMPTY);

@@ -124,7 +124,7 @@ function html_picture() {
 	$pid = $CURRENT_PIC_DATA['pid'];
 
 	if (!isset($USER['liv']) || !is_array($USER['liv'])) {
-		$USER['liv'] = array();
+		$USER['liv'] = array ();
 	}
 
 	// Add 1 to hit counter
@@ -267,7 +267,10 @@ function html_picinfo() {
 	$xoopsTpl->assign('lang_picinfo_title', _MD_DIS_TITLE);
 	$xoopsTpl->assign('picinfo', isset($_COOKIE['picinfo']) ? $_COOKIE['picinfo'] : ($xoopsModuleConfig['display_pic_info'] ? 'block' : 'none'));
 	foreach ($info as $key => $value) {
-		$xoopsTpl->append('infos', array('key' => $key, 'value' => $value));
+		$xoopsTpl->append('infos', array (
+				'key' => $key,
+				'value' => $value
+		));
 	}
 }
 
@@ -337,7 +340,7 @@ if (!is_numeric($album) && $cat) { // Meta albums, we need to restrict the album
 	if ($cat < 0) {
 		$ALBUM_SET .= 'AND aid IN (' . (-$cat) . ') ';
 	} else {
-		$ALBUM_SET_ARRAY = array();
+		$ALBUM_SET_ARRAY = array ();
 		if ($cat == USER_GAL_CAT)
 			$where = 'category > ' . FIRST_USER_CAT;
 		else
@@ -414,7 +417,7 @@ if (isset($_GET['fullsize'])) {
 } elseif (isset($_GET['slideshow'])) {
 	$xoopsOption['template_main'] = 'xcgal_slideshow.html';
 	include ICMS_ROOT_PATH . "/header.php";
-	$xoopsTpl->assign('xoops_module_header', $xcgal_module_header);
+	$xoopsTpl->assign('icms_module_header', $xcgal_module_header);
 	$xoopsTpl->assign('speed', (int) $_GET['slideshow']);
 	$i = 0;
 	$j = 0;
@@ -429,7 +432,10 @@ if (isset($_GET['fullsize'])) {
 			$picture_url = get_pic_url($picture, 'fullsize');
 		}
 
-		$xoopsTpl->append('pics', array('pic_url' => $picture_url, 'i' => $i));
+		$xoopsTpl->append('pics', array (
+				'pic_url' => $picture_url,
+				'i' => $i
+		));
 		if ($picture['pid'] == $pid) {
 			$j = $i;
 			$start_img = $picture_url;
@@ -456,7 +462,7 @@ if (isset($_GET['fullsize'])) {
 	$picture_title = $CURRENT_PIC_DATA['title'] ? $CURRENT_PIC_DATA['title'] : strtr(preg_replace("/(.+)\..*?\Z/", "\\1", htmlspecialchars($CURRENT_PIC_DATA['filename'])), "_", " ");
 	$xoopsOption['template_main'] = 'xcgal_display.html';
 	include ICMS_ROOT_PATH . "/header.php";
-	$xoopsTpl->assign('xoops_module_header', $xcgal_module_header);
+	$xoopsTpl->assign('icms_module_header', $xcgal_module_header);
 	$xoopsTpl->assign('album_title', $album_title);
 	html_img_nav_menu();
 	html_picture();
