@@ -118,7 +118,7 @@ function process_post_data() {
 
 		$update = "aid = '" . $aid . "'";
 		$update .= ", title = '" . $myts->addSlashes($title) . "'";
-		$update .= ", caption = '" . $myts->makeTareaData4Save($caption, 0) . "'";
+		$update .= ", caption = '" . icms_core_DataFilter::addSlashes($caption, 0) . "'";
 		$update .= ", keywords = '" . $myts->addSlashes($keywords) . "'";
 		$update .= ", user1 = '" . $myts->addSlashes($user1) . "'";
 		$update .= ", user2 = '" . $myts->addSlashes($user2) . "'";
