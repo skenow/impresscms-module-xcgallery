@@ -15,10 +15,12 @@ function user_get_profile() {
 	}
 
 	if (!isset($USER['ID']) || strlen($USER['ID']) != 32) {
-		list($usec, $sec) = explode(' ', microtime());
+		list ( $usec, $sec ) = explode(' ', microtime());
 		$seed = (float) $sec + ((float) $usec * 100000);
 		srand($seed);
-		$USER = array('ID' => md5(uniqid(rand(), 1)));
+		$USER = array (
+				'ID' => md5(uniqid(rand(), 1))
+		);
 	} else {
 		$USER['ID'] = addslashes($USER['ID']);
 	}
@@ -46,7 +48,7 @@ function user_save_profile() {
 // Fetch all rows in an array
 function db_fetch_rowset($result) {
 	global $xoopsDB;
-	$rowset = array();
+	$rowset = array ();
 
 	while ($row = $xoopsDB->fetchArray($result))
 		$rowset[] = $row;
@@ -150,7 +152,12 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 	global $GLOBALS;
 	global $xoopsDB, $xoopsModule, $xoopsConfig;
 	$myts = icms_core_Textsanitizer::getInstance();
-	$sort_array = array('na' => 'filename ASC', 'nd' => 'filename DESC', 'da' => 'pid ASC', 'dd' => 'pid DESC');
+	$sort_array = array (
+			'na' => 'filename ASC',
+			'nd' => 'filename DESC',
+			'da' => 'pid ASC',
+			'dd' => 'pid DESC'
+	);
 	$sort_code = isset($USER['sort']) ? $USER['sort'] : $xoopsModuleConfig['default_sort_order'];
 	$sort_order = isset($sort_array[$sort_code]) ? $sort_array[$sort_code] : $sort_array[$xoopsModuleConfig['default_sort_order']];
 	$limit = ($limit1 != -1) ? ' LIMIT ' . $limit1 : '';
@@ -254,7 +261,7 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 				$user_handler = icms::handler('icms_member');
 				$pic_owner = &$user_handler->getUser($row['owner_id']);
 				if (is_object($pic_owner)) {
-					$user_link = '<br /><a href ="' . ICMS_URL . '/userinfo.php?uid=' . $pic_owner->uid() . '">' . $pic_owner->uname() . '</a>';
+					$user_link = '<br /><a href ="' . ICMS_URL . '/userinfo.php?uid=' . $pic_owner->getVar('uid') . '">' . $pic_owner->getVar('uname') . '</a>';
 				} else {
 					$user_link = '';
 				}
@@ -373,7 +380,7 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 				$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' $ALBUM_SET ORDER BY RAND() LIMIT $limit2");
 			}
 
-			$rowset = array();
+			$rowset = array ();
 			while ($row = $xoopsDB->fetchArray($result)) {
 				$row['caption_text'] = '';
 				$rowset[-$row['pid']] = $row;
@@ -411,7 +418,7 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 		case 'usearch': // User pics search results
 			if (isset($USER['suid']) && $USER['suid'] > 0) {
 				$owner = new XoopsUser($USER['suid']);
-				$album_name = _MD_USEARCH . $owner->uname();
+				$album_name = _MD_USEARCH . $owner->getVar('uname');
 			} else
 				$album_name = 'Pics submitted by ' . $xoopsConfig['anonymous'];
 			$result = $xoopsDB->query("SELECT count(*) from " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' AND owner_id = '{$USER['suid']}' $ALBUM_SET");
@@ -490,9 +497,9 @@ function breadcrumb($cat, &$breadcrumb, &$BREADCRUMB_TEXT) {
 	$myts = icms_core_Textsanitizer::getInstance();
 	$breadcrumb = '';
 	if ($cat != 0) {
-		$breadcrumb_array = array();
+		$breadcrumb_array = array ();
 		if ($cat >= FIRST_USER_CAT) {
-			$row = array();
+			$row = array ();
 			$user_handler = icms::handler('icms_member');
 			$alb_owner = &$user_handler->getUser($cat - FIRST_USER_CAT);
 			if (!is_object($alb_owner) && !USER_IS_ADMIN)
@@ -500,8 +507,11 @@ function breadcrumb($cat, &$breadcrumb, &$BREADCRUMB_TEXT) {
 			elseif (!is_object($alb_owner))
 				$row['uname'] = _MD_FUNC_DELUSER . " uid=" . ($cat - FIRST_USER_CAT);
 			else
-				$row['uname'] = $alb_owner->uname();
-			$breadcrumb_array[] = array($cat, $row['uname']);
+				$row['uname'] = $alb_owner->getVar('uname');
+			$breadcrumb_array[] = array (
+					$cat,
+					$row['uname']
+			);
 			$CURRENT_CAT_NAME = sprintf(_MD_INDEX_USERS_GAL, $row['uname']);
 			$row['parent'] = 1;
 			if (isset($result)) $xoopsDB->freeRecordSet($result);
@@ -510,7 +520,10 @@ function breadcrumb($cat, &$breadcrumb, &$BREADCRUMB_TEXT) {
 			if ($xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_NO_EXIST_CAT);
 			$row = $xoopsDB->fetchArray($result);
 			$row['name'] = icms_core_DataFilter::htmlSpecialchars($row['name']);
-			$breadcrumb_array[] = array($cat, $row['name']);
+			$breadcrumb_array[] = array (
+					$cat,
+					$row['name']
+			);
 			$CURRENT_CAT_NAME = $row['name'];
 			$xoopsDB->freeRecordSet($result);
 		}
@@ -519,7 +532,10 @@ function breadcrumb($cat, &$breadcrumb, &$BREADCRUMB_TEXT) {
 			if ($xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_ORPHAN_CAT);
 			$row = $xoopsDB->fetchArray($result);
 			$row['name'] = icms_core_DataFilter::htmlSpecialchars($row['name']);
-			$breadcrumb_array[] = array($row['cid'], $row['name']);
+			$breadcrumb_array[] = array (
+					$row['cid'],
+					$row['name']
+			);
 			$xoopsDB->freeRecordSet($result);
 		} // while
 
@@ -593,13 +609,19 @@ function display_thumbnails($album, $cat, $page, $thumbcols, $thumbrows, $displa
 function get_pic_url(&$pic_row, $mode) {
 	global $xoopsModuleConfig, $xoopsModule;
 
-	static $pic_prefix = array();
-	static $url_prefix = array();
+	static $pic_prefix = array ();
+	static $url_prefix = array ();
 
 	if (!count($pic_prefix)) {
-		$pic_prefix = array('thumb' => $xoopsModuleConfig['thumb_pfx'], 'normal' => $xoopsModuleConfig['normal_pfx'], 'fullsize' => '');
+		$pic_prefix = array (
+				'thumb' => $xoopsModuleConfig['thumb_pfx'],
+				'normal' => $xoopsModuleConfig['normal_pfx'],
+				'fullsize' => ''
+		);
 
-		$url_prefix = array(0 => $xoopsModuleConfig['fullpath']);
+		$url_prefix = array (
+				0 => $xoopsModuleConfig['fullpath']
+		);
 	}
 
 	// watermarking for JPG
@@ -613,8 +635,67 @@ function get_pic_url(&$pic_row, $mode) {
 
 function clean_words(&$entry) {
 	// global $charset, $multibyte_charset;
-	static $drop_char_match = array('^', '$', '(', ')', '<', '>', '`', '\'', '"', '|', ',', '@', '_', '?', '%', '~', '.', '[', ']', '{', '}', ':', '\\', '/', '=', '\'', '!');
-	static $drop_char_replace = array(' ', ' ', ' ', ' ', ' ', ' ', ' ', '', '', ' ', ' ', ' ', ' ', '', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
+	static $drop_char_match = array (
+			'^',
+			'$',
+			'(',
+			')',
+			'<',
+			'>',
+			'`',
+			'\'',
+			'"',
+			'|',
+			',',
+			'@',
+			'_',
+			'?',
+			'%',
+			'~',
+			'.',
+			'[',
+			']',
+			'{',
+			'}',
+			':',
+			'\\',
+			'/',
+			'=',
+			'\'',
+			'!'
+	);
+	static $drop_char_replace = array (
+			' ',
+			' ',
+			' ',
+			' ',
+			' ',
+			' ',
+			' ',
+			'',
+			'',
+			' ',
+			' ',
+			' ',
+			' ',
+			'',
+			' ',
+			' ',
+			' ',
+			' ',
+			' ',
+			' ',
+			' ',
+			' ',
+			' ',
+			' ',
+			' ',
+			' ',
+			' ',
+			' ',
+			' ',
+			' '
+	);
 
 	$entry = ' ' . strtolower($entry) . ' ';
 
@@ -671,7 +752,12 @@ function is_known_filetype(&$file) {
 }
 
 function get_media_type(&$file) {
-	foreach (array('image', 'movie', 'audio', 'document') as $type) {
+	foreach (array (
+			'image',
+			'movie',
+			'audio',
+			'document'
+	) as $type) {
 		eval("\$file_type = is_$type(\$file);");
 		if ($file_type) return $type;
 	}
