@@ -56,4 +56,4 @@ if ($xoopsDB->getRowsNum($result)) {
 
 header('Content-type: image/gif');
 echo fread(fopen($file_name, 'rb'), filesize($file_name));
-ob_end_flush()
+ob_end_flush();
