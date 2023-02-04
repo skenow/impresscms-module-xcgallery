@@ -116,7 +116,7 @@ function do_footer() {
 		ob_end_clean();
 		$generated = <<<EOT
 		                Page generated in <b>$time</b> seconds - <b>$query_count</b> queries in <b>$total_query_time</b> seconds - Album set : $ALBUM_SET
-		EOT;
+EOT;
 		$xoopsTpl->assign('generated', $generated);
 	}
 }

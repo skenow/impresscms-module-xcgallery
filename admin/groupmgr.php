@@ -111,7 +111,7 @@ function display_group_list() {
 		                </td>
 		                <td class="{$tdstyle}" style="white-space: nowrap;">
 		                        <input type="text" name="group_quota_{$group['group_id']}" value="{$group['group_quota']}" size="10" class="textinput">
-		EOT;
+EOT;
 		echo _AM_GRPMGR_KB . "</td>";
 
 		foreach ($field_list as $field_name) {
@@ -121,7 +121,7 @@ function display_group_list() {
 			echo <<< EOT
 			                <td class="{$tdstyle}" align="center">
 			                        <select name="{$field_name}_{$group['group_id']}" class="listbox">
-			EOT;
+EOT;
 			echo "<option value='1' {$yes_selected}>" . _YES . "</option>";
 			echo "<option value='0' {$no_selected}>" . _NO . "</option></select></td>";
 		}

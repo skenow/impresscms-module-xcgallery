@@ -93,7 +93,7 @@ function list_users() {
 		        <tr>
 		                <td class="{$tdstyle}" align="center">{$ulink}{$user['uname']}{$ulink_end}</td>
 		                <td class="{$tdstyle}" align="center">
-		EOT;
+EOT;
 		foreach ($albs as $alb) {
 			if ($user['owner_id'] == $alb['category'] - FIRST_USER_CAT) echo $usr_link_start . $alb['alb'] . $usr_link_end;
 		}
@@ -104,7 +104,7 @@ function list_users() {
 		                <td class="{$tdstyle}" align="right">{$user['disk_usage']} {$byte}</td>
 		        </tr>
 		
-		EOT;
+EOT;
 	} // while
 	$xoopsDB->freeRecordSet($result);
 	echo <<<EOT
@@ -117,8 +117,7 @@ function list_users() {
 	                        </table>
 	                </td>
 	        </tr></table>
-	
-	EOT;
+EOT;
 
 	// endtable();
 }
@@ -201,7 +200,7 @@ function cat_list_box() {
 	global $CAT_LIST, $PHP_SELF;
 	$lb = <<< EOT
 	                        <select name="move[]" class="listbox">
-	EOT;
+EOT;
 	$lb .= "<option value=\"-1\">" . _AM_USERMGR_NOTMOVE . "</option><option value=\"0\">" . _AM_CAT_NOCAT . "</option>\n";
 	foreach ($CAT_LIST as $category)
 		if ($category['cid'] != 1) {
@@ -211,7 +210,7 @@ function cat_list_box() {
 	$lb .= <<<EOT
 	                        </select>
 	
-	EOT;
+EOT;
 
 	return $lb;
 }

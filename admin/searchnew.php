@@ -156,7 +156,7 @@ function picrow($picfile, $picid, $albid) {
 			                           <a href="javascript:;" onClick= "MM_openBrWindow('../displayimage.php?&fullsize=1&picfile=$pic_url', 'ImageViewer', 'toolbar=yes, status=yes, resizable=yes, width=$winsizeX, height=$winsizeY')">$img<br /></a>
 			                       </td>
 			                   </tr>
-			EOT;
+EOT;
 		}
 	} else {
 		$winsizeX = (300);
@@ -173,7 +173,7 @@ function picrow($picfile, $picid, $albid) {
 		                        <a href="javascript:;" onClick= "MM_openBrWindow('displayimage.php?&fullsize=1&picfile=$pic_url', 'ImageViewer', 'toolbar=yes, status=yes, resizable=yes, width=$winsizeX, height=$winsizeY')"><img src="showthumb.php?picfile=$pic_url&size=48" class="thumbnail" border="0"><br /></a>
 		                </td>
 		        </tr>
-		EOT;
+EOT;
 	}
 }
 
@@ -232,7 +232,7 @@ function display_dir_tree($folder, $ident) {
 			                                        $ident<img src="../images/folder.gif" alt="">&nbsp;<a href= "$PHP_SELF?startdir=$start_target">$file</a>$warnings
 			                                </td>
 			                        </tr>
-			EOT;
+EOT;
 			display_dir_tree($folder . $file . '/', $ident . '&nbsp;&nbsp;&nbsp;&nbsp;');
 		}
 	}
