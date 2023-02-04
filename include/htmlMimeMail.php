@@ -100,7 +100,7 @@ class htmlMimeMail {
 	 * Sets the headers
 	 * if supplied.
 	 */
-	function htmlMimeMail() {
+	function __construct() {
 		/**
 		 * Initialise some variables.
 		 */

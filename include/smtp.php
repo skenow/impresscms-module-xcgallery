@@ -41,7 +41,7 @@ class smtp {
 	 * timeout - The timeout in seconds for the call Default: 5
 	 * to fsockopen()
 	 */
-	function smtp($params = array()) {
+	function __construct($params = array()) {
 		if (!defined('CRLF')) define('CRLF', "\r\n", TRUE);
 
 		$this->authenticated = FALSE;
