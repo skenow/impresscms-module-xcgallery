@@ -81,7 +81,7 @@ $breadcrumb_text = '';
 $cat_data = array ();
 
 // Build the private album set
-if (!GALLERY_ADMIN_MODE && $xoopsModuleConfig['allow_private_albums']) get_private_album_set();
+if (!GALLERY_ADMIN_MODE && icms::$module->config['allow_private_albums']) get_private_album_set();
 
 if (is_numeric($album)) {
 	$result = $xoopsDB->query("SELECT category, title FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album' $ALBUM_SET");
@@ -126,7 +126,7 @@ if (is_numeric($album)) {
 			$row = $xoopsDB->fetchArray($result);
 			$CURRENT_CAT_NAME = icms_core_DataFilter::htmlSpecialchars($row['name']);
 		}
-		get_subcat_data($cat, $album_set_array, $xoopsModuleConfig['subcat_level']);
+		get_subcat_data($cat, $album_set_array, icms::$module->config['subcat_level']);
 
 		// Treat the album set
 		if (count($album_set_array)) {
@@ -149,15 +149,15 @@ include_once "include/theme_func.php";
 if ($breadcrumb)
 	theme_display_cat_list($breadcrumb, $cat_data, '');
 else {
-	$xoopsTpl->assign('breadcrumb', '<a href="index.php">' . $xoopsModule->getVar('name') . '</a>');
+	$xoopsTpl->assign('breadcrumb', '<a href="index.php">' . icms::$module->getVar('name') . '</a>');
 	$xoopsTpl->assign('lang_category', 0);
 	$xoopsTpl->assign('set_stat', 0);
 }
-display_thumbnails($album, (isset($cat) ? $cat : 0), $page, $xoopsModuleConfig['thumbcols'], $xoopsModuleConfig['thumbrows'], true);
+display_thumbnails($album, (isset($cat) ? $cat : 0), $page, icms::$module->config['thumbcols'], icms::$module->config['thumbrows'], true);
 
-$xoopsTpl->assign('gallery', $xoopsModule->getVar('name'));
+$xoopsTpl->assign('gallery', icms::$module->getVar('name'));
 
 main_menu();
 do_footer();
-$xoopsTpl->assign('xoops_pagetitle', icms_core_DataFilter::htmlSpecialchars($CURRENT_ALBUM_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars($xoopsModule->name()));
+$xoopsTpl->assign('xoops_pagetitle', icms_core_DataFilter::htmlSpecialchars($CURRENT_ALBUM_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars(icms::$module->name()));
 include_once "../../footer.php";

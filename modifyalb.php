@@ -156,7 +156,7 @@ if ($xoopsDB->getRowsNum($results) == 0) {
 		$img_list[$picture['pid']] = htmlspecialchars($picture['filename']);
 	}
 	$xoopsTpl->assign('pic_url', $pic_url);
-	$xoopsTpl->assign('thumb_cell_height', $xoopsModuleConfig['thumb_width'] + 17);
+	$xoopsTpl->assign('thumb_cell_height', icms::$module->config['thumb_width'] + 17);
 	$xoopsTpl->assign('initial_thumb_url', $initial_thumb_url);
 	$thumbs = '';
 	foreach ($img_list as $pid => $pic_name) {
@@ -166,7 +166,7 @@ if ($xoopsDB->getRowsNum($results) == 0) {
 }
 $xoopsTpl->assign('alb_perm', _MD_MODIFYALB_ALB_PERM);
 $xoopsTpl->assign('can_view', _MD_MODIFYALB_CAN_VIEW);
-if (!$xoopsModuleConfig['allow_private_albums']) {
+if (!icms::$module->config['allow_private_albums']) {
 	$xoopsTpl->assign('no_private', 1);
 } else {
 	$xoopsTpl->assign('no_private', '');
@@ -236,7 +236,7 @@ $xoopsTpl->assign('yes_selected_votes', $yes_selected_votes);
 $xoopsTpl->assign('no_selected_votes', $no_selected_votes);
 
 user_save_profile();
-$xoopsTpl->assign('gallery', $xoopsModule->getVar('name'));
+$xoopsTpl->assign('gallery', icms::$module->getVar('name'));
 include_once "include/theme_func.php";
 main_menu();
 // $xoopsTpl->assign('xcgal_footer', pagefooter());

@@ -131,14 +131,12 @@ EOT;
 }
 
 function get_post_var($var) {
-	global $_POST;
-
 	if (!isset($_POST[$var])) redirect_header('index.php', 2, _AM_PARAM_MISSING . " ($var)");
 	return $_POST[$var];
 }
 
 function process_post_data() {
-	global $_POST, $xoopsDB;
+	global $xoopsDB;
 
 	$field_list = array('group_quota', 'can_rate_pictures', 'can_send_ecards', 'can_post_comments', 'can_upload_pictures', 'pub_upl_need_approval', 'can_create_albums', 'priv_upl_need_approval');
 

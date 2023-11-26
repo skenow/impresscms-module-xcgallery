@@ -31,14 +31,14 @@
 
 // Add a picture to an album
 function add_picture($aid, $filepath, $filename, $title = '', $caption = '', $keywords = '', $user1 = '', $user2 = '', $user3 = '', $user4 = '', $category = 0) {
-	global $xoopsModuleConfig, $ERROR, $USER_DATA, $PIC_NEED_APPROVAL;
-	global $xoopsDB, $xoopsUser, $picinID, $_SERVER;
+	global $ERROR, $USER_DATA, $PIC_NEED_APPROVAL;
+	global $xoopsDB, $xoopsUser, $picinID;
 	$xcgalDir = basename(dirname(dirname(__FILE__)));
 
 	$myts = icms_core_Textsanitizer::getInstance();
-	$image = $xoopsModuleConfig['fullpath'] . $filepath . $filename;
-	$normal = $xoopsModuleConfig['fullpath'] . $filepath . $xoopsModuleConfig['normal_pfx'] . $filename;
-	$thumb = $xoopsModuleConfig['fullpath'] . $filepath . $xoopsModuleConfig['thumb_pfx'] . $filename;
+	$image = icms::$module->config['fullpath'] . $filepath . $filename;
+	$normal = icms::$module->config['fullpath'] . $filepath . icms::$module->config['normal_pfx'] . $filename;
+	$thumb = icms::$module->config['fullpath'] . $filepath . icms::$module->config['thumb_pfx'] . $filename;
 
 	$imagesize = getimagesize($image);
 
@@ -70,9 +70,9 @@ function add_picture($aid, $filepath, $filename, $title = '', $caption = '', $ke
 		}
 	} else {
 
-		if (!file_exists($thumb)) if (!resize_image($image, $thumb, $xoopsModuleConfig['thumb_width'], $xoopsModuleConfig['thumb_method'])) return false;
+		if (!file_exists($thumb)) if (!resize_image($image, $thumb, icms::$module->config['thumb_width'], icms::$module->config['thumb_method'])) return false;
 
-		if (max($imagesize[0], $imagesize[1]) > $xoopsModuleConfig['picture_width'] && $xoopsModuleConfig['make_intermediate'] && !file_exists($normal)) if (!resize_image($image, $normal, $xoopsModuleConfig['picture_width'], $xoopsModuleConfig['thumb_method'])) return false;
+		if (max($imagesize[0], $imagesize[1]) > icms::$module->config['picture_width'] && icms::$module->config['make_intermediate'] && !file_exists($normal)) if (!resize_image($image, $normal, icms::$module->config['picture_width'], icms::$module->config['thumb_method'])) return false;
 	}
 
 	$image_filesize = filesize($image);
@@ -137,7 +137,7 @@ define("GIS_PNG", 3);
  * @return 'true' in case of success
  */
 function resize_image($src_file, $dest_file, $new_size, $method) {
-	global $xoopsModuleConfig, $ERROR;
+	global $ERROR;
 
 	$imginfo = getimagesize($src_file);
 	if ($imginfo == null) return false;
@@ -171,12 +171,12 @@ function resize_image($src_file, $dest_file, $new_size, $method) {
 			}
 
 			$output = array();
-			$cmd = "{$xoopsModuleConfig['impath']}convert -quality {$xoopsModuleConfig['jpeg_qual']} {$xoopsModuleConfig['im_options']} -geometry {$destWidth}x{$destHeight} $src_file $im_dest_file";
+			$cmd = "{icms::$module->config['impath']}convert -quality {icms::$module->config['jpeg_qual']} {icms::$module->config['im_options']} -geometry {$destWidth}x{$destHeight} $src_file $im_dest_file";
 			exec($cmd, $output, $retval);
 
 			if ($retval) {
 				$ERROR = _MD_IM_ERROR . " $retval";
-				if ($xoopsModuleConfig['debug_mode']) {
+				if (icms::$module->config['debug_mode']) {
 					// Re-execute the command with the backtit operator in order to get all outputs
 					// will not work is safe mode is enabled
 					$output = `$cmd 2>&1`;
@@ -204,21 +204,21 @@ function resize_image($src_file, $dest_file, $new_size, $method) {
 					$op_in = 'giftopnm';
 					$op_out = 'ppmtogif';
 					$op_out2 = 'pnmtogif';
-					$cmd = "{$xoopsModuleConfig['impath']}{$op_in} $src_file | pnmscale -xsize={$destWidth} -ysize={$destHeight} | ppmquant 255 | {$op_out} > $im_dest_file";
+					$cmd = "{icms::$module->config['impath']}{$op_in} $src_file | pnmscale -xsize={$destWidth} -ysize={$destHeight} | ppmquant 255 | {$op_out} > $im_dest_file";
 					break;
 
 				case GIS_JPG:
 					$op_in = 'jpegtopnm';
 					$op_out = 'pnmtojpeg';
 					$op_out2 = 'ppmtojpeg';
-					$cmd = "{$xoopsModuleConfig['impath']}{$op_in} $src_file | pnmscale -xsize={$destWidth} -ysize={$destHeight} | {$op_out} -quality={$xoopsModuleConfig['jpeg_qual']} > $im_dest_file";
-					$cmd2 = "{$xoopsModuleConfig['impath']}{$op_in} $src_file | pnmscale -xsize={$destWidth} -ysize={$destHeight} | {$op_out2} -quality={$xoopsModuleConfig['jpeg_qual']} > $im_dest_file";
+					$cmd = "{icms::$module->config['impath']}{$op_in} $src_file | pnmscale -xsize={$destWidth} -ysize={$destHeight} | {$op_out} -quality={icms::$module->config['jpeg_qual']} > $im_dest_file";
+					$cmd2 = "{icms::$module->config['impath']}{$op_in} $src_file | pnmscale -xsize={$destWidth} -ysize={$destHeight} | {$op_out2} -quality={icms::$module->config['jpeg_qual']} > $im_dest_file";
 					break;
 
 				case GIS_PNG:
 					$op_in = 'pngtopnm';
 					$op_out = 'pnmtopng';
-					$cmd = "{$xoopsModuleConfig['impath']}{$op_in} $src_file | pnmscale -xsize={$destWidth} -ysize={$destHeight} | {$op_out} > $im_dest_file";
+					$cmd = "{icms::$module->config['impath']}{$op_in} $src_file | pnmscale -xsize={$destWidth} -ysize={$destHeight} | {$op_out} > $im_dest_file";
 					break;
 			}
 			$output = array();
@@ -242,7 +242,7 @@ function resize_image($src_file, $dest_file, $new_size, $method) {
 			}
 			$dst_img = imagecreate($destWidth, $destHeight);
 			imagecopyresized($dst_img, $src_img, 0, 0, 0, 0, $destWidth, (int) $destHeight, $srcWidth, $srcHeight);
-			imagejpeg($dst_img, $dest_file, $xoopsModuleConfig['jpeg_qual']);
+			imagejpeg($dst_img, $dest_file, icms::$module->config['jpeg_qual']);
 			imagedestroy($src_img);
 			imagedestroy($dst_img);
 			break;
@@ -266,14 +266,14 @@ function resize_image($src_file, $dest_file, $new_size, $method) {
 			}
 			$dst_img = imagecreatetruecolor($destWidth, $destHeight);
 			imagecopyresampled($dst_img, $src_img, 0, 0, 0, 0, $destWidth, (int) $destHeight, $srcWidth, $srcHeight);
-			imagejpeg($dst_img, $dest_file, $xoopsModuleConfig['jpeg_qual']);
+			imagejpeg($dst_img, $dest_file, icms::$module->config['jpeg_qual']);
 			imagedestroy($src_img);
 			imagedestroy($dst_img);
 			break;
 	}
 
 	// Set mode of uploaded picture
-	chmod($dest_file, octdec($xoopsModuleConfig['default_file_mode']));
+	chmod($dest_file, octdec(icms::$module->config['default_file_mode']));
 
 	// We check that the image is valid
 	$imginfo = getimagesize($dest_file);

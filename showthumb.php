@@ -31,7 +31,7 @@ define('IN_XCGALLERY', true);
 
 require ("include/init.inc.php");
 
-if (!is_object($xoopsUser) || !($xoopsUser->isAdmin($xoopsModule->mid()))) redirect_header(ICMS_URL . "/", 3, _NOPERM);
+if (!is_object($xoopsUser) || !($xoopsUser->isAdmin(icms::$module->mid()))) redirect_header(ICMS_URL . "/", 3, _NOPERM);
 
 define("GIS_GIF", 1);
 define("GIS_JPG", 2);
@@ -42,7 +42,6 @@ define("GIF_ICON", 'images/gif48x48.gif');
 define("READ_ERROR_ICON", 'images/read_error48x48.gif');
 
 function makethumbnail($src_file, $newSize, $method) {
-	global $xoopsModuleConfig;
 
 	$content_type = array(GIS_GIF => 'gif', GIS_JPG => 'jpeg', GIS_PNG => 'png');
 
@@ -88,7 +87,7 @@ function makethumbnail($src_file, $newSize, $method) {
 				$src_file = escapeshellarg($src_file);
 			}
 			header("Content-type: image/" . ($content_type[$imginfo[2]]));
-			passthru("{$xoopsModuleConfig['impath']}convert -quality {$xoopsModuleConfig['jpeg_qual']} -antialias -geometry {$destWidth}x{$destHeight} $src_file -");
+			passthru("{icms::$module->config['impath']}convert -quality {icms::$module->config['jpeg_qual']} -antialias -geometry {$destWidth}x{$destHeight} $src_file -");
 			break;
 
 		case "gd2":
@@ -119,4 +118,4 @@ function makethumbnail($src_file, $newSize, $method) {
 	}
 }
 
-makethumbnail($xoopsModuleConfig['fullpath'] . $_GET['picfile'], $_GET['size'], $xoopsModuleConfig['thumb_method']);
+makethumbnail(icms::$module->config['fullpath'] . $_GET['picfile'], $_GET['size'], icms::$module->config['thumb_method']);

@@ -36,7 +36,7 @@ include ICMS_ROOT_PATH . "/header.php";
 $xoopsTpl->assign('icms_module_header', $xcgal_module_header);
 $xoopsTpl->assign('search_title', _MD_SEARCH_TITLE);
 user_save_profile();
-$xoopsTpl->assign('gallery', $xoopsModule->getVar('name'));
+$xoopsTpl->assign('gallery', icms::$module->getVar('name'));
 include_once "include/theme_func.php";
 main_menu();
 do_footer();

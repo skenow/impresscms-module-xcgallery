@@ -88,11 +88,11 @@ function albumselect($id = "album") {
  * @return the HTML code
  */
 function dirheader($dir, $dirid) {
-	global $xoopsModuleConfig;
+	
 	$xcgalDir = basename(dirname(__FILE__));
 	$warning = '';
 
-	if (!is_writable(ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/" . $xoopsModuleConfig['fullpath'] . $dir)) $warning = "<tr><td class=\"even\" valign=\"middle\" colspan=\"3\">\n" . "<div class=\"errorMsg\"><b>" . _AM_SRCHNEW_WARNING . "</b>: " . _AM_SRCHNEW_CHG_PERM . "</div></td></tr>\n";
+	if (!is_writable(ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/" . icms::$module->config['fullpath'] . $dir)) $warning = "<tr><td class=\"even\" valign=\"middle\" colspan=\"3\">\n" . "<div class=\"errorMsg\"><b>" . _AM_SRCHNEW_WARNING . "</b>: " . _AM_SRCHNEW_CHG_PERM . "</div></td></tr>\n";
 	return "<tr><td class=\"head\" valign=\"middle\" colspan=\"3\">\n" . sprintf(_AM_SRCHNEW_TARGET_ALB, $dir, albumselect($dirid)) . "</td></tr>\n" . $warning;
 }
 
@@ -107,16 +107,16 @@ function dirheader($dir, $dirid) {
  * @return the HTML code
  */
 function picrow($picfile, $picid, $albid) {
-	global $xoopsModuleConfig, $expic_array;
+	global $expic_array;
 	$xcgalDir = basename(dirname(__FILE__));
 
 	$encoded_picfile = base64_encode($picfile);
-	$picname = ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/" . $xoopsModuleConfig['fullpath'] . $picfile;
+	$picname = ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/" . icms::$module->config['fullpath'] . $picfile;
 	$pic_url = urlencode($picfile);
-	$picpath = ICMS_URL . "/modules/" . $xcgalDir . "/" . $xoopsModuleConfig['fullpath'] . $picfile;
+	$picpath = ICMS_URL . "/modules/" . $xcgalDir . "/" . icms::$module->config['fullpath'] . $picfile;
 	$pic_fname = basename($picfile);
 
-	$thumb_file = dirname($picname) . '/' . $xoopsModuleConfig['thumb_pfx'] . $pic_fname;
+	$thumb_file = dirname($picname) . '/' . icms::$module->config['thumb_pfx'] . $pic_fname;
 	if (file_exists($thumb_file)) {
 		$thumb_info = getimagesize($picname);
 		$thumb_size = compute_img_size($thumb_info[0], $thumb_info[1], 48);
@@ -132,7 +132,7 @@ function picrow($picfile, $picid, $albid) {
 
 		$checked = isset($expic_array[$picfile]) || !$fullimagesize ? '' : 'checked="checked"';
 
-		if (($checked == '') && ($xoopsModuleConfig['batch_all'] == 0)) {
+		if (($checked == '') && (icms::$module->config['batch_all'] == 0)) {
 			/*
 			 * return <<<EOT
 			 * <tr>
@@ -150,7 +150,7 @@ function picrow($picfile, $picid, $albid) {
 			 * </tr>
 			 * EOT;
 			 */
-		} elseif ($xoopsModuleConfig['batch_all'] == 1) {
+		} elseif (icms::$module->config['batch_all'] == 1) {
 			return <<<EOT
 			                   <tr>
 			                       <td class='odd' valign='middle'>
@@ -198,16 +198,16 @@ EOT;
  * @return
  */
 function getfoldercontent($folder, &$dir_array, &$pic_array, &$expic_array) {
-	global $xoopsModuleConfig;
+	
 	$xcgalDir = basename(dirname(__FILE__));
 
-	$dir = opendir(ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/" . $xoopsModuleConfig['fullpath'] . $folder);
+	$dir = opendir(ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/" . icms::$module->config['fullpath'] . $folder);
 	while ($file = readdir($dir)) {
-		if (is_dir(ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/" . $xoopsModuleConfig['fullpath'] . $folder . $file)) {
+		if (is_dir(ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/" . icms::$module->config['fullpath'] . $folder . $file)) {
 			if ($file != "." && $file != "..") $dir_array[] = $file;
 		}
-		if (is_file(ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/" . $xoopsModuleConfig['fullpath'] . $folder . $file)) {
-			if (strncmp($file, $xoopsModuleConfig['thumb_pfx'], strlen($xoopsModuleConfig['thumb_pfx'])) != 0 && strncmp($file, $xoopsModuleConfig['normal_pfx'], strlen($xoopsModuleConfig['normal_pfx'])) != 0) $pic_array[] = $file;
+		if (is_file(ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/" . icms::$module->config['fullpath'] . $folder . $file)) {
+			if (strncmp($file, icms::$module->config['thumb_pfx'], strlen(icms::$module->config['thumb_pfx'])) != 0 && strncmp($file, icms::$module->config['normal_pfx'], strlen(icms::$module->config['normal_pfx'])) != 0) $pic_array[] = $file;
 		}
 	}
 	closedir($dir);
@@ -217,17 +217,17 @@ function getfoldercontent($folder, &$dir_array, &$pic_array, &$expic_array) {
 }
 
 function display_dir_tree($folder, $ident) {
-	global $xoopsModuleConfig, $PHP_SELF;
+	global $PHP_SELF;
 	$xcgalDir = basename(dirname(__FILE__));
 
-	$dir_path = ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/" . $xoopsModuleConfig['fullpath'] . $folder;
+	$dir_path = ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/" . icms::$module->config['fullpath'] . $folder;
 	if (!is_readable($dir_path)) return;
 
 	$dir = opendir($dir_path);
 	while ($file = readdir($dir)) {
-		if (is_dir(ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/" . $xoopsModuleConfig['fullpath'] . $folder . $file) && $file != "." && $file != "..") {
+		if (is_dir(ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/" . icms::$module->config['fullpath'] . $folder . $file) && $file != "." && $file != "..") {
 			$start_target = $folder . $file;
-			$dir_path = ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/" . $xoopsModuleConfig['fullpath'] . $folder . $file;
+			$dir_path = ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/" . icms::$module->config['fullpath'] . $folder . $file;
 
 			$warnings = '';
 			if (!is_writable($dir_path)) $warnings .= _AM_SRCHNEW_DIR_RO;

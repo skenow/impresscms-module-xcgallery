@@ -118,8 +118,8 @@ function output_caption() {
 }
 
 function delete_picture($pid) {
-	global $xoopsModuleConfig, $header_printed, $xoopsDB;
-	global $del_pic, $xoopsModule;
+	global $header_printed, $xoopsDB;
+	global $del_pic;
 	if (!$header_printed) output_table_header();
 	$myts = icms_core_Textsanitizer::getInstance();
 	$green = "<img src=\"images/green.gif\" border=\"0\" width=\"12\" height=\"12\" alt=\"\" /><br />";
@@ -139,7 +139,7 @@ function delete_picture($pid) {
 	}
 
 	$aid = $pic['aid'];
-	$dir = $xoopsModuleConfig['fullpath'] . $pic['filepath'];
+	$dir = icms::$module->config['fullpath'] . $pic['filepath'];
 	$file = $pic['filename'];
 
 	if (!is_writable($dir)) redirect_header('index.php', 2, sprintf(_MD_DIRECTORY_RO, htmlspecialchars($dir)));
@@ -148,8 +148,8 @@ function delete_picture($pid) {
 
 	$files = array (
 			$dir . $file,
-			$dir . $xoopsModuleConfig['normal_pfx'] . $file,
-			$dir . $xoopsModuleConfig['thumb_pfx'] . $file
+			$dir . icms::$module->config['normal_pfx'] . $file,
+			$dir . icms::$module->config['thumb_pfx'] . $file
 	);
 	foreach ($files as $currFile) {
 		$del_pic .= "<td class=\"even\" align=\"center\">";
@@ -163,7 +163,7 @@ function delete_picture($pid) {
 		$del_pic .= "</td>";
 	}
 
-	$deleted = xoops_comment_delete($xoopsModule->getVar('mid'), $pid);
+	$deleted = xoops_comment_delete(icms::$module->getVar('mid'), $pid);
 	$del_pic .= "<td class=\"even\" align=\"center\">";
 	if ($deleted)
 		$del_pic .= $green;
@@ -394,7 +394,7 @@ if ($out_caption) {
 	$xoopsTpl->assign('continue_url', $continueURL);
 	$xoopsTpl->assign('lang_continue', _MD_CONTINUE);
 	user_save_profile();
-	$xoopsTpl->assign('gallery', $xoopsModule->getVar('name'));
+	$xoopsTpl->assign('gallery', icms::$module->getVar('name'));
 	include_once "include/theme_func.php";
 	main_menu();
 	// $xoopsTpl->assign('xcgal_footer', pagefooter());

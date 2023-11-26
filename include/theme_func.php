@@ -84,11 +84,10 @@ function main_menu() {
 }
 
 function do_footer() {
-	global $_GET, $_POST, $_SERVER;
-	global $USER, $ALBUM_SET, $xoopsModuleConfig, $time_start, $query_stats;
+	global $USER, $ALBUM_SET, $time_start, $query_stats;
 	global $xoopsTpl;
 
-	if ($xoopsModuleConfig['debug_mode']) {
+	if (icms::$module->config['debug_mode']) {
 		$xoopsTpl->assign('debug_mode', 1);
 		$time_end = getmicrotime();
 		$time = round($time_end - $time_start, 3);
@@ -122,9 +121,9 @@ EOT;
 }
 
 function theme_display_cat_list($breadcrumb, &$cat_data, $statistics) {
-	global $xoopsTpl, $xoopsModule;
+	global $xoopsTpl;
 
-	if (!isset($breadcrumb) || $breadcrumb == '') $breadcrumb = '<a href="index.php">' . $xoopsModule->getVar('name') . '</a>';
+	if (!isset($breadcrumb) || $breadcrumb == '') $breadcrumb = '<a href="index.php">' . icms::$module->getVar('name') . '</a>';
 	$xoopsTpl->assign('breadcrumb', $breadcrumb);
 
 	if (count($cat_data) == 0 && $statistics) {
@@ -151,7 +150,7 @@ function theme_display_cat_list($breadcrumb, &$cat_data, $statistics) {
 }
 
 function theme_display_album_list(&$alb_list, $nbAlb, $cat, $page, $total_pages) {
-	global $xoopsTpl, $xoopsModuleConfig, $STATS_IN_ALB_LIST, $statistics, $template_tab_display;
+	global $xoopsTpl, $STATS_IN_ALB_LIST, $statistics, $template_tab_display;
 	$xoopsTpl->assign('display_alb_list', 1);
 	$theme_alb_list_tab_tmpl = $template_tab_display;
 
@@ -161,9 +160,9 @@ function theme_display_album_list(&$alb_list, $nbAlb, $cat, $page, $total_pages)
 	$tabs = create_tabs($nbAlb, $page, $total_pages, $theme_alb_list_tab_tmpl);
 	$count = 0;
 
-	$columns = $xoopsModuleConfig['album_list_cols'];
+	$columns = icms::$module->config['album_list_cols'];
 	$column_width = ceil(100 / $columns);
-	$thumb_cell_width = $xoopsModuleConfig['alb_list_thumb_size'] + 2;
+	$thumb_cell_width = icms::$module->config['alb_list_thumb_size'] + 2;
 	$xoopsTpl->assign('columns_width', $column_width);
 	$xoopsTpl->assign('thumb_cell_width', $thumb_cell_width);
 
@@ -192,7 +191,7 @@ function theme_display_album_list(&$alb_list, $nbAlb, $cat, $page, $total_pages)
 }
 
 function theme_display_thumbnails(&$thumb_list, $nbThumb, $album_name, $aid, $cat, $page, $total_pages, $sort_options, $display_tabs, $mode = 'thumb') {
-	global $xoopsModuleConfig, $xoopsTpl;
+	global $xoopsTpl;
 	global $template_tab_display;
 	$cat_link = is_numeric($aid) ? '' : '&amp;cat=' . $cat;
 
@@ -206,8 +205,8 @@ function theme_display_thumbnails(&$thumb_list, $nbThumb, $album_name, $aid, $ca
 		$theme_thumb_tab_tmpl['inactive_tab'] = strtr($theme_thumb_tab_tmpl['inactive_tab'], array('{LINK}' => 'index.php?cat=' . $cat . '&amp;page=%d'));
 	}
 
-	$thumbcols = $xoopsModuleConfig['thumbcols'];
-	$cell_width = ceil(100 / $xoopsModuleConfig['thumbcols']) . '%';
+	$thumbcols = icms::$module->config['thumbcols'];
+	$cell_width = ceil(100 / icms::$module->config['thumbcols']) . '%';
 
 	$tabs_html = $display_tabs ? create_tabs($nbThumb, $page, $total_pages, $theme_thumb_tab_tmpl) : '';
 	$i = 0;
@@ -228,6 +227,9 @@ function theme_display_thumbnails(&$thumb_list, $nbThumb, $album_name, $aid, $ca
 		if ($mode == 'thumb') {
 			$pic['link_tgt'] = "displayimage.php?pid={$thumb['pid']}&amp;album=$aid$cat_link&amp;pos={$thumb['pos']}";
 			$pic['admin_menu'] = $thumb['admin_menu'];
+			$pic['pic_url'] = $thumb['pic_url'];
+			$pic['pic_title'] = $thumb['pic_title'];
+			$pic['album_title'] = $thumb['album_title'];
 		} else {
 			$pic['link_tgt'] = "index.php?cat={$thumb['cat']}";
 			$pic['admin_menu'] = "";

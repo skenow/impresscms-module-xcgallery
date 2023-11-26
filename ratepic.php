@@ -42,7 +42,7 @@ $rate = min($rate, 5);
 $rate = max($rate, 0);
 
 // If user does not accept script's cookies, we don't accept the vote
-if (!isset($_COOKIE[$xoopsModuleConfig['cookie_name'] . '_data'])) {
+if (!isset($_COOKIE[icms::$module->config['cookie_name'] . '_data'])) {
 	redirect_header('displayimage.php?pid=' . $pic . '&amp;pos=' . (-$pic), 2, "Please enable Cookies!");
 	exit();
 }
@@ -58,8 +58,8 @@ if (!USER_CAN_RATE_PICTURES || $row['votes_allowed'] == 'NO') redirect_header($l
 
 // Clean votes older votes
 $curr_time = time();
-if ($xoopsModuleConfig['keep_votes_time'] > 0) {
-	$clean_before = $curr_time - $xoopsModuleConfig['keep_votes_time'] * 86400;
+if (icms::$module->config['keep_votes_time'] > 0) {
+	$clean_before = $curr_time - icms::$module->config['keep_votes_time'] * 86400;
 	$sql = "DELETE " . "FROM " . $xoopsDB->prefix("xcgal_votes") . " " . "WHERE vote_time < $clean_before";
 	$result = $xoopsDB->queryf($sql);
 }

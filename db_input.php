@@ -108,11 +108,11 @@ switch ($event) {
 
 		// Pictures are moved in a directory named 10000 + USER_ID
 		if (USER_ID && !defined('SILLY_SAFE_MODE')) {
-			$filepath = $xoopsModuleConfig['userpics'] . (USER_ID + FIRST_USER_CAT);
-			$dest_dir = $xoopsModuleConfig['fullpath'] . $filepath;
+			$filepath = icms::$module->config['userpics'] . (USER_ID + FIRST_USER_CAT);
+			$dest_dir = icms::$module->config['fullpath'] . $filepath;
 			if (!is_dir($dest_dir)) {
-				mkdir($dest_dir, octdec($xoopsModuleConfig['default_dir_mode']), true);
-				chmod($dest_dir, octdec($xoopsModuleConfig['default_dir_mode']));
+				mkdir($dest_dir, octdec(icms::$module->config['default_dir_mode']), true);
+				chmod($dest_dir, octdec(icms::$module->config['default_dir_mode']));
 				if (!is_dir($dest_dir)) redirect_header('index.php', 2, sprintf(_MD_DB_ERR_MKDIR, $dest_dir));
 				$fp = fopen($dest_dir . '/index.html', 'w');
 				fwrite($fp, ' ');
@@ -121,8 +121,8 @@ switch ($event) {
 			$dest_dir .= '/';
 			$filepath .= '/';
 		} else {
-			$filepath = $xoopsModuleConfig['userpics'];
-			$dest_dir = $xoopsModuleConfig['fullpath'] . $filepath;
+			$filepath = icms::$module->config['userpics'];
+			$dest_dir = icms::$module->config['fullpath'] . $filepath;
 		}
 
 		// Check that target dir is writable
@@ -130,17 +130,17 @@ switch ($event) {
 
 		// Replace forbidden chars with underscores
 		$matches = array();
-		$forbidden_chars = strtr($xoopsModuleConfig['forbidden_fname_char'], array('&amp;' => '&', '&quot;' => '"', '&lt;' => '<', '&gt;' => '>'));
+		$forbidden_chars = strtr(icms::$module->config['forbidden_fname_char'], array('&amp;' => '&', '&quot;' => '"', '&lt;' => '<', '&gt;' => '>'));
 
 		// Check that the file uploaded has a valid extension
 		$_FILES['userpicture']['name'] = $myts->addSlashes($_FILES['userpicture']['name']);
-		$picture_name = strtr($_FILES['userpicture']['name'], $forbidden_chars, str_repeat('_', strlen($xoopsModuleConfig['forbidden_fname_char'])));
+		$picture_name = strtr($_FILES['userpicture']['name'], $forbidden_chars, str_repeat('_', strlen(icms::$module->config['forbidden_fname_char'])));
 		if (!preg_match("/(.+)\.(.*?)\Z/", $picture_name, $matches)) {
 			$matches[1] = 'invalid_fname';
 			$matches[2] = 'xxx';
 		}
-		if ($matches[2] == '' || !stristr($xoopsModuleConfig['allowed_file_extensions'], $matches[2])) {
-			redirect_header('index.php', 2, sprintf(_MD_DB_ERR_FEXT, $xoopsModuleConfig['allowed_file_extensions']));
+		if ($matches[2] == '' || !stristr(icms::$module->config['allowed_file_extensions'], $matches[2])) {
+			redirect_header('index.php', 2, sprintf(_MD_DB_ERR_FEXT, icms::$module->config['allowed_file_extensions']));
 		}
 
 		// Create a unique name for the uploaded file
@@ -155,7 +155,7 @@ switch ($event) {
 		if (!move_uploaded_file($_FILES['userpicture']['tmp_name'], $uploaded_pic)) redirect_header('index.php', 2, sprintf(_MD_DB_ERR_MOVE, $picture_name, $dest_dir));
 
 		// Change file permission
-		chmod($uploaded_pic, octdec($xoopsModuleConfig['default_file_mode']));
+		chmod($uploaded_pic, octdec(icms::$module->config['default_file_mode']));
 
 		// Get picture information
 		$imginfo = getimagesize($uploaded_pic);
@@ -177,14 +177,14 @@ switch ($event) {
 			$movie_picture = false;
 
 		// Check that picture size (in pixels) is lower than the maximum allowed
-		if (max($imginfo[0], $imginfo[1]) > $xoopsModuleConfig['max_upl_width_height']) {
+		if (max($imginfo[0], $imginfo[1]) > icms::$module->config['max_upl_width_height']) {
 			@unlink($uploaded_pic);
-			redirect_header('index.php', 2, sprintf(_MD_DB_ERR_PIC_SIZE, $xoopsModuleConfig['max_upl_width_height'], $xoopsModuleConfig['max_upl_width_height']));
+			redirect_header('index.php', 2, sprintf(_MD_DB_ERR_PIC_SIZE, icms::$module->config['max_upl_width_height'], icms::$module->config['max_upl_width_height']));
 
 			// Check that picture file size is lower than the maximum allowed
-		} elseif (filesize($uploaded_pic) > ($xoopsModuleConfig['max_upl_size'] << 10)) {
+		} elseif (filesize($uploaded_pic) > (icms::$module->config['max_upl_size'] << 10)) {
 			@unlink($uploaded_pic);
-			redirect_header('index.php', 2, sprintf(_MD_DB_ERR_FSIZE, $xoopsModuleConfig['max_upl_size']));
+			redirect_header('index.php', 2, sprintf(_MD_DB_ERR_FSIZE, icms::$module->config['max_upl_size']));
 
 			// getimagesize does not recognize the file as a picture
 		} elseif ($imginfo == null) {
@@ -192,14 +192,14 @@ switch ($event) {
 			redirect_header('index.php', 2, _MD_DB_ERR_IMG_INVALID);
 
 			// JPEG and PNG only are allowed with GD
-		} elseif (!$movie_picture && ($imginfo[2] != GIS_GIF && $imginfo[2] != GIS_JPG && $imginfo[2] != GIS_PNG && ($xoopsModuleConfig['thumb_method'] == 'gd1' || $xoopsModuleConfig['thumb_method'] == 'gd2'))) {
+		} elseif (!$movie_picture && ($imginfo[2] != GIS_GIF && $imginfo[2] != GIS_JPG && $imginfo[2] != GIS_PNG && (icms::$module->config['thumb_method'] == 'gd1' || icms::$module->config['thumb_method'] == 'gd2'))) {
 			@unlink($uploaded_pic);
 			redirect_header('index.php', 2, _MD_GD_FILE_TYPE_ERR);
 
 			// Check image type is among those allowed for ImageMagick
-		} elseif (!$movie_picture && (!stristr($xoopsModuleConfig['allowed_img_types'], $IMG_TYPES[$imginfo[2]]) && $xoopsModuleConfig['thumb_method'] == 'im')) {
+		} elseif (!$movie_picture && (!stristr(icms::$module->config['allowed_img_types'], $IMG_TYPES[$imginfo[2]]) && icms::$module->config['thumb_method'] == 'im')) {
 			@unlink($uploaded_pic);
-			redirect_header('index.php', 2, sprintf(_MD_DB_IMG_ALLOWED, $xoopsModuleConfig['allowed_img_types']));
+			redirect_header('index.php', 2, sprintf(_MD_DB_IMG_ALLOWED, icms::$module->config['allowed_img_types']));
 		} else {
 
 			// Create thumbnail and internediate image and add the image into the DB
@@ -254,11 +254,11 @@ switch ($event) {
 
 			// Pictures are moved in a directory named 10000 + USER_ID
 			if (USER_ID && !defined('SILLY_SAFE_MODE')) {
-				$filepath = $xoopsModuleConfig['userpics'] . (USER_ID + FIRST_USER_CAT);
-				$dest_dir = $xoopsModuleConfig['fullpath'] . $filepath;
+				$filepath = icms::$module->config['userpics'] . (USER_ID + FIRST_USER_CAT);
+				$dest_dir = icms::$module->config['fullpath'] . $filepath;
 				if (!is_dir($dest_dir)) {
-					mkdir($dest_dir, octdec($xoopsModuleConfig['default_dir_mode']), true);
-					chmod($dest_dir, octdec($xoopsModuleConfig['default_dir_mode']));
+					mkdir($dest_dir, octdec(icms::$module->config['default_dir_mode']), true);
+					chmod($dest_dir, octdec(icms::$module->config['default_dir_mode']));
 					if (!is_dir($dest_dir)) redirect_header('index.php', 2, sprintf(_MD_DB_ERR_MKDIR, $dest_dir));
 					$fp = fopen($dest_dir . '/index.html', 'w');
 					fwrite($fp, ' ');
@@ -267,8 +267,8 @@ switch ($event) {
 				$dest_dir .= '/';
 				$filepath .= '/';
 			} else {
-				$filepath = $xoopsModuleConfig['userpics'];
-				$dest_dir = $xoopsModuleConfig['fullpath'] . $filepath;
+				$filepath = icms::$module->config['userpics'];
+				$dest_dir = icms::$module->config['fullpath'] . $filepath;
 			}
 
 			// Check that target dir is writable
@@ -276,17 +276,17 @@ switch ($event) {
 
 			// Replace forbidden chars with underscores
 			$matches = array();
-			$forbidden_chars = strtr($xoopsModuleConfig['forbidden_fname_char'], array('&amp;' => '&', '&quot;' => '"', '&lt;' => '<', '&gt;' => '>'));
+			$forbidden_chars = strtr(icms::$module->config['forbidden_fname_char'], array('&amp;' => '&', '&quot;' => '"', '&lt;' => '<', '&gt;' => '>'));
 
 			// Check that the file uploaded has a valid extension
 			$_FILES['userpicture1']['name'] = $myts->addSlashes($_FILES['userpicture1']['name']);
-			$picture_name = strtr($_FILES['userpicture1']['name'], $forbidden_chars, str_repeat('_', strlen($xoopsModuleConfig['forbidden_fname_char'])));
+			$picture_name = strtr($_FILES['userpicture1']['name'], $forbidden_chars, str_repeat('_', strlen(icms::$module->config['forbidden_fname_char'])));
 			if (!preg_match("/(.+)\.(.*?)\Z/", $picture_name, $matches)) {
 				$matches[1] = 'invalid_fname';
 				$matches[2] = 'xxx';
 			}
-			if ($matches[2] == '' || !stristr($xoopsModuleConfig['allowed_file_extensions'], $matches[2])) {
-				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_FEXT, $xoopsModuleConfig['allowed_file_extensions']));
+			if ($matches[2] == '' || !stristr(icms::$module->config['allowed_file_extensions'], $matches[2])) {
+				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_FEXT, icms::$module->config['allowed_file_extensions']));
 			}
 
 			// Create a unique name for the uploaded file
@@ -301,20 +301,20 @@ switch ($event) {
 			if (!move_uploaded_file($_FILES['userpicture1']['tmp_name'], $uploaded_pic)) redirect_header('index.php', 2, sprintf(_MD_DB_ERR_MOVE, $picture_name, $dest_dir));
 
 			// Change file permission
-			chmod($uploaded_pic, octdec($xoopsModuleConfig['default_file_mode']));
+			chmod($uploaded_pic, octdec(icms::$module->config['default_file_mode']));
 
 			// Get picture information
 			$imginfo = getimagesize($uploaded_pic);
 
 			// Check that picture size (in pixels) is lower than the maximum allowed
-			if (max($imginfo[0], $imginfo[1]) > $xoopsModuleConfig['max_upl_width_height']) {
+			if (max($imginfo[0], $imginfo[1]) > icms::$module->config['max_upl_width_height']) {
 				@unlink($uploaded_pic);
-				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_PIC_SIZE, $xoopsModuleConfig['max_upl_width_height'], $xoopsModuleConfig['max_upl_width_height']));
+				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_PIC_SIZE, icms::$module->config['max_upl_width_height'], icms::$module->config['max_upl_width_height']));
 
 				// Check that picture file size is lower than the maximum allowed
-			} elseif (filesize($uploaded_pic) > ($xoopsModuleConfig['max_upl_size'] << 10)) {
+			} elseif (filesize($uploaded_pic) > (icms::$module->config['max_upl_size'] << 10)) {
 				@unlink($uploaded_pic);
-				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_FSIZE, $xoopsModuleConfig['max_upl_size']));
+				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_FSIZE, icms::$module->config['max_upl_size']));
 
 				// getimagesize does not recognize the file as a picture
 			} elseif ($imginfo == null) {
@@ -322,14 +322,14 @@ switch ($event) {
 				redirect_header('index.php', 2, _MD_DB_ERR_IMG_INVALID);
 
 				// JPEG and PNG only are allowed with GD
-			} elseif ($imginfo[2] != GIS_GIF && $imginfo[2] != GIS_JPG && $imginfo[2] != GIS_PNG && ($xoopsModuleConfig['thumb_method'] == 'gd1' || $xoopsModuleConfig['thumb_method'] == 'gd2')) {
+			} elseif ($imginfo[2] != GIS_GIF && $imginfo[2] != GIS_JPG && $imginfo[2] != GIS_PNG && (icms::$module->config['thumb_method'] == 'gd1' || icms::$module->config['thumb_method'] == 'gd2')) {
 				@unlink($uploaded_pic);
 				redirect_header('index.php', 2, _MD_GD_FILE_TYPE_ERR);
 
 				// Check image type is among those allowed for ImageMagick
-			} elseif (!stristr($xoopsModuleConfig['allowed_img_types'], $IMG_TYPES[$imginfo[2]]) && $xoopsModuleConfig['thumb_method'] == 'im') {
+			} elseif (!stristr(icms::$module->config['allowed_img_types'], $IMG_TYPES[$imginfo[2]]) && icms::$module->config['thumb_method'] == 'im') {
 				@unlink($uploaded_pic);
-				redirect_header('index.php', 2, sprintf(_MD_DB_IMG_ALLOWED, $xoopsModuleConfig['allowed_img_types']));
+				redirect_header('index.php', 2, sprintf(_MD_DB_IMG_ALLOWED, icms::$module->config['allowed_img_types']));
 			} else {
 
 				// Create thumbnail and internediate image and add the image into the DB
@@ -376,11 +376,11 @@ switch ($event) {
 
 			// Pictures are moved in a directory named 10000 + USER_ID
 			if (USER_ID && !defined('SILLY_SAFE_MODE')) {
-				$filepath = $xoopsModuleConfig['userpics'] . (USER_ID + FIRST_USER_CAT);
-				$dest_dir = $xoopsModuleConfig['fullpath'] . $filepath;
+				$filepath = icms::$module->config['userpics'] . (USER_ID + FIRST_USER_CAT);
+				$dest_dir = icms::$module->config['fullpath'] . $filepath;
 				if (!is_dir($dest_dir)) {
-					mkdir($dest_dir, octdec($xoopsModuleConfig['default_dir_mode']), true);
-					chmod($dest_dir, octdec($xoopsModuleConfig['default_dir_mode']));
+					mkdir($dest_dir, octdec(icms::$module->config['default_dir_mode']), true);
+					chmod($dest_dir, octdec(icms::$module->config['default_dir_mode']));
 					if (!is_dir($dest_dir)) redirect_header('index.php', 2, sprintf(_MD_DB_ERR_MKDIR, $dest_dir));
 					$fp = fopen($dest_dir . '/index.html', 'w');
 					fwrite($fp, ' ');
@@ -389,8 +389,8 @@ switch ($event) {
 				$dest_dir .= '/';
 				$filepath .= '/';
 			} else {
-				$filepath = $xoopsModuleConfig['userpics'];
-				$dest_dir = $xoopsModuleConfig['fullpath'] . $filepath;
+				$filepath = icms::$module->config['userpics'];
+				$dest_dir = icms::$module->config['fullpath'] . $filepath;
 			}
 
 			// Check that target dir is writable
@@ -398,17 +398,17 @@ switch ($event) {
 
 			// Replace forbidden chars with underscores
 			$matches = array();
-			$forbidden_chars = strtr($xoopsModuleConfig['forbidden_fname_char'], array('&amp;' => '&', '&quot;' => '"', '&lt;' => '<', '&gt;' => '>'));
+			$forbidden_chars = strtr(icms::$module->config['forbidden_fname_char'], array('&amp;' => '&', '&quot;' => '"', '&lt;' => '<', '&gt;' => '>'));
 
 			// Check that the file uploaded has a valid extension
 			$_FILES['userpicture2']['name'] = $myts->addSlashes($_FILES['userpicture2']['name']);
-			$picture_name = strtr($_FILES['userpicture2']['name'], $forbidden_chars, str_repeat('_', strlen($xoopsModuleConfig['forbidden_fname_char'])));
+			$picture_name = strtr($_FILES['userpicture2']['name'], $forbidden_chars, str_repeat('_', strlen(icms::$module->config['forbidden_fname_char'])));
 			if (!preg_match("/(.+)\.(.*?)\Z/", $picture_name, $matches)) {
 				$matches[1] = 'invalid_fname';
 				$matches[2] = 'xxx';
 			}
-			if ($matches[2] == '' || !stristr($xoopsModuleConfig['allowed_file_extensions'], $matches[2])) {
-				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_FEXT, $xoopsModuleConfig['allowed_file_extensions']));
+			if ($matches[2] == '' || !stristr(icms::$module->config['allowed_file_extensions'], $matches[2])) {
+				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_FEXT, icms::$module->config['allowed_file_extensions']));
 			}
 
 			// Create a unique name for the uploaded file
@@ -423,20 +423,20 @@ switch ($event) {
 			if (!move_uploaded_file($_FILES['userpicture2']['tmp_name'], $uploaded_pic)) redirect_header('index.php', 2, sprintf(_MD_DB_ERR_MOVE, $picture_name, $dest_dir));
 
 			// Change file permission
-			chmod($uploaded_pic, octdec($xoopsModuleConfig['default_file_mode']));
+			chmod($uploaded_pic, octdec(icms::$module->config['default_file_mode']));
 
 			// Get picture information
 			$imginfo = getimagesize($uploaded_pic);
 
 			// Check that picture size (in pixels) is lower than the maximum allowed
-			if (max($imginfo[0], $imginfo[1]) > $xoopsModuleConfig['max_upl_width_height']) {
+			if (max($imginfo[0], $imginfo[1]) > icms::$module->config['max_upl_width_height']) {
 				@unlink($uploaded_pic);
-				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_PIC_SIZE, $xoopsModuleConfig['max_upl_width_height'], $xoopsModuleConfig['max_upl_width_height']));
+				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_PIC_SIZE, icms::$module->config['max_upl_width_height'], icms::$module->config['max_upl_width_height']));
 
 				// Check that picture file size is lower than the maximum allowed
-			} elseif (filesize($uploaded_pic) > ($xoopsModuleConfig['max_upl_size'] << 10)) {
+			} elseif (filesize($uploaded_pic) > (icms::$module->config['max_upl_size'] << 10)) {
 				@unlink($uploaded_pic);
-				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_FSIZE, $xoopsModuleConfig['max_upl_size']));
+				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_FSIZE, icms::$module->config['max_upl_size']));
 
 				// getimagesize does not recognize the file as a picture
 			} elseif ($imginfo == null) {
@@ -444,14 +444,14 @@ switch ($event) {
 				redirect_header('index.php', 2, _MD_DB_ERR_IMG_INVALID);
 
 				// JPEG and PNG only are allowed with GD
-			} elseif ($imginfo[2] != GIS_GIF && $imginfo[2] != GIS_JPG && $imginfo[2] != GIS_PNG && ($xoopsModuleConfig['thumb_method'] == 'gd1' || $xoopsModuleConfig['thumb_method'] == 'gd2')) {
+			} elseif ($imginfo[2] != GIS_GIF && $imginfo[2] != GIS_JPG && $imginfo[2] != GIS_PNG && (icms::$module->config['thumb_method'] == 'gd1' || icms::$module->config['thumb_method'] == 'gd2')) {
 				@unlink($uploaded_pic);
 				redirect_header('index.php', 2, _MD_GD_FILE_TYPE_ERR);
 
 				// Check image type is among those allowed for ImageMagick
-			} elseif (!stristr($xoopsModuleConfig['allowed_img_types'], $IMG_TYPES[$imginfo[2]]) && $xoopsModuleConfig['thumb_method'] == 'im') {
+			} elseif (!stristr(icms::$module->config['allowed_img_types'], $IMG_TYPES[$imginfo[2]]) && icms::$module->config['thumb_method'] == 'im') {
 				@unlink($uploaded_pic);
-				redirect_header('index.php', 2, sprintf(_MD_DB_IMG_ALLOWED, $xoopsModuleConfig['allowed_img_types']));
+				redirect_header('index.php', 2, sprintf(_MD_DB_IMG_ALLOWED, icms::$module->config['allowed_img_types']));
 			} else {
 
 				// Create thumbnail and internediate image and add the image into the DB
@@ -498,11 +498,11 @@ switch ($event) {
 
 			// Pictures are moved in a directory named 10000 + USER_ID
 			if (USER_ID && !defined('SILLY_SAFE_MODE')) {
-				$filepath = $xoopsModuleConfig['userpics'] . (USER_ID + FIRST_USER_CAT);
-				$dest_dir = $xoopsModuleConfig['fullpath'] . $filepath;
+				$filepath = icms::$module->config['userpics'] . (USER_ID + FIRST_USER_CAT);
+				$dest_dir = icms::$module->config['fullpath'] . $filepath;
 				if (!is_dir($dest_dir)) {
-					mkdir($dest_dir, octdec($xoopsModuleConfig['default_dir_mode']), true);
-					chmod($dest_dir, octdec($xoopsModuleConfig['default_dir_mode']));
+					mkdir($dest_dir, octdec(icms::$module->config['default_dir_mode']), true);
+					chmod($dest_dir, octdec(icms::$module->config['default_dir_mode']));
 					if (!is_dir($dest_dir)) redirect_header('index.php', 2, sprintf(_MD_DB_ERR_MKDIR, $dest_dir));
 					$fp = fopen($dest_dir . '/index.html', 'w');
 					fwrite($fp, ' ');
@@ -511,8 +511,8 @@ switch ($event) {
 				$dest_dir .= '/';
 				$filepath .= '/';
 			} else {
-				$filepath = $xoopsModuleConfig['userpics'];
-				$dest_dir = $xoopsModuleConfig['fullpath'] . $filepath;
+				$filepath = icms::$module->config['userpics'];
+				$dest_dir = icms::$module->config['fullpath'] . $filepath;
 			}
 
 			// Check that target dir is writable
@@ -520,17 +520,17 @@ switch ($event) {
 
 			// Replace forbidden chars with underscores
 			$matches = array();
-			$forbidden_chars = strtr($xoopsModuleConfig['forbidden_fname_char'], array('&amp;' => '&', '&quot;' => '"', '&lt;' => '<', '&gt;' => '>'));
+			$forbidden_chars = strtr(icms::$module->config['forbidden_fname_char'], array('&amp;' => '&', '&quot;' => '"', '&lt;' => '<', '&gt;' => '>'));
 
 			// Check that the file uploaded has a valid extension
 			$_FILES['userpicture3']['name'] = $myts->addSlashes($_FILES['userpicture3']['name']);
-			$picture_name = strtr($_FILES['userpicture3']['name'], $forbidden_chars, str_repeat('_', strlen($xoopsModuleConfig['forbidden_fname_char'])));
+			$picture_name = strtr($_FILES['userpicture3']['name'], $forbidden_chars, str_repeat('_', strlen(icms::$module->config['forbidden_fname_char'])));
 			if (!preg_match("/(.+)\.(.*?)\Z/", $picture_name, $matches)) {
 				$matches[1] = 'invalid_fname';
 				$matches[2] = 'xxx';
 			}
-			if ($matches[2] == '' || !stristr($xoopsModuleConfig['allowed_file_extensions'], $matches[2])) {
-				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_FEXT, $xoopsModuleConfig['allowed_file_extensions']));
+			if ($matches[2] == '' || !stristr(icms::$module->config['allowed_file_extensions'], $matches[2])) {
+				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_FEXT, icms::$module->config['allowed_file_extensions']));
 			}
 
 			// Create a unique name for the uploaded file
@@ -545,20 +545,20 @@ switch ($event) {
 			if (!move_uploaded_file($_FILES['userpicture3']['tmp_name'], $uploaded_pic)) redirect_header('index.php', 2, sprintf(_MD_DB_ERR_MOVE, $picture_name, $dest_dir));
 
 			// Change file permission
-			chmod($uploaded_pic, octdec($xoopsModuleConfig['default_file_mode']));
+			chmod($uploaded_pic, octdec(icms::$module->config['default_file_mode']));
 
 			// Get picture information
 			$imginfo = getimagesize($uploaded_pic);
 
 			// Check that picture size (in pixels) is lower than the maximum allowed
-			if (max($imginfo[0], $imginfo[1]) > $xoopsModuleConfig['max_upl_width_height']) {
+			if (max($imginfo[0], $imginfo[1]) > icms::$module->config['max_upl_width_height']) {
 				@unlink($uploaded_pic);
-				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_PIC_SIZE, $xoopsModuleConfig['max_upl_width_height'], $xoopsModuleConfig['max_upl_width_height']));
+				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_PIC_SIZE, icms::$module->config['max_upl_width_height'], icms::$module->config['max_upl_width_height']));
 
 				// Check that picture file size is lower than the maximum allowed
-			} elseif (filesize($uploaded_pic) > ($xoopsModuleConfig['max_upl_size'] << 10)) {
+			} elseif (filesize($uploaded_pic) > (icms::$module->config['max_upl_size'] << 10)) {
 				@unlink($uploaded_pic);
-				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_FSIZE, $xoopsModuleConfig['max_upl_size']));
+				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_FSIZE, icms::$module->config['max_upl_size']));
 
 				// getimagesize does not recognize the file as a picture
 			} elseif ($imginfo == null) {
@@ -566,14 +566,14 @@ switch ($event) {
 				redirect_header('index.php', 2, _MD_DB_ERR_IMG_INVALID);
 
 				// JPEG and PNG only are allowed with GD
-			} elseif ($imginfo[2] != GIS_GIF && $imginfo[2] != GIS_JPG && $imginfo[2] != GIS_PNG && ($xoopsModuleConfig['thumb_method'] == 'gd1' || $xoopsModuleConfig['thumb_method'] == 'gd2')) {
+			} elseif ($imginfo[2] != GIS_GIF && $imginfo[2] != GIS_JPG && $imginfo[2] != GIS_PNG && (icms::$module->config['thumb_method'] == 'gd1' || icms::$module->config['thumb_method'] == 'gd2')) {
 				@unlink($uploaded_pic);
 				redirect_header('index.php', 2, _MD_GD_FILE_TYPE_ERR);
 
 				// Check image type is among those allowed for ImageMagick
-			} elseif (!stristr($xoopsModuleConfig['allowed_img_types'], $IMG_TYPES[$imginfo[2]]) && $xoopsModuleConfig['thumb_method'] == 'im') {
+			} elseif (!stristr(icms::$module->config['allowed_img_types'], $IMG_TYPES[$imginfo[2]]) && icms::$module->config['thumb_method'] == 'im') {
 				@unlink($uploaded_pic);
-				redirect_header('index.php', 2, sprintf(_MD_DB_IMG_ALLOWED, $xoopsModuleConfig['allowed_img_types']));
+				redirect_header('index.php', 2, sprintf(_MD_DB_IMG_ALLOWED, icms::$module->config['allowed_img_types']));
 			} else {
 
 				// Create thumbnail and internediate image and add the image into the DB
@@ -620,11 +620,11 @@ switch ($event) {
 
 			// Pictures are moved in a directory named 10000 + USER_ID
 			if (USER_ID && !defined('SILLY_SAFE_MODE')) {
-				$filepath = $xoopsModuleConfig['userpics'] . (USER_ID + FIRST_USER_CAT);
-				$dest_dir = $xoopsModuleConfig['fullpath'] . $filepath;
+				$filepath = icms::$module->config['userpics'] . (USER_ID + FIRST_USER_CAT);
+				$dest_dir = icms::$module->config['fullpath'] . $filepath;
 				if (!is_dir($dest_dir)) {
-					mkdir($dest_dir, octdec($xoopsModuleConfig['default_dir_mode']), true);
-					chmod($dest_dir, octdec($xoopsModuleConfig['default_dir_mode']));
+					mkdir($dest_dir, octdec(icms::$module->config['default_dir_mode']), true);
+					chmod($dest_dir, octdec(icms::$module->config['default_dir_mode']));
 					if (!is_dir($dest_dir)) redirect_header('index.php', 2, sprintf(_MD_DB_ERR_MKDIR, $dest_dir));
 					$fp = fopen($dest_dir . '/index.html', 'w');
 					fwrite($fp, ' ');
@@ -633,8 +633,8 @@ switch ($event) {
 				$dest_dir .= '/';
 				$filepath .= '/';
 			} else {
-				$filepath = $xoopsModuleConfig['userpics'];
-				$dest_dir = $xoopsModuleConfig['fullpath'] . $filepath;
+				$filepath = icms::$module->config['userpics'];
+				$dest_dir = icms::$module->config['fullpath'] . $filepath;
 			}
 
 			// Check that target dir is writable
@@ -642,17 +642,17 @@ switch ($event) {
 
 			// Replace forbidden chars with underscores
 			$matches = array();
-			$forbidden_chars = strtr($xoopsModuleConfig['forbidden_fname_char'], array('&amp;' => '&', '&quot;' => '"', '&lt;' => '<', '&gt;' => '>'));
+			$forbidden_chars = strtr(icms::$module->config['forbidden_fname_char'], array('&amp;' => '&', '&quot;' => '"', '&lt;' => '<', '&gt;' => '>'));
 
 			// Check that the file uploaded has a valid extension
 			$_FILES['userpicture4']['name'] = $myts->addSlashes($_FILES['userpicture4']['name']);
-			$picture_name = strtr($_FILES['userpicture4']['name'], $forbidden_chars, str_repeat('_', strlen($xoopsModuleConfig['forbidden_fname_char'])));
+			$picture_name = strtr($_FILES['userpicture4']['name'], $forbidden_chars, str_repeat('_', strlen(icms::$module->config['forbidden_fname_char'])));
 			if (!preg_match("/(.+)\.(.*?)\Z/", $picture_name, $matches)) {
 				$matches[1] = 'invalid_fname';
 				$matches[2] = 'xxx';
 			}
-			if ($matches[2] == '' || !stristr($xoopsModuleConfig['allowed_file_extensions'], $matches[2])) {
-				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_FEXT, $xoopsModuleConfig['allowed_file_extensions']));
+			if ($matches[2] == '' || !stristr(icms::$module->config['allowed_file_extensions'], $matches[2])) {
+				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_FEXT, icms::$module->config['allowed_file_extensions']));
 			}
 
 			// Create a unique name for the uploaded file
@@ -667,20 +667,20 @@ switch ($event) {
 			if (!move_uploaded_file($_FILES['userpicture4']['tmp_name'], $uploaded_pic)) redirect_header('index.php', 2, sprintf(_MD_DB_ERR_MOVE, $picture_name, $dest_dir));
 
 			// Change file permission
-			chmod($uploaded_pic, octdec($xoopsModuleConfig['default_file_mode']));
+			chmod($uploaded_pic, octdec(icms::$module->config['default_file_mode']));
 
 			// Get picture information
 			$imginfo = getimagesize($uploaded_pic);
 
 			// Check that picture size (in pixels) is lower than the maximum allowed
-			if (max($imginfo[0], $imginfo[1]) > $xoopsModuleConfig['max_upl_width_height']) {
+			if (max($imginfo[0], $imginfo[1]) > icms::$module->config['max_upl_width_height']) {
 				@unlink($uploaded_pic);
-				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_PIC_SIZE, $xoopsModuleConfig['max_upl_width_height'], $xoopsModuleConfig['max_upl_width_height']));
+				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_PIC_SIZE, icms::$module->config['max_upl_width_height'], icms::$module->config['max_upl_width_height']));
 
 				// Check that picture file size is lower than the maximum allowed
-			} elseif (filesize($uploaded_pic) > ($xoopsModuleConfig['max_upl_size'] << 10)) {
+			} elseif (filesize($uploaded_pic) > (icms::$module->config['max_upl_size'] << 10)) {
 				@unlink($uploaded_pic);
-				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_FSIZE, $xoopsModuleConfig['max_upl_size']));
+				redirect_header('index.php', 2, sprintf(_MD_DB_ERR_FSIZE, icms::$module->config['max_upl_size']));
 
 				// getimagesize does not recognize the file as a picture
 			} elseif ($imginfo == null) {
@@ -688,14 +688,14 @@ switch ($event) {
 				redirect_header('index.php', 2, _MD_DB_ERR_IMG_INVALID);
 
 				// JPEG and PNG only are allowed with GD
-			} elseif ($imginfo[2] != GIS_GIF && $imginfo[2] != GIS_JPG && $imginfo[2] != GIS_PNG && ($xoopsModuleConfig['thumb_method'] == 'gd1' || $xoopsModuleConfig['thumb_method'] == 'gd2')) {
+			} elseif ($imginfo[2] != GIS_GIF && $imginfo[2] != GIS_JPG && $imginfo[2] != GIS_PNG && (icms::$module->config['thumb_method'] == 'gd1' || icms::$module->config['thumb_method'] == 'gd2')) {
 				@unlink($uploaded_pic);
 				redirect_header('index.php', 2, _MD_GD_FILE_TYPE_ERR);
 
 				// Check image type is among those allowed for ImageMagick
-			} elseif (!stristr($xoopsModuleConfig['allowed_img_types'], $IMG_TYPES[$imginfo[2]]) && $xoopsModuleConfig['thumb_method'] == 'im') {
+			} elseif (!stristr(icms::$module->config['allowed_img_types'], $IMG_TYPES[$imginfo[2]]) && icms::$module->config['thumb_method'] == 'im') {
 				@unlink($uploaded_pic);
-				redirect_header('index.php', 2, sprintf(_MD_DB_IMG_ALLOWED, $xoopsModuleConfig['allowed_img_types']));
+				redirect_header('index.php', 2, sprintf(_MD_DB_IMG_ALLOWED, icms::$module->config['allowed_img_types']));
 			} else {
 
 				// Create thumbnail and internediate image and add the image into the DB

@@ -52,7 +52,7 @@ echo "<table><tr><td width='100px'><b><a href='index.php'>INDEX</a></b></td>
 
 echo "<h4>" . _AM_CONFIG . "</h4>";
 echo "<table width='100%' border='0' cellspacing='1' class='outer'><tr><td class=\"odd\">";
-echo " - <b><a href='" . ICMS_URL . '/modules/system/admin.php?fct=preferences&amp;op=showmod&amp;mod=' . $xoopsModule->getVar('mid') . "'>" . _AM_GENERALCONF . "</a></b><br /><br />\n";
+echo " - <b><a href='" . ICMS_URL . '/modules/system/admin.php?fct=preferences&amp;op=showmod&amp;mod=' . icms::$module->getVar('mid') . "'>" . _AM_GENERALCONF . "</a></b><br /><br />\n";
 echo " - <b><a href='catmgr.php'>" . _AM_CATMNGR . "</a></b>";
 echo "<br /><br />\n";
 echo " - <b><a href='usermgr.php'>" . _AM_USERMNGR . "</a></b>\n";
@@ -63,6 +63,6 @@ echo " - <b><a href='searchnew.php'>" . _AM_BATCHADD . "</a></b>\n";
 echo "<br /><br />\n";
 echo " - <b><a href='ecardmgr.php'>" . _AM_ECARDMNGR . "</a></b>\n";
 echo "<br /><br />\n";
-echo " - <b><a href='" . ICMS_URL . "/modules/" . $xoopsModule->getVar('dirname') . "/editpics.php?mode=upload_approval'>" . _AM_PICAPP . " ({$pics})</a></b>\n";
+echo " - <b><a href='" . ICMS_URL . "/modules/" . icms::$module->getVar('dirname') . "/editpics.php?mode=upload_approval'>" . _AM_PICAPP . " ({$pics})</a></b>\n";
 echo "</td></tr></table>";
 icms_cp_footer();

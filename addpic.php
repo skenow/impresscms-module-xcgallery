@@ -34,7 +34,7 @@ require ('include/init.inc.php');
 require ('include/picmgmt.inc.php');
 
 // if (!GALLERY_ADMIN_MODE)
-if (!is_object($xoopsUser) || !($xoopsUser->isAdmin($xoopsModule->mid()))) redirect_header(ICMS_URL . "/", 3, _NOPERM);
+if (!is_object($xoopsUser) || !($xoopsUser->isAdmin(icms::$module->mid()))) redirect_header(ICMS_URL . "/", 3, _NOPERM);
 
 $aid = (int) $_GET['aid'];
 $pic_file = base64_decode($_GET['pic_file']);

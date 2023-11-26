@@ -40,7 +40,7 @@ function delete_cards($e_ids) {
 }
 
 $card_per_page = 25;
-$delete_time = time() - ($xoopsModuleConfig['ecards_saved_db'] * 86400);
+$delete_time = time() - (icms::$module->config['ecards_saved_db'] * 86400);
 $xoopsDB->queryf("DELETE from " . $xoopsDB->prefix("xcgal_ecard") . " WHERE s_time < " . $delete_time . "");
 
 if (isset($_POST['card_action'])) {

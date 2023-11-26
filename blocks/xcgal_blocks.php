@@ -74,7 +74,7 @@ function xcgal_block_func($options) {
 		foreach ($pic_datas as $key => $row) {
 			$i++ ;
 
-			// $image_size = compute_img_size($row['pwidth'], $row['pheight'], $xoopsModuleConfig['thumb_width']);
+			// $image_size = compute_img_size($row['pwidth'], $row['pheight'], icms::$module->config['thumb_width']);
 
 			$thumb_list[$i]['pos'] = $key < 0 ? $key : $i - 1 - $options[5];
 			$thumb_list[$i]['image'] = "<img src=\"" . XOOPS_URL . "/modules/" . $xcgalDir . "/" . $xcgalConfig['fullpath'] . str_replace("%2F", "/", rawurlencode($row['filepath'] . $xcgalConfig['thumb_pfx'] . $row['filename'])) . "\" class=\"image\" border=\"0\" alt=\"{$row['filename']}\" />";
@@ -136,7 +136,7 @@ function xcgal_block_filmstrip_func($options) {
 		foreach ($pic_datas as $key => $row) {
 			$i++ ;
 
-			// $image_size = compute_img_size($row['pwidth'], $row['pheight'], $xoopsModuleConfig['thumb_width']);
+			// $image_size = compute_img_size($row['pwidth'], $row['pheight'], icms::$module->config['thumb_width']);
 
 			$thumb_list[$i]['pos'] = $key < 0 ? $key : $i - 1 - $options[5];
 			$thumb_list[$i]['image'] = XOOPS_URL . "/modules/" . $xcgalDir . "/" . $xcgalConfig['fullpath'] . str_replace("%2F", "/", rawurlencode($row['filepath'] . $xcgalConfig['normal_pfx'] . $row['filename']));

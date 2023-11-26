@@ -34,19 +34,19 @@ define('IN_XCGALLERY', true);
 require 'include/init.inc.php';
 // include "../../header.php";
 
-if ((($xoopsModuleConfig['anosee']) != 1) && !is_object($xoopsUser)) {
+if (((icms::$module->config['anosee']) != 1) && !is_object($xoopsUser)) {
 	redirect_header(ICMS_URL . "/user.php", 2, _NOPERM);
 	exit();
 }
 
-if ($xoopsModuleConfig['read_exif_data'] && function_exists('exif_read_data')) {
+if (icms::$module->config['read_exif_data'] && function_exists('exif_read_data')) {
 	include ("include/exif_php.inc.php");
-} elseif ($xoopsModuleConfig['read_exif_data']) {
+} elseif (icms::$module->config['read_exif_data']) {
 	redirect_header('index.php', 2, _MD_DIS_EXIF_ERR);
 	exit();
 }
 
-$myts = icms_core_TextSanitizer::getInstance();
+$myts = icms_core_Textsanitizer::getInstance();
 
 /**
  * ************************************************************************
@@ -56,13 +56,13 @@ $myts = icms_core_TextSanitizer::getInstance();
 
 // Prints the image-navigation menu
 function html_img_nav_menu() {
-	global $xoopsModuleConfig, $_SERVER, $_GET, $CURRENT_PIC_DATA, $PHP_SELF;
+	global $CURRENT_PIC_DATA, $PHP_SELF;
 	global $album, $cat, $pos, $pic_count;
 	global $xoopsTpl, $album_name;
 	$cat_link = is_numeric($album) ? '' : '&amp;cat=' . $cat;
 
 	$human_pos = $pos + 1;
-	$page = ceil(($pos + 1) / ($xoopsModuleConfig['thumbrows'] * $xoopsModuleConfig['thumbcols']));
+	$page = ceil(($pos + 1) / (icms::$module->config['thumbrows'] * icms::$module->config['thumbcols']));
 	$pid = $CURRENT_PIC_DATA['pid'];
 
 	if ($pos > 0) {
@@ -117,7 +117,7 @@ function html_img_nav_menu() {
 
 // Displays a picture
 function html_picture() {
-	global $xoopsModuleConfig, $CURRENT_PIC_DATA, $CURRENT_ALBUM_DATA, $USER, $_COOKIE;
+	global $CURRENT_PIC_DATA, $CURRENT_ALBUM_DATA, $USER, $_COOKIE;
 	global $album, $comment_date_fmt;
 	global $xoopsTpl, $myts;
 
@@ -128,19 +128,19 @@ function html_picture() {
 	}
 
 	// Add 1 to hit counter
-	if ($album != "topn" && $album != "lasthits" && !in_array($pid, $USER['liv']) && isset($_COOKIE[$xoopsModuleConfig['cookie_name'] . '_data'])) {
+	if ($album != "topn" && $album != "lasthits" && !in_array($pid, $USER['liv']) && isset($_COOKIE[icms::$module->config['cookie_name'] . '_data'])) {
 		add_hit($pid);
 		if (count($USER['liv']) > 4) array_shift($USER['liv']);
 		array_push($USER['liv'], $pid);
 	}
 
-	if ($xoopsModuleConfig['make_intermediate'] && max($CURRENT_PIC_DATA['pwidth'], $CURRENT_PIC_DATA['pheight']) > $xoopsModuleConfig['picture_width']) {
+	if (icms::$module->config['make_intermediate'] && max($CURRENT_PIC_DATA['pwidth'], $CURRENT_PIC_DATA['pheight']) > icms::$module->config['picture_width']) {
 		$picture_url = get_pic_url($CURRENT_PIC_DATA, 'normal');
 	} else {
 		$picture_url = get_pic_url($CURRENT_PIC_DATA, 'fullsize');
 	}
 
-	$image_size = compute_img_size($CURRENT_PIC_DATA['pwidth'], $CURRENT_PIC_DATA['pheight'], $xoopsModuleConfig['picture_width']);
+	$image_size = compute_img_size($CURRENT_PIC_DATA['pwidth'], $CURRENT_PIC_DATA['pheight'], icms::$module->config['picture_width']);
 	$xoopsTpl->assign('pid', $pid);
 	$xoopsTpl->assign('picture_url', $picture_url);
 	$xoopsTpl->assign('image_size', $image_size['geom']);
@@ -209,7 +209,7 @@ function html_rating_box() {
 // Display picture information
 function html_picinfo() {
 	global $CURRENT_PIC_DATA, $CURRENT_ALBUM_DATA;
-	global $album, $xoopsModuleConfig, $myts;
+	global $album, $myts;
 	global $xoopsTpl;
 
 	$info[_MD_DIS_FNAME] = icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC_DATA['filename']);
@@ -236,8 +236,8 @@ function html_picinfo() {
 	// $info[_MD_KEYS] = '<span class="alblink">'.preg_replace("/(\S+)/","<a href=\"thumbnails.php?album=search&amp;search=\\1\">\\1</a>" , icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC_DATA['keywords'])).'</span>';
 
 	for ($i = 1; $i <= 4; $i++ ) {
-		if ($xoopsModuleConfig['user_field' . $i . '_name']) {
-			$info[$xoopsModuleConfig['user_field' . $i . '_name']] = $CURRENT_PIC_DATA['user' . $i];
+		if (icms::$module->config['user_field' . $i . '_name']) {
+			$info[icms::$module->config['user_field' . $i . '_name']] = $CURRENT_PIC_DATA['user' . $i];
 		}
 	}
 
@@ -246,9 +246,9 @@ function html_picinfo() {
 	$info[_MD_DIS_DISPLAYED] = sprintf(_MD_DIS_VIEWS, $CURRENT_PIC_DATA['hits']);
 	$info[_MD_DIS_SENT] = sprintf(_MD_DIS_VIEWS, $CURRENT_PIC_DATA['sent_card']);
 
-	$path_to_pic = $xoopsModuleConfig['fullpath'] . $CURRENT_PIC_DATA['filepath'] . $CURRENT_PIC_DATA['filename'];
+	$path_to_pic = icms::$module->config['fullpath'] . $CURRENT_PIC_DATA['filepath'] . $CURRENT_PIC_DATA['filename'];
 
-	if ($xoopsModuleConfig['read_exif_data']) $exif = exif_parse_file($path_to_pic);
+	if (icms::$module->config['read_exif_data']) $exif = exif_parse_file($path_to_pic);
 	if (isset($exif) && is_array($exif)) {
 		// Sanitize the data - to fix the XSS vulnarability - Aditya
 		foreach ($exif as $key => $data) {
@@ -265,7 +265,7 @@ function html_picinfo() {
 
 	if (USER_IS_ADMIN) $info[_MD_DIS_SUBIP] = $CURRENT_PIC_DATA['ip'];
 	$xoopsTpl->assign('lang_picinfo_title', _MD_DIS_TITLE);
-	$xoopsTpl->assign('picinfo', isset($_COOKIE['picinfo']) ? $_COOKIE['picinfo'] : ($xoopsModuleConfig['display_pic_info'] ? 'block' : 'none'));
+	$xoopsTpl->assign('picinfo', isset($_COOKIE['picinfo']) ? $_COOKIE['picinfo'] : (icms::$module->config['display_pic_info'] ? 'block' : 'none'));
 	foreach ($info as $key => $value) {
 		$xoopsTpl->append('infos', array (
 				'key' => $key,
@@ -276,7 +276,7 @@ function html_picinfo() {
 
 // Display the full size image
 function display_fullsize_pic() {
-	global $xoopsModuleConfig, $_GET, $ALBUM_SET;
+	global $ALBUM_SET;
 	global $xoopsDB, $pic_out;
 
 	if (isset($_GET['picfile'])) {
@@ -284,7 +284,7 @@ function display_fullsize_pic() {
 		if (!GALLERY_ADMIN_MODE) redirect_header('index.php', 2, _MD_ACCESS_DENIED);
 
 		$picfile = $_GET['picfile'];
-		$picname = $xoopsModuleConfig['fullpath'] . $picfile;
+		$picname = icms::$module->config['fullpath'] . $picfile;
 		$imagesize = @getimagesize($picname);
 		$pic_out = "<img src=\"" . path2url($picname) . "\" $imagesize[3] class=\"image\" border=\"0\" alt=\"$picfile\"/><br />\n";
 	} elseif (isset($_GET['pid'])) {
@@ -299,6 +299,25 @@ function display_fullsize_pic() {
 		$geom = 'width="' . $row['pwidth'] . '" height="' . $row['pheight'] . '"';
 		$pic_out = "<img src=\"" . $pic_url . "\" $geom class=\"image\" border=\"0\" alt=\"" . htmlspecialchars($row['filename']) . "\" /><br />\n";
 	}
+}
+
+// Another function that missed getting into the repository
+
+function get_fullsize_pic() {
+	global $xoopsDB, $ALBUM_SET;
+	
+	$pid = (int)$_GET['pid'];
+	$sql =  "SELECT * ".
+		"FROM ".$xoopsDB->prefix("xcgal_pictures")." ".
+		"WHERE pid='$pid' $ALBUM_SET";
+	$result = $xoopsDB->query($sql);
+	
+	$row = $xoopsDB->fetchArray($result);
+	$pic_url = get_pic_url($row, 'fullsize');
+	$geom = 'width="' . $row['pwidth'] . '" height="' . $row['pheight'] . '"';
+	$pic_out= "<img src=\"".$pic_url."\" $geom class=\"image\" border=\"0\" alt=\"". htmlspecialchars($row['filename']). "\" /><br />\n";
+	
+	return $pic_url;
 }
 
 function get_subcat_data($parent, $level) {
@@ -332,7 +351,7 @@ $cat = isset($_GET['cat']) ? (int) $_GET['cat'] : 0;
 $album = isset($_GET['album']) ? $_GET['album'] : '';
 
 // Build the private album set
-if (!GALLERY_ADMIN_MODE && $xoopsModuleConfig['allow_private_albums']) get_private_album_set();
+if (!GALLERY_ADMIN_MODE && icms::$module->config['allow_private_albums']) get_private_album_set();
 
 // Build the album set if required
 // albums can be named - lastup, lastcom, topn, toprated
@@ -350,7 +369,7 @@ if (!is_numeric($album) && $cat) { // Meta albums, we need to restrict the album
 		while ($row = $xoopsDB->fetchArray($result)) {
 			$ALBUM_SET_ARRAY[] = $row['aid'];
 		} // while
-		get_subcat_data($cat, $xoopsModuleConfig['subcat_level']);
+		get_subcat_data($cat, icms::$module->config['subcat_level']);
 
 		// Treat the album set
 		if (count($ALBUM_SET_ARRAY)) {
@@ -410,7 +429,7 @@ if (isset($_GET['fullsize'])) {
 	require_once ICMS_ROOT_PATH . '/class/template.php';
 	$xoopsTpl = new XoopsTpl();
 	$xoopsTpl->assign('sitename', $xoopsConfig['sitename']);
-	$xoopsTpl->assign('gallery', $xoopsModule->getVar('name'));
+	$xoopsTpl->assign('gallery', icms::$module->getVar('name'));
 	$xoopsTpl->assign('pic_out', $pic_out);
 	$xoopsTpl->display('db:xcgal_fullsize.html');
 	exit();
@@ -426,7 +445,7 @@ if (isset($_GET['fullsize'])) {
 	$pic_data = get_pic_data($_GET['album'], $pic_count, $album_name, -1, -1, false);
 
 	foreach ($pic_data as $picture) {
-		if ($xoopsModuleConfig['make_intermediate'] && max($picture['pwidth'], $picture['pheight']) > $xoopsModuleConfig['picture_width']) {
+		if (icms::$module->config['make_intermediate'] && max($picture['pwidth'], $picture['pheight']) > icms::$module->config['picture_width']) {
 			$picture_url = get_pic_url($picture, 'normal');
 		} else {
 			$picture_url = get_pic_url($picture, 'fullsize');
@@ -445,13 +464,13 @@ if (isset($_GET['fullsize'])) {
 	$xoopsTpl->assign('j', $j);
 	$xoopsTpl->assign('album', isset($_GET['album']) ? $_GET['album'] : '');
 	$xoopsTpl->assign('cat', isset($_GET['cat']) ? $_GET['cat'] : '');
-	$xoopsTpl->assign('tab_width', $xoopsModuleConfig['picture_width']);
-	$xoopsTpl->assign('cell_height', $xoopsModuleConfig['picture_width'] + 100);
+	$xoopsTpl->assign('tab_width', icms::$module->config['picture_width']);
+	$xoopsTpl->assign('cell_height', icms::$module->config['picture_width'] + 100);
 	$xoopsTpl->assign('start_img', $start_img);
 	$xoopsTpl->assign('lang_stop_slideshow', _MD_DIS_STOP_SLIDE);
 
 	user_save_profile();
-	$xoopsTpl->assign('gallery', $xoopsModule->getVar('name'));
+	$xoopsTpl->assign('gallery', icms::$module->getVar('name'));
 	include_once "include/theme_func.php";
 	main_menu();
 	// $xoopsTpl->assign('xcgal_footer', pagefooter());
@@ -469,12 +488,14 @@ if (isset($_GET['fullsize'])) {
 	html_rating_box();
 	html_picinfo();
 	user_save_profile();
-	$xoopsTpl->assign('gallery', $xoopsModule->getVar('name'));
+	$xoopsTpl->assign('gallery', icms::$module->getVar('name'));
+	$pic_url = get_fullsize_pic();
+	$xoopsTpl->assign('pic_url', $pic_url);
 	include_once "include/theme_func.php";
 	main_menu();
 	// $xoopsTpl->assign('xcgal_footer', pagefooter());
 	do_footer();
-	$xoopsTpl->assign('xoops_pagetitle', icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars($CURRENT_ALBUM_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars($xoopsModule->name()));
+	$xoopsTpl->assign('xoops_pagetitle', icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars($CURRENT_ALBUM_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars(icms::$module->name()));
 	include ICMS_ROOT_PATH . '/include/comment_view.php';
 	include_once "../../footer.php";
 }

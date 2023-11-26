@@ -48,7 +48,7 @@ function html_albummenu($id) {
 }
 
 function get_subcat_data($parent, &$cat_data, &$album_set_array, $level, $ident = '') {
-	global $xoopsModuleConfig, $HIDE_USER_CAT, $xoopsDB, $myts;
+	global $HIDE_USER_CAT, $xoopsDB, $myts;
 
 	$sql = $xoopsDB->query("SELECT cid, name, description FROM " . $xoopsDB->prefix("xcgal_categories") . " WHERE parent = '$parent'  ORDER BY pos");
 
@@ -117,9 +117,9 @@ function get_subcat_data($parent, &$cat_data, &$album_set_array, $level, $ident 
 
 // List all categories
 function get_cat_list(&$breadcrumb, &$cat_data, &$statistics) {
-	global $_GET, $xoopsModuleConfig, $ALBUM_SET, $CURRENT_CAT_NAME, $BREADCRUMB_TEXT, $STATS_IN_ALB_LIST;
+	global $ALBUM_SET, $CURRENT_CAT_NAME, $BREADCRUMB_TEXT, $STATS_IN_ALB_LIST;
 	global $HIDE_USER_CAT;
-	global $xoopsDB, $xoopsModule;
+	global $xoopsDB;
 
 	$cat = isset($_GET['cat']) ? (int) $_GET['cat'] : 0;
 
@@ -129,7 +129,7 @@ function get_cat_list(&$breadcrumb, &$cat_data, &$statistics) {
 	// Build the category list
 	$cat_data = array ();
 	$album_set_array = array ();
-	get_subcat_data($cat, $cat_data, $album_set_array, $xoopsModuleConfig['subcat_level']);
+	get_subcat_data($cat, $cat_data, $album_set_array, icms::$module->config['subcat_level']);
 
 	// Treat the album set
 	if ($cat) {
@@ -165,7 +165,7 @@ function get_cat_list(&$breadcrumb, &$cat_data, &$statistics) {
 		$picture_count = $xoopsDB->getRowsNum($result);
 		$xoopsDB->freeRecordSet($result);
 
-		$comment_count = xoops_comment_count($xoopsModule->getVar('mid'));
+		$comment_count = xoops_comment_count(icms::$module->getVar('mid'));
 
 		$result = $xoopsDB->query("SELECT * FROM " . $xoopsDB->prefix("xcgal_categories") . " WHERE 1");
 		$cat_count = $xoopsDB->getRowsNum($result) - $HIDE_USER_CAT;
@@ -220,7 +220,7 @@ function get_cat_list(&$breadcrumb, &$cat_data, &$statistics) {
 }
 
 function list_users() {
-	global $xoopsModuleConfig, $PAGE, $FORBIDDEN_SET, $xoopsDB, $myts;
+	global $PAGE, $FORBIDDEN_SET, $xoopsDB, $myts;
 
 	$sql = "SELECT category, COUNT(DISTINCT a.aid) as alb_count," . " COUNT(DISTINCT pid) as pic_count," . " MAX(pid) as thumb_pid " . "FROM " . $xoopsDB->prefix("xcgal_albums") . " AS a, " . "" . $xoopsDB->prefix("xcgal_pictures") . " AS p WHERE category > " . FIRST_USER_CAT . " AND p.aid = a.aid " . "AND approved = 'YES' " . "$FORBIDDEN_SET " . "GROUP BY category " . "ORDER BY category ";
 	$result = $xoopsDB->query($sql);
@@ -234,7 +234,7 @@ function list_users() {
 	$rowset = db_fetch_rowset($result);
 	$xoopsDB->freeRecordSet($result);
 
-	$user_per_page = $xoopsModuleConfig['thumbcols'] * $xoopsModuleConfig['thumbrows'];
+	$user_per_page = icms::$module->config['thumbcols'] * icms::$module->config['thumbrows'];
 	$totalPages = ceil($user_count / $user_per_page);
 	if ($PAGE > $totalPages) $PAGE = 1;
 	$lower_limit = ($PAGE - 1) * $user_per_page;
@@ -256,7 +256,7 @@ function list_users() {
 				$picture = $xoopsDB->fetchArray($result);
 				$xoopsDB->freeRecordSet($result);
 
-				$image_size = compute_img_size($picture['pwidth'], $picture['pheight'], $xoopsModuleConfig['thumb_width']);
+				$image_size = compute_img_size($picture['pwidth'], $picture['pheight'], icms::$module->config['thumb_width']);
 				$user_thumb = "<img src=\"" . get_pic_url($picture, 'thumb') . "\" {$image_size['geom']} alt=\"\" border=\"0\" class=\"image\" />";
 			}
 		}
@@ -282,13 +282,13 @@ function list_users() {
 
 // List all albums
 function list_albums() {
-	global $xoopsModuleConfig, $USER, $PAGE, $lastup_date_fmt, $_GET, $USER_DATA;
+	global $USER, $PAGE, $lastup_date_fmt, $USER_DATA;
 	global $xoopsDB;
 	$myts = icms_core_Textsanitizer::getInstance();
-	$cat = isset($_GET['cat']) ? $_GET['cat'] : 0;
+	$cat = isset($_GET['cat']) ? (int) $_GET['cat'] : 0;
 
-	$alb_per_page = $xoopsModuleConfig['albums_per_page'];
-	$maxTab = $xoopsModuleConfig['max_tabs'];
+	$alb_per_page = icms::$module->config['albums_per_page'];
+	$maxTab = icms::$module->config['max_tabs'];
 
 	$result = $xoopsDB->query("SELECT count(*) FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE category = '$cat'");
 	$nbEnr = $xoopsDB->fetchArray($result);
@@ -352,14 +352,14 @@ function list_albums() {
 					$picture = $xoopsDB->fetchArray($result);
 					$xoopsDB->freeRecordSet($result);
 				}
-				$image_size = compute_img_size($picture['pwidth'], $picture['pheight'], $xoopsModuleConfig['alb_list_thumb_size']);
+				$image_size = compute_img_size($picture['pwidth'], $picture['pheight'], icms::$module->config['alb_list_thumb_size']);
 				$alb_list[$alb_idx]['thumb_pic'] = "<img src=\"" . get_pic_url($picture, 'thumb') . "\" {$image_size['geom']} alt=\"\" border=\"0\" class=\"image\" />";
 			} else {
-				$image_size = compute_img_size(100, 75, $xoopsModuleConfig['alb_list_thumb_size']);
+				$image_size = compute_img_size(100, 75, icms::$module->config['alb_list_thumb_size']);
 				$alb_list[$alb_idx]['thumb_pic'] = "<img src=\"images/private.jpg\" {$image_size['geom']} alt=\"\" border=\"0\" class=\"image\" />";
 			}
 		} else {
-			$image_size = compute_img_size(100, 75, $xoopsModuleConfig['alb_list_thumb_size']);
+			$image_size = compute_img_size(100, 75, icms::$module->config['alb_list_thumb_size']);
 			$alb_list[$alb_idx]['thumb_pic'] = "<img src=\"images/nopic.jpg\" {$image_size['geom']} alt=\"\" border=\"0\" class=\"image\" />";
 		}
 
@@ -400,7 +400,7 @@ if (isset($_GET['cat'])) {
 	$cat = '';
 
 // Gather data for categories
-if (!GALLERY_ADMIN_MODE && $xoopsModuleConfig['allow_private_albums']) get_private_album_set();
+if (!GALLERY_ADMIN_MODE && icms::$module->config['allow_private_albums']) get_private_album_set();
 $breadcrumb = '';
 $cat_data = array ();
 $statistics = '';
@@ -413,7 +413,7 @@ include ICMS_ROOT_PATH . "/header.php";
 $xoopsTpl->assign('icms_module_header', $xcgal_module_header);
 $xoopsTpl->assign('display_alb_list', '');
 
-$elements = preg_split("|/|", $xoopsModuleConfig['main_page_layout'], -1, PREG_SPLIT_NO_EMPTY);
+$elements = preg_split("|/|", icms::$module->config['main_page_layout'], -1, PREG_SPLIT_NO_EMPTY);
 foreach ($elements as $element) {
 	if (preg_match("/(\w+),*(\d+)*/", $element, $matches)) switch ($matches[1]) {
 		case 'catlist':
@@ -426,42 +426,42 @@ foreach ($elements as $element) {
 			break;
 
 		case 'random':
-			display_thumbnails('random', $cat, 1, $xoopsModuleConfig['thumbcols'], max(1, $matches[2]), false);
+			display_thumbnails('random', $cat, 1, icms::$module->config['thumbcols'], max(1, $matches[2]), false);
 			break;
 		case 'lasthits':
-			display_thumbnails('lasthits', $cat, 1, $xoopsModuleConfig['thumbcols'], max(1, $matches[2]), false);
+			display_thumbnails('lasthits', $cat, 1, icms::$module->config['thumbcols'], max(1, $matches[2]), false);
 			break;
 
 		case 'lastup':
-			display_thumbnails('lastup', $cat, 1, $xoopsModuleConfig['thumbcols'], max(1, $matches[2]), false);
+			display_thumbnails('lastup', $cat, 1, icms::$module->config['thumbcols'], max(1, $matches[2]), false);
 			break;
 
 		case 'topn':
-			display_thumbnails('topn', $cat, 1, $xoopsModuleConfig['thumbcols'], max(1, $matches[2]), false);
+			display_thumbnails('topn', $cat, 1, icms::$module->config['thumbcols'], max(1, $matches[2]), false);
 			break;
 
 		case 'toprated':
-			display_thumbnails('toprated', $cat, 1, $xoopsModuleConfig['thumbcols'], max(1, $matches[2]), false);
+			display_thumbnails('toprated', $cat, 1, icms::$module->config['thumbcols'], max(1, $matches[2]), false);
 			break;
 
 		case 'lastcom':
-			display_thumbnails('lastcom', $cat, 1, $xoopsModuleConfig['thumbcols'], max(1, $matches[2]), false);
+			display_thumbnails('lastcom', $cat, 1, icms::$module->config['thumbcols'], max(1, $matches[2]), false);
 			break;
 		case 'mostsend':
-			display_thumbnails('mostsend', $cat, 1, $xoopsModuleConfig['thumbcols'], max(1, $matches[2]), false);
+			display_thumbnails('mostsend', $cat, 1, icms::$module->config['thumbcols'], max(1, $matches[2]), false);
 			break;
 	}
 }
 
 // $xoopsTpl->assign('xcgal_main', $temp);
-$xoopsTpl->assign('gallery', $xoopsModule->getVar('name'));
+$xoopsTpl->assign('gallery', icms::$module->getVar('name'));
 main_menu();
 // $xoopsTpl->assign('xcgal_footer', pagefooter());
 do_footer();
 if ($cat != 0) {
-	$xoopsTpl->assign('xoops_pagetitle', icms_core_DataFilter::htmlSpecialchars($CURRENT_CAT_NAME) . ' : ' . icms_core_DataFilter::htmlSpecialchars($xoopsModule->getVar('name')));
+	$xoopsTpl->assign('xoops_pagetitle', icms_core_DataFilter::htmlSpecialchars($CURRENT_CAT_NAME) . ' : ' . icms_core_DataFilter::htmlSpecialchars(icms::$module->getVar('name')));
 } else {
-	$xoopsTpl->assign('xoops_pagetitle', icms_core_DataFilter::htmlSpecialchars($xoopsModule->getVar('name')));
+	$xoopsTpl->assign('xoops_pagetitle', icms_core_DataFilter::htmlSpecialchars(icms::$module->getVar('name')));
 }
 include_once "../../footer.php";
 // Speed-up the random image query by 'keying' the image table

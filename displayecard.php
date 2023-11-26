@@ -36,7 +36,7 @@ $myts = icms_core_Textsanitizer::getInstance();
 
 if (!isset($_GET['data'])) redirect_header('index.php', 2, _MD_PARAM_MISSING);
 $data = $_GET['data'];
-$delete_time = time() - ($xoopsModuleConfig['ecards_saved_db'] * 86400);
+$delete_time = time() - (icms::$module->config['ecards_saved_db'] * 86400);
 $xoopsDB->queryf("DELETE from " . $xoopsDB->prefix("xcgal_ecard") . " WHERE s_time < " . $delete_time);
 
 $result = $xoopsDB->query("SELECT * FROM " . $xoopsDB->prefix("xcgal_ecard") . " as e, " . $xoopsDB->prefix("xcgal_pictures") . " as p WHERE e.e_id ='" . $data . "' AND e.pid=p.pid");
@@ -45,7 +45,7 @@ if (!$xoopsDB->getRowsNum($result))
 	redirect_header('index.php', 2, "Sorry, can't find e-card!");
 else
 	$row = $xoopsDB->fetchArray($result);
-if ($xoopsModuleConfig['make_intermediate'] && max($row['pwidth'], $row['pheight']) > $xoopsModuleConfig['picture_width']) {
+if (icms::$module->config['make_intermediate'] && max($row['pwidth'], $row['pheight']) > icms::$module->config['picture_width']) {
 	$n_picname = get_pic_url($row, 'normal');
 } else {
 	$n_picname = get_pic_url($row, 'fullsize');
@@ -66,7 +66,7 @@ $xoopsTpl->assign('greetings', $row['greetings']);
 $xoopsTpl->assign('message', $msg_content);
 $xoopsTpl->assign('sender_email', icms_core_DataFilter::htmlSpecialchars($row['sender_email']));
 $xoopsTpl->assign('sender_name', icms_core_DataFilter::htmlSpecialchars($row['sender_name']));
-$xoopsTpl->assign('view_more_tgt', $xoopsModuleConfig['ecards_more_pic_target']);
+$xoopsTpl->assign('view_more_tgt', icms::$module->config['ecards_more_pic_target']);
 $xoopsTpl->assign('view_more_lnk', _MD_CARD_VIEW_MORE_PICS);
 $xoopsTpl->assign('icms_module_header', $xcgal_module_header);
 $xoopsTpl->display('db:xcgal_discard.html');

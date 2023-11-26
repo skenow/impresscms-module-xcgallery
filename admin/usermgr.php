@@ -32,7 +32,7 @@ include "header.php";
 
 // if (!GALLERY_ADMIN_MODE) redirect_header('index.php',2,$lang_errors['access_denied']);
 function list_users() {
-	global $PHP_SELF, $_GET, $xoopsDB, $xoopsConfig;
+	global $PHP_SELF, $xoopsDB, $xoopsConfig;
 
 	$sort = (!isset($_GET['sort']) || !isset($sort_codes[$_GET['sort']])) ? 'name_a' : $_GET['sort'];
 	$tab_tmpl = array('left_text' => '<td width="100%%" align="left" valign="middle" class="tableh1_compact" style="white-space: nowrap"><b>' . _AM_USERMGR_UONPAGE . '</b></td>' . "\n",
@@ -123,7 +123,7 @@ EOT;
 }
 
 function list_deleted_users() {
-	global $PHP_SELF, $_GET, $xoopsDB;
+	global $PHP_SELF, $xoopsDB;
 	global $CAT_LIST, $member_handler;
 
 	get_subcat_data(0);
@@ -157,7 +157,7 @@ function list_deleted_users() {
 }
 
 function movealb() {
-	global $_POST, $xoopsDB;
+	global $xoopsDB;
 	if (!isset($_POST['album']) || !is_array($_POST['album'])) return;
 	$album_array = &$_POST['album'];
 	foreach ($album_array as $key => $value) {

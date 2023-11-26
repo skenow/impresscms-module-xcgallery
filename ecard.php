@@ -37,8 +37,8 @@ $xoopsMailer = &getMailer();
 if (!USER_CAN_SEND_ECARDS) redirect_header('index.php', 2, _MD_ACCESS_DENIED);
 
 function send_ecard($recipient_email, $recipient_name, $greetings, $msg_content, $sender_name, $sender_email, $image, $n_picname, $redirect_link) {
-	global $_SERVER, $xoopsUser, $xoopsModuleConfig, $USER, $xoopsDB;
-	global $xoopsModule, $xoopsConfig, $myts;
+	global $xoopsUser, $USER, $xoopsDB;
+	global $xoopsConfig, $myts;
 
 	if (is_object($xoopsUser))
 		$s_uid = "|| sender_uid = " . $xoopsUser->uid();
@@ -46,25 +46,25 @@ function send_ecard($recipient_email, $recipient_name, $greetings, $msg_content,
 		$s_uid = "";
 	$s_time = time() - 3600;
 	$result = $xoopsDB->query("SELECT * from " . $xoopsDB->prefix("xcgal_ecard") . " WHERE (sess_id ='" . session_id() . "' || sender_email = '" . $myts->addSlashes($sender_email) . "' || sender_ip ='" . $_SERVER['REMOTE_ADDR'] . "' " . $s_uid . ") AND s_time > " . $s_time . "");
-	if ($xoopsDB->getRowsNum($result) >= $xoopsModuleConfig['ecards_per_hour']) {
-		redirect_header('index.php', 2, sprintf(_MD_CARD_PERHOUR, $xoopsModuleConfig['ecards_per_hour']));
+	if ($xoopsDB->getRowsNum($result) >= icms::$module->config['ecards_per_hour']) {
+		redirect_header('index.php', 2, sprintf(_MD_CARD_PERHOUR, icms::$module->config['ecards_per_hour']));
 		return;
 	}
-	if (is_array($USER['ecard']) && count($USER['ecard']) >= $xoopsModuleConfig['ecards_per_hour']) {
+	if (is_array($USER['ecard']) && count($USER['ecard']) >= icms::$module->config['ecards_per_hour']) {
 		$s_count = 0;
 		foreach ($USER['ecard'] as $sent) {
 			if ($sent > $s_time) {
 				$s_count++ ;
 			}
 		}
-		if ($s_count >= $xoopsModuleConfig['ecards_per_hour']) {
-			redirect_header('index.php', 2, sprintf(_MD_CARD_PERHOUR, $xoopsModuleConfig['ecards_per_hour']));
+		if ($s_count >= icms::$module->config['ecards_per_hour']) {
+			redirect_header('index.php', 2, sprintf(_MD_CARD_PERHOUR, icms::$module->config['ecards_per_hour']));
 			return;
 		}
 	}
-	if (count($USER['ecard']) >= ($xoopsModuleConfig['ecards_per_hour'] + 2)) array_shift($USER['ecard']);
+	if (count($USER['ecard']) >= (icms::$module->config['ecards_per_hour'] + 2)) array_shift($USER['ecard']);
 
-	$delete_time = time() - ($xoopsModuleConfig['ecards_saved_db'] * 86400);
+	$delete_time = time() - (icms::$module->config['ecards_saved_db'] * 86400);
 	$xoopsDB->query("DELETE from " . $xoopsDB->prefix("xcgal_ecard") . " WHERE s_time < " . $delete_time . "");
 
 	if (is_object($xoopsUser))
@@ -87,12 +87,12 @@ function send_ecard($recipient_email, $recipient_name, $greetings, $msg_content,
 	$xoopsMailer->setFromEmail($sender_email);
 	$xoopsMailer->setFromName($sender_name);
 
-	$ecardText = $xoopsModuleConfig['ecards_text'];
+	$ecardText = icms::$module->config['ecards_text'];
 	$ecardText = str_replace("{R_NAME}", $recipient_name, $ecardText);
 	$ecardText = str_replace("{R_MAIL}", $recipient_email, $ecardText);
 	$ecardText = str_replace("{S_NAME}", $sender_name, $ecardText);
 	$ecardText = str_replace("{S_MAIL}", $sender_email, $ecardText);
-	$ecardText = str_replace("{SAVE_DAYS}", $xoopsModuleConfig['ecards_saved_db'], $ecardText);
+	$ecardText = str_replace("{SAVE_DAYS}", icms::$module->config['ecards_saved_db'], $ecardText);
 	$ecardText = str_replace("{X_SITEURL}", ICMS_URL, $ecardText);
 	$ecardText = str_replace("{X_SITENAME}", $xoopsConfig['sitename'], $ecardText);
 	$ecardText = str_replace("{CARD_LINK}", ICMS_URL . "/modules/" . $xcgalDir . "/displayecard.php?data=" . $e_id, $ecardText);
@@ -101,7 +101,7 @@ function send_ecard($recipient_email, $recipient_name, $greetings, $msg_content,
 	$xoopsMailer->setSubject(sprintf(_MD_CARD_ECARD_TITLE, $sender_name));
 	$xoopsMailer->setBody($ecardText);
 
-	if ($xoopsModuleConfig['ecards_type'] != 1) {
+	if (icms::$module->config['ecards_type'] != 1) {
 		$htmlCard = build_html_card($sender_name, $sender_email, $n_picname, $msg_content, $greetings, $e_id);
 
 		$xoopsMailer->multimailer->IsHTML(true);
@@ -125,7 +125,7 @@ function send_ecard($recipient_email, $recipient_name, $greetings, $msg_content,
 }
 
 function build_html_card($sender_name, $sender_email, $n_picname, $message, $greetings, $e_id) {
-	global $myts, $xoopsConfig, $xoopsModuleConfig;
+	global $myts, $xoopsConfig;
 	if (!stristr($n_picname, 'http:')) $n_picname = ICMS_URL . "/modules/" . $xcgalDir . "/" . $n_picname;
 
 	$msg_content = $myts->makeTareaData4Show($message, 0);
@@ -142,7 +142,7 @@ function build_html_card($sender_name, $sender_email, $n_picname, $message, $gre
 	$ecardTpl->assign('message', $msg_content);
 	$ecardTpl->assign('sender_email', icms_core_DataFilter::htmlSpecialchars($sender_email));
 	$ecardTpl->assign('sender_name', icms_core_DataFilter::htmlSpecialchars($sender_name));
-	$ecardTpl->assign('view_more_tgt', $xoopsModuleConfig['ecards_more_pic_target']);
+	$ecardTpl->assign('view_more_tgt', icms::$module->config['ecards_more_pic_target']);
 	$ecardTpl->assign('view_more_lnk', _MD_CARD_VIEW_MORE_PICS);
 	$ecardTpl->assign('icms_module_header', $xcgal_module_header);
 	$ecardTpl->assign('xoops_url', ICMS_URL);
@@ -165,8 +165,6 @@ function get_message_id() {
 
 // end get_message_id
 function get_post_var($name, $default = '') {
-	global $_POST;
-
 	return isset($_POST[$name]) ? $_POST[$name] : $default;
 }
 
@@ -184,7 +182,7 @@ $sender_email_warning = '';
 $recipient_email_warning = '';
 
 // Build the private album set
-if (!GALLERY_ADMIN_MODE && $xoopsModuleConfig['allow_private_albums']) get_private_album_set();
+if (!GALLERY_ADMIN_MODE && icms::$module->config['allow_private_albums']) get_private_album_set();
 
 // Get picture thumbnail url
 $result = $xoopsDB->query("SELECT * from " . $xoopsDB->prefix("xcgal_pictures") . " WHERE pid='$pid' $ALBUM_SET");
@@ -206,7 +204,7 @@ if (count($_POST) > 0 && $valid_sender_email && $valid_recipient_email) {
 	$gallery_dir = strtr(dirname($PHP_SELF), '\\', '/');
 	$gallery_url_prefix = 'http://' . $_SERVER['HTTP_HOST'] . $gallery_dir . (substr($gallery_dir, -1) == '/' ? '' : '/');
 
-	if ($xoopsModuleConfig['make_intermediate'] && max($row['pwidth'], $row['pheight']) > $xoopsModuleConfig['picture_width']) {
+	if (icms::$module->config['make_intermediate'] && max($row['pwidth'], $row['pheight']) > icms::$module->config['picture_width']) {
 		$n_picname = get_pic_url($row, 'normal');
 	} else {
 		$n_picname = get_pic_url($row, 'fullsize');
@@ -256,7 +254,7 @@ $xoopsTpl->assign('xoops_smilies', ob_get_contents());
 ob_end_clean();
 
 user_save_profile();
-$xoopsTpl->assign('gallery', $xoopsModule->getVar('name'));
+$xoopsTpl->assign('gallery', icms::$module->getVar('name'));
 include_once "include/theme_func.php";
 main_menu();
 do_footer();

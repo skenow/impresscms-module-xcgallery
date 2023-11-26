@@ -112,7 +112,7 @@ $xoopsTpl->assign('delete', _MD_ALBMGR_DEL);
 $xoopsTpl->assign('new', _MD_ALBMGR_NEW);
 $xoopsTpl->assign('apply_modifs', _MD_ALBMGR_APPLY);
 user_save_profile();
-$xoopsTpl->assign('gallery', $xoopsModule->getVar('name'));
+$xoopsTpl->assign('gallery', icms::$module->getVar('name'));
 include_once "include/theme_func.php";
 main_menu();
 // $xoopsTpl->assign('xcgal_footer', pagefooter());

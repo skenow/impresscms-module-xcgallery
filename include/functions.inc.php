@@ -8,10 +8,10 @@
 
 // Decode the user profile contained in a cookie
 function user_get_profile() {
-	global $xoopsModuleConfig, $USER, $_COOKIE, $xoopsUser;
+	global $USER, $_COOKIE, $xoopsUser;
 
-	if (isset($_COOKIE[$xoopsModuleConfig['cookie_name'] . '_data'])) {
-		$USER = @unserialize(@base64_decode($_COOKIE[$xoopsModuleConfig['cookie_name'] . '_data']));
+	if (isset($_COOKIE[icms::$module->config['cookie_name'] . '_data'])) {
+		$USER = @unserialize(@base64_decode($_COOKIE[icms::$module->config['cookie_name'] . '_data']));
 	}
 
 	if (!isset($USER['ID']) || strlen($USER['ID']) != 32) {
@@ -29,12 +29,12 @@ function user_get_profile() {
 
 // Save the user profile in a cookie
 function user_save_profile() {
-	global $xoopsModuleConfig, $USER, $_SERVER;
+	global $USER, $_SERVER;
 	static $profile_saved = 0;
 
 	if (!$profile_saved) {
 		$data = base64_encode(serialize($USER));
-		setcookie($xoopsModuleConfig['cookie_name'] . '_data', $data, time() + 86400 * 30, $xoopsModuleConfig['cookie_path']);
+		setcookie(icms::$module->config['cookie_name'] . '_data', $data, time() + 86400 * 30, icms::$module->config['cookie_path']);
 		$profile_saved = 1;
 	}
 }
@@ -75,14 +75,14 @@ function path2url($path) {
 // 'active_tab' => ,
 // 'inactive_tab' => );
 function create_tabs($items, $curr_page, $total_pages, $template) {
-	global $xoopsModuleConfig;
+	
 
 	if (function_exists('theme_create_tabs')) {
 		theme_create_tabs($items, $curr_page, $total_pages, $template);
 		return;
 	}
 
-	$maxTab = $xoopsModuleConfig['max_tabs'];
+	$maxTab = icms::$module->config['max_tabs'];
 
 	$tabs = sprintf($template['left_text'], $items, $total_pages, 1);
 
@@ -148,9 +148,9 @@ function get_private_album_set() {
 
 // Retrieve the data for a picture or a set of picture
 function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1, $set_caption = true) {
-	global $USER, $xoopsModuleConfig, $ALBUM_SET, $CURRENT_CAT_NAME, $HTML_SUBST, $THEME_DIR;
+	global $USER, $ALBUM_SET, $CURRENT_CAT_NAME, $HTML_SUBST, $THEME_DIR;
 	global $GLOBALS;
-	global $xoopsDB, $xoopsModule, $xoopsConfig;
+	global $xoopsDB, $xoopsConfig;
 	$myts = icms_core_Textsanitizer::getInstance();
 	$sort_array = array (
 			'na' => 'filename ASC',
@@ -158,8 +158,8 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 			'da' => 'pid ASC',
 			'dd' => 'pid DESC'
 	);
-	$sort_code = isset($USER['sort']) ? $USER['sort'] : $xoopsModuleConfig['default_sort_order'];
-	$sort_order = isset($sort_array[$sort_code]) ? $sort_array[$sort_code] : $sort_array[$xoopsModuleConfig['default_sort_order']];
+	$sort_code = isset($USER['sort']) ? $USER['sort'] : icms::$module->config['default_sort_order'];
+	$sort_order = isset($sort_array[$sort_code]) ? $sort_array[$sort_code] : $sort_array[icms::$module->config['default_sort_order']];
 	$limit = ($limit1 != -1) ? ' LIMIT ' . $limit1 : '';
 	$limit .= ($limit2 != -1) ? ' ,' . $limit2 : '';
 
@@ -189,11 +189,11 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 		// Set picture caption
 		if ($set_caption) foreach ($rowset as $key => $row) {
 			$caption = $rowset[$key]['title'] ? "<span class=\"thumb_title\">" . $rowset[$key]['title'] . "</span>" : '';
-			if ($xoopsModuleConfig['caption_in_thumbview']) {
+			if (icms::$module->config['caption_in_thumbview']) {
 				$caption .= $rowset[$key]['caption'] ? "<span class=\"thumb_caption\">" . $myts->makeTareaData4Show($rowset[$key]['caption'], 0) . "</span>" : '';
 			}
-			if ($xoopsModuleConfig['display_comment_count']) {
-				$comments_nr = xoops_comment_count($xoopsModule->mid(), $row['pid']);
+			if (icms::$module->config['display_comment_count']) {
+				$comments_nr = xoops_comment_count(icms::$module->mid(), $row['pid']);
 				if ($comments_nr > 0) $caption .= "<span class=\"thumb_num_comments\">" . sprintf(_MD_FUNC_COM, $comments_nr) . "</span>";
 			}
 			$rowset[$key]['caption_text'] = $caption;
@@ -210,7 +210,7 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 			} else {
 				$album_name = _MD_LASTCOM;
 			}
-			$result = $xoopsDB->query("SELECT count(*) from " . $xoopsDB->prefix("xoopscomments") . ", " . $xoopsDB->prefix("xcgal_pictures") . " WHERE com_modid = " . $xoopsModule->mid() . " AND approved='YES' AND com_itemid = pid $ALBUM_SET");
+			$result = $xoopsDB->query("SELECT count(*) from " . $xoopsDB->prefix("xoopscomments") . ", " . $xoopsDB->prefix("xcgal_pictures") . " WHERE com_modid = " . icms::$module->mid() . " AND approved='YES' AND com_itemid = pid $ALBUM_SET");
 			$nbEnr = $xoopsDB->fetchArray($result);
 			$count = $nbEnr['count(*)'];
 			$xoopsDB->freeRecordSet($result);
@@ -219,11 +219,11 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 				$select_columns = $select_columns . ', com_id, com_uid,com_itemid,com_rootid, com_exparams, com_created, com_title';
 			}
 			include_once ICMS_ROOT_PATH . "/include/comment_constants.php";
-			$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xoopscomments") . ", " . $xoopsDB->prefix("xcgal_pictures") . " WHERE com_modid = " . $xoopsModule->mid() . " AND approved = 'YES' AND pid = com_itemid AND com_status=" . XOOPS_COMMENT_ACTIVE . " $ALBUM_SET ORDER by com_id DESC $limit");
+			$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xoopscomments") . ", " . $xoopsDB->prefix("xcgal_pictures") . " WHERE com_modid = " . icms::$module->mid() . " AND approved = 'YES' AND pid = com_itemid AND com_status=" . XOOPS_COMMENT_ACTIVE . " $ALBUM_SET ORDER by com_id DESC $limit");
 			$rowset = db_fetch_rowset($result);
 			$xoopsDB->freeRecordSet($result);
 			$member_handler = icms::handler('icms_member');
-			$comment_config = $xoopsModule->getInfo('comments');
+			$comment_config = icms::$module->getInfo('comments');
 			if ($set_caption) foreach ($rowset as $key => $row) {
 				if ($row['com_uid'] > 0) {
 					$poster = &$member_handler->getUser($row['com_uid']);
@@ -234,7 +234,7 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 					}
 				} else
 					$posters = $GLOBALS['xoopsConfig']['anonymous'];
-				$comtitle = '<a href="' . ICMS_URL . '/modules/' . $xoopsModule->getVar('dirname') . '/' . $comment_config['pageName'] . '?' . $comment_config['itemName'] . '=' . $row['com_itemid'] . '&amp;com_id=' . $row['com_id'] . '&amp;com_rootid=' . $row['com_rootid'] . '&amp;com_mode=flat&amp;' . $row['com_exparams'] . '#comment' . $row['com_id'] . '">' . $row['com_title'] . '</a>';
+				$comtitle = '<a href="' . ICMS_URL . '/modules/' . icms::$module->getVar('dirname') . '/' . $comment_config['pageName'] . '?' . $comment_config['itemName'] . '=' . $row['com_itemid'] . '&amp;com_id=' . $row['com_id'] . '&amp;com_rootid=' . $row['com_rootid'] . '&amp;com_mode=flat&amp;' . $row['com_exparams'] . '#comment' . $row['com_id'] . '">' . $row['com_title'] . '</a>';
 				$caption = "<span class=\"thumb_title\">" . $posters . '</span>' . "<span class=\"thumb_caption\">" . formatTimestamp($row['com_created'], 'm') . '</span>' . "<span class=\"thumb_caption\">" . $comtitle . '</span>';
 				$rowset[$key]['caption_text'] = $caption;
 			}
@@ -303,14 +303,14 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 			} else {
 				$album_name = _MD_TOPRATED;
 			}
-			$result = $xoopsDB->query("SELECT count(*) from " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' AND votes >= '{$xoopsModuleConfig['min_votes_for_rating']}' $ALBUM_SET");
+			$result = $xoopsDB->query("SELECT count(*) from " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' AND votes >= '{icms::$module->config['min_votes_for_rating']}' $ALBUM_SET");
 			$nbEnr = $xoopsDB->fetchArray($result);
 			$count = $nbEnr['count(*)'];
 			$xoopsDB->freeRecordSet($result);
 
 			if ($select_columns != '*') $select_columns .= ', pic_rating, votes';
 
-			$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' AND votes >= '{$xoopsModuleConfig['min_votes_for_rating']}' $ALBUM_SET ORDER BY ROUND((pic_rating+1)/2000) DESC, votes DESC $limit");
+			$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' AND votes >= '{icms::$module->config['min_votes_for_rating']}' $ALBUM_SET ORDER BY ROUND((pic_rating+1)/2000) DESC, votes DESC $limit");
 			$rowset = db_fetch_rowset($result);
 			$xoopsDB->freeRecordSet($result);
 
@@ -491,7 +491,6 @@ function add_hit($pid) {
 
 // Build the breadcrumb
 function breadcrumb($cat, &$breadcrumb, &$BREADCRUMB_TEXT) {
-	global $xoopsModule;
 	global $CURRENT_CAT_NAME, $xoopsDB;
 
 	$myts = icms_core_Textsanitizer::getInstance();
@@ -540,8 +539,8 @@ function breadcrumb($cat, &$breadcrumb, &$BREADCRUMB_TEXT) {
 		} // while
 
 		$breadcrumb_array = array_reverse($breadcrumb_array);
-		$breadcrumb = '<a href=index.php>' . $xoopsModule->getVar('name') . '</a>';
-		$BREADCRUMB_TEXT = $xoopsModule->getVar('name');
+		$breadcrumb = '<a href=index.php>' . icms::$module->getVar('name') . '</a>';
+		$BREADCRUMB_TEXT = icms::$module->getVar('name');
 		foreach ($breadcrumb_array as $category) {
 			$link = "<a href=index.php?cat={$category[0]}>{$category[1]}</a>";
 			$breadcrumb .= ' > ' . $link;
@@ -572,9 +571,12 @@ function compute_img_size($width, $height, $max) {
 
 // Prints thumbnails of pictures in an album
 function display_thumbnails($album, $cat, $page, $thumbcols, $thumbrows, $display_tabs) {
-	global $xoopsModuleConfig, $xoopsTpl;
+	global $xoopsTpl, $CURRENT_CAT_NAME;
 	$myts = icms_core_Textsanitizer::getInstance();
 
+	$albums = get_album_list();
+	$categories = get_category_list();
+	
 	$thumb_per_page = $thumbcols * $thumbrows;
 	$lower_limit = ($page - 1) * $thumb_per_page;
 
@@ -586,15 +588,20 @@ function display_thumbnails($album, $cat, $page, $thumbcols, $thumbrows, $displa
 		foreach ($pic_data as $key => $row) {
 			$i++ ;
 
-			$image_size = compute_img_size($row['pwidth'], $row['pheight'], $xoopsModuleConfig['thumb_width']);
+			$image_size = compute_img_size($row['pwidth'], $row['pheight'], icms::$module->config['thumb_width']);
 
-			$pic_title = _MD_FUNC_FNAME . icms_core_DataFilter::htmlSpecialchars($row['filename']) . "\n" . _MD_FUNC_FSIZE . ($row['filesize'] >> 10) . _MD_KB . "\n" . _MD_FUNC_DIM . $row['pwidth'] . "x" . $row['pheight'] . "\n" . _MD_FUNC_DATE . formatTimestamp($row['ctime'], 'm');
-
+			$pic_title = _MD_THM_CAT . ': ' . $categories[$albums[$row['aid']]['category']]['name'] . "\n"
+			. _MD_ALBUM . ': ' . $albums[$row['aid']]['title'] . "\n"
+			. _MD_UPL_PICTURE . ': ' . $row['title'];
+				
 			$thumb_list[$i]['pos'] = $key < 0 ? $key : $i - 1 + $lower_limit;
-			$thumb_list[$i]['image'] = "<img src=\"" . get_pic_url($row, 'thumb') . "\" class=\"image\" {$image_size['geom']} border=\"0\" alt=\"{$row['filename']}\" title=\"$pic_title\" />"; // deleted </a> at end mcleines
+			$thumb_list[$i]['image'] = "<img src=\"" . get_pic_url($row, 'thumb') . "\" class=\"image\" {$image_size['geom']} border=\"0\" alt=\"{$row['title']}\" title=\"$pic_title\" />";     # deleted </a> at end mcleines
 			$thumb_list[$i]['caption'] = ($row['caption_text']);
 			$thumb_list[$i]['admin_menu'] = '';
 			$thumb_list[$i]['pid'] = $row['pid'];
+			$thumb_list[$i]['pic_url'] = get_pic_url($row, 'fullsize');
+			$thumb_list[$i]['pic_title'] = $row['title'];
+			$thumb_list[$i]['album_title'] = $albums[$row['aid']]['title'];
 		}
 		$xoopsTpl->assign('no_img', 0);
 		theme_display_thumbnails($thumb_list, $thumb_count, $album_name, $album, $cat, $page, $total_pages, is_numeric($album), $display_tabs);
@@ -607,27 +614,25 @@ function display_thumbnails($album, $cat, $page, $thumbcols, $thumbrows, $displa
 
 // Return the url for a picture, allows to have pictures spreaded over multiple servers
 function get_pic_url(&$pic_row, $mode) {
-	global $xoopsModuleConfig, $xoopsModule;
-
 	static $pic_prefix = array ();
 	static $url_prefix = array ();
 
 	if (!count($pic_prefix)) {
 		$pic_prefix = array (
-				'thumb' => $xoopsModuleConfig['thumb_pfx'],
-				'normal' => $xoopsModuleConfig['normal_pfx'],
+				'thumb' => icms::$module->config['thumb_pfx'],
+				'normal' => icms::$module->config['normal_pfx'],
 				'fullsize' => ''
 		);
 
 		$url_prefix = array (
-				0 => $xoopsModuleConfig['fullpath']
+				0 => icms::$module->config['fullpath']
 		);
 	}
 
 	// watermarking for JPG
 	$ext = strrchr($pic_row['filename'], ".");
-	if ((strtolower($ext) == ".jpg" or strtolower($ext) == ".jpeg") and $xoopsModuleConfig['watermarking']) {
-		return ICMS_URL . '/modules/' . $xoopsModule->getVar('dirname') . '/watermark.php?picturename=' . $url_prefix[$pic_row['url_prefix']] . path2url($pic_row['filepath'] . $pic_prefix[$mode] . $pic_row['filename']);
+	if ((strtolower($ext) == ".jpg" or strtolower($ext) == ".jpeg") and icms::$module->config['watermarking']) {
+		return ICMS_URL . '/modules/' . icms::$module->getVar('dirname') . '/watermark.php?picturename=' . $url_prefix[$pic_row['url_prefix']] . path2url($pic_row['filepath'] . $pic_prefix[$mode] . $pic_row['filename']);
 	} else {
 		return $url_prefix[$pic_row['url_prefix']] . path2url($pic_row['filepath'] . $pic_prefix[$mode] . $pic_row['filename']);
 	}
@@ -765,20 +770,59 @@ function get_media_type(&$file) {
 }
 
 function get_real_path() {
-	global $xoopsModuleConfig;
+	
 
-	if (empty($xoopsModuleConfig['realpath']))
-		return $xoopsModuleConfig['fullpath'];
+	if (empty(icms::$module->config['realpath']))
+		return icms::$module->config['fullpath'];
 	else
-		return $xoopsModuleConfig['realpath'];
+		return icms::$module->config['realpath'];
 }
 
 function get_full_real_path() {
-	global $xoopsModuleConfig;
+	
 	$xcgalDir = basename(dirname(dirname(__FILE__)));
 
-	if (empty($xoopsModuleConfig['realpath']))
-		return ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/" . $xoopsModuleConfig['fullpath'];
+	if (empty(icms::$module->config['realpath']))
+		return ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/" . icms::$module->config['fullpath'];
 	else
-		return $xoopsModuleConfig['realpath'];
+		return icms::$module->config['realpath'];
+}
+
+/*
+ * Were these added before the module was moved to the repository?
+ * They get used in display_thumbnails and they are in my production sites
+ */
+
+/**
+ * Retrieve a static list of albums
+ *
+ * @return	array
+ */
+function get_album_list() {
+	global $xoopsDB;
+	
+	$albums = array();
+	
+	$result = $xoopsDB->query('SELECT * FROM ' . $xoopsDB->prefix('xcgal_albums'));
+	while ($res = $xoopsDB->fetchArray($result)) {
+		$albums[$res['aid']] = $res;
+	}
+	return $albums;
+}
+
+/**
+ * Retrieve a static list of categories
+ *
+ * @return	array
+ */
+function get_category_list() {
+	global $xoopsDB;
+	
+	$cats = array();
+	
+	$result = $xoopsDB->query('SELECT * FROM ' . $xoopsDB->prefix('xcgal_categories'));
+	while ($res = $xoopsDB->fetchArray($result)) {
+		$cats[$res['cid']] = $res;
+	}
+	return $cats;
 }

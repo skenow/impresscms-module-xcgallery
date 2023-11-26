@@ -61,26 +61,24 @@ if (EDIT_PICTURES_MODE) {
 }
 
 $THUMB_ROWSPAN = 5;
-if ($xoopsModuleConfig['user_field1_name'] != '') $THUMB_ROWSPAN++ ;
-if ($xoopsModuleConfig['user_field2_name'] != '') $THUMB_ROWSPAN++ ;
-if ($xoopsModuleConfig['user_field3_name'] != '') $THUMB_ROWSPAN++ ;
-if ($xoopsModuleConfig['user_field4_name'] != '') $THUMB_ROWSPAN++ ;
+if (icms::$module->config['user_field1_name'] != '') $THUMB_ROWSPAN++ ;
+if (icms::$module->config['user_field2_name'] != '') $THUMB_ROWSPAN++ ;
+if (icms::$module->config['user_field3_name'] != '') $THUMB_ROWSPAN++ ;
+if (icms::$module->config['user_field4_name'] != '') $THUMB_ROWSPAN++ ;
 
 $USER_ALBUMS_ARRAY = array (
 		0 => array ()
 );
 
 function get_post_var($var, $pid) {
-	global $_POST;
-
 	$var_name = $var . $pid;
 	if (!isset($_POST[$var_name])) redirect_header('index.php', 2, _MD_PARAM_MISSING . " ($var_name)");
 	return $_POST[$var_name];
 }
 
 function process_post_data() {
-	global $_POST, $xoopsModuleConfig, $xoopsDB;
-	global $user_albums_list, $xoopsModule, $myts;
+	global $xoopsDB;
+	global $user_albums_list, $myts;
 
 	$user_album_set = array ();
 	foreach ($user_albums_list as $album)
@@ -141,19 +139,19 @@ function process_post_data() {
 		if ($del_comments) {
 			// $query = "DELETE FROM ".$xoopsDB->prefix("xcgal_comments")." WHERE pid='$pid'";
 			// $result =$xoopsDB->query($query);
-			xoops_comment_delete($xoopsModule->getVar('mid'), $pid);
+			xoops_comment_delete(icms::$module->getVar('mid'), $pid);
 		}
 
 		if ($delete) {
-			$dir = $xoopsModuleConfig['fullpath'] . $pic['filepath'];
+			$dir = icms::$module->config['fullpath'] . $pic['filepath'];
 			$file = $pic['filename'];
 
 			if (!is_writable($dir)) redirect_header('index.php', 2, sprintf(_MD_DIRECTORY_RO, $dir));
 
 			$files = array (
 					$dir . $file,
-					$dir . $xoopsModuleConfig['normal_pfx'] . $file,
-					$dir . $xoopsModuleConfig['thumb_pfx'] . $file
+					$dir . icms::$module->config['normal_pfx'] . $file,
+					$dir . icms::$module->config['thumb_pfx'] . $file
 			);
 			foreach ($files as $currFile) {
 				if (is_file($currFile)) @unlink($currFile);
@@ -173,7 +171,7 @@ function process_post_data() {
 }
 
 function form_pic_info() {
-	global $CURRENT_PIC, $THUMB_ROWSPAN, $xoopsModuleConfig, $xoopsConfig;
+	global $CURRENT_PIC, $THUMB_ROWSPAN, $xoopsConfig;
 	global $filename, $pic_info, $thumb_url, $thumb_link, $myts;
 
 	if (UPLOAD_APPROVAL_MODE) {
@@ -211,7 +209,7 @@ function form_options() {
 }
 
 function form_alb_list_box() {
-	global $xoopsModuleConfig, $CURRENT_PIC;
+	global $CURRENT_PIC;
 	global $user_albums_list, $public_albums_list;
 	global $sel_name, $alb_opt;
 	$sel_album = $CURRENT_PIC['aid'];
@@ -327,10 +325,10 @@ $xoopsTpl->assign('lang_album', _MD_ALBUM);
 $xoopsTpl->assign('lang_title', _MD_EDITPICS_TITLE);
 $xoopsTpl->assign('lang_desc', _MD_EDITPICS_DESC);
 $xoopsTpl->assign('lang_keywords', _MD_KEYS);
-$xoopsTpl->assign('user1', $xoopsModuleConfig['user_field1_name']);
-$xoopsTpl->assign('user2', $xoopsModuleConfig['user_field2_name']);
-$xoopsTpl->assign('user3', $xoopsModuleConfig['user_field3_name']);
-$xoopsTpl->assign('user4', $xoopsModuleConfig['user_field4_name']);
+$xoopsTpl->assign('user1', icms::$module->config['user_field1_name']);
+$xoopsTpl->assign('user2', icms::$module->config['user_field2_name']);
+$xoopsTpl->assign('user3', icms::$module->config['user_field3_name']);
+$xoopsTpl->assign('user4', icms::$module->config['user_field4_name']);
 
 while ($CURRENT_PIC = $xoopsDB->fetchArray($result)) {
 	if (USER_IS_ADMIN) {
@@ -389,7 +387,7 @@ $xoopsDB->freeRecordSet($result);
 $xoopsTpl->assign('form', $form);
 $xoopsTpl->assign('apply', _MD_EDITPICS_APPLY);
 user_save_profile();
-$xoopsTpl->assign('gallery', $xoopsModule->getVar('name'));
+$xoopsTpl->assign('gallery', icms::$module->getVar('name'));
 include_once "include/theme_func.php";
 main_menu();
 // $xoopsTpl->assign('xcgal_footer', pagefooter());

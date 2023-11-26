@@ -136,8 +136,8 @@ if (is_object($xoopsUser)) {
 		if ($ugroup['priv_upl_need_approval'] == 0) $USER_DATA['priv_upl_need_approval'] = $ugroup['priv_upl_need_approval']; # mcleines
 		if ($ugroup['group_quota'] > $USER_DATA['group_quota']) $USER_DATA['group_quota'] = $ugroup['group_quota'];
 	} // while
-	$xoopsModule = icms::$module;
-	if ($xoopsUser->isAdmin($xoopsModule->getVar('mid')))
+
+	if ($xoopsUser->isAdmin(icms::$module->getVar('mid')))
 		define('USER_IS_ADMIN', 1);
 	else
 		define('USER_IS_ADMIN', 0);
