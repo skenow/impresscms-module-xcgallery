@@ -73,7 +73,7 @@ function html_img_nav_menu() {
 		$prev_title = _MD_DIS_PREV;
 	} else {
 		$prev_tgt = "javascript:;";
-		$prev_title = "";
+                $prev_title = "You're at the beginning";
 	}
 
 	if ($pos < ($pic_count - 1)) {
@@ -84,7 +84,7 @@ function html_img_nav_menu() {
 		$next_title = _MD_DIS_NEXT;
 	} else {
 		$next_tgt = "javascript:;";
-		$next_title = "";
+                $next_title = "You're at the end";
 	}
 
 	if (USER_CAN_SEND_ECARDS) {

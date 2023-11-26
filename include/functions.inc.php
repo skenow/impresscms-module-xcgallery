@@ -242,6 +242,7 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 			break;
 
 		case 'lastup': // Last uploads
+		default:
 			if ($ALBUM_SET && $CURRENT_CAT_NAME) {
 				$album_name = _MD_LASTUP . ' - ' . $CURRENT_CAT_NAME;
 			} else {
@@ -462,8 +463,8 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 			return $rowset;
 			break;
 
-		default: // Invalid meta album
-			redirect_header('index.php', 2, _MD_NON_EXIST_AP);
+ 	       //default : // Invalid meta album
+ 	       //	redirect_header('index.php',2, _MD_NON_EXIST_AP);
 	}
 }
 

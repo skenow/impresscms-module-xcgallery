@@ -141,6 +141,7 @@ function xcgal_block_filmstrip_func($options) {
 			$thumb_list[$i]['pos'] = $key < 0 ? $key : $i - 1 - $options[5];
 			$thumb_list[$i]['image'] = XOOPS_URL . "/modules/" . $xcgalDir . "/" . $xcgalConfig['fullpath'] . str_replace("%2F", "/", rawurlencode($row['filepath'] . $xcgalConfig['normal_pfx'] . $row['filename']));
 			$thumb_list[$i]['caption'] = $row['caption_text'];
+			$thumb_list[$i]['title'] = $row['title']; 
 			$thumb_list[$i]['pid'] = $row['pid'];
 			$thumb_list[$i]['link_tgt'] = XOOPS_URL . "/modules/" . $xcgalDir . "/displayimage.php?pid={$row['pid']}&amp;album={$album}&amp;pos={$key}&amp;cat=";
 			$thumb_list[$i]['i'] = $i;
@@ -312,11 +313,12 @@ function get_subcat_data_block($parent, $ident = '') {
 	}
 }
 
-function pic_data_block($album, $count, $set_caption) {
+function pic_data_block($album, $count, $set_caption, $category = "") {
 	global $ALBUM_SET_BLOCK, $GLOBALS;
 	global $xoopsDB, $xcgalModule;
 	$xcgalDir = basename(dirname(dirname(__FILE__)));
-
+	if ($category !== "") {$filter = " AND category = " . $category;}
+	
 	$select_columns = 'pid, filepath, filename, url_prefix, filesize, pwidth, pheight, ctime, title, caption';
 
 	// Meta albums

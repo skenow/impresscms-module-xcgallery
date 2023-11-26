@@ -38,7 +38,7 @@ if (!USER_CAN_SEND_ECARDS) redirect_header('index.php', 2, _MD_ACCESS_DENIED);
 
 function send_ecard($recipient_email, $recipient_name, $greetings, $msg_content, $sender_name, $sender_email, $image, $n_picname, $redirect_link) {
 	global $xoopsUser, $USER, $xoopsDB;
-	global $xoopsConfig, $myts;
+	global $xoopsConfig, $myts, $xcgalDir;
 
 	if (is_object($xoopsUser))
 		$s_uid = "|| sender_uid = " . $xoopsUser->uid();
@@ -125,7 +125,7 @@ function send_ecard($recipient_email, $recipient_name, $greetings, $msg_content,
 }
 
 function build_html_card($sender_name, $sender_email, $n_picname, $message, $greetings, $e_id) {
-	global $myts, $xoopsConfig;
+	global $myts, $xoopsConfig, $xcgalDir;
 	if (!stristr($n_picname, 'http:')) $n_picname = ICMS_URL . "/modules/" . $xcgalDir . "/" . $n_picname;
 
 	$msg_content = $myts->makeTareaData4Show($message, 0);
@@ -191,9 +191,11 @@ $row = $xoopsDB->fetchArray($result);
 $thumb_pic_url = get_pic_url($row, 'thumb');
 
 // Check supplied email address
-$valid_email_pattern = "^[_\.0-9a-z\-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,6}$";
-$valid_sender_email = eregi($valid_email_pattern, $sender_email);
-$valid_recipient_email = eregi($valid_email_pattern, $recipient_email);
+//$valid_email_pattern = "^[_\.0-9a-z\-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,6}$";
+//$valid_sender_email = eregi($valid_email_pattern, $sender_email);
+//$valid_recipient_email = eregi($valid_email_pattern,$recipient_email);
+$valid_sender_email = filter_var($sender_email, FILTER_VALIDATE_EMAIL);
+$valid_recipient_email = filter_var($recipient_email, FILTER_VALIDATE_EMAIL);
 $invalid_email = '<font size="1">' . _MD_CARD_INVALIDE_EMAIL . '</font>';
 if (!$valid_sender_email && count($_POST) > 0) $sender_email_warning = $invalid_email;
 if (!$valid_recipient_email && count($_POST) > 0) $recipient_email_warning = $invalid_email;
