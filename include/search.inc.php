@@ -29,7 +29,7 @@
 // ------------------------------------------------------------------------ //
 if ($search_string != '') {
 	$split_search = array();
-	$split_search = split(' ', clean_words($search_string));
+	$split_search = explode(' ', clean_words($search_string));
 
 	$current_match_type = 'and';
 
