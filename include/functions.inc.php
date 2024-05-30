@@ -418,7 +418,7 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 			break;
 		case 'usearch': // User pics search results
 			if (isset($USER['suid']) && $USER['suid'] > 0) {
-				$owner = new XoopsUser($USER['suid']);
+			    $owner = new icms_member_user_Object($USER['suid']);
 				$album_name = _MD_USEARCH . $owner->getVar('uname');
 			} else
 				$album_name = 'Pics submitted by ' . $xoopsConfig['anonymous'];

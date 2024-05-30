@@ -163,7 +163,7 @@ function process_post_data() {
 			$query = "UPDATE " . $xoopsDB->prefix("xcgal_pictures") . " SET $update WHERE pid='$pid' LIMIT 1";
 			$result = $xoopsDB->query($query);
 			if ($pic['owner_id'] != 0) {
-				$submitter = new XoopsUser($pic['owner_id']);
+			    $submitter = new icms_member_user_Object($pic['owner_id']);
 				$submitter->incrementPost();
 			}
 		}
