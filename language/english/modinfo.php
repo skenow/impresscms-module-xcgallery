@@ -100,3 +100,8 @@ define("_MI_WATERMARKING", "Use watermarking for JPG");
 define("_MI_WATERMARK_TEXTDESC", "Watermark must be saved at xcgal/images/watermark.png");
 define("_MI_BATCHSHOWALL", "Batchupload - Show all");
 define("_MI_BATCHSHOWALLDESC", "All files are shown, also files that are already in an album. For NO only new files are displayed");
+
+define('_MI_GALLERY_METADESC', "Module's Meta Description");
+define('_MI_GALLERY_METADESC_DSC', 'The meta description to be used for the main page of the module');
+define('_MI_GALLERY_KEYWORDS', 'Default keywords for the module');
+define('_MI_GALLERY_KEYWORDS_DSC', 'The meta keywords to be used for the main page of the module');
