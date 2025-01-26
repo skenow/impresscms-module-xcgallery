@@ -28,11 +28,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA //
 // ------------------------------------------------------------------------ //
 $modversion['name'] = 'xcGallery';
-$modversion['version'] = '2.04';
-$modversion['description'] = 'Gallery module for Xoops 2.2 and higher based on xcgal 1.1 RC what is based on Coppermine 1.10 &copy; Gr�gory DEMAR (http://coppermine.sourceforge.net)';
+$modversion['version'] = '2.1.0';
+$modversion['description'] = 'Gallery module for ImpressCMS based on xcgal 1.1 RC which is based on Coppermine 1.10 &copy; Gr�gory DEMAR (http://coppermine.sourceforge.net)';
 $modversion['credits'] = "http://dev.xoops.org";
-$modversion['author'] = "Vers. 1.1: Derya Kiran, edited for Xoops 2.2 by mcleines";
-$modversion['help'] = "top.html";
+$modversion['author'] = "skenow, Vers. 1.1: Derya Kiran, edited for Xoops 2.2 by mcleines";
+$modversion['help'] = "";
 $modversion['license'] = "GPL see LICENSE";
 $modversion['official'] = 1;
 $modversion['image'] = "images/slogo.png";

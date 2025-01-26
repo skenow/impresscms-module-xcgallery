@@ -1,4 +1,16 @@
 Changelog
++ added
+- removed
+! changed
+
+== xcGallery 2.1.0 ==
+Status: Beta
+Release Date:
+
++ META keywords and description for the module
+
+! PHP 8 compliance
+! ImpressCMS 1.3, 1.4, and 2.0 compliance
 
 
 #####################################################################
