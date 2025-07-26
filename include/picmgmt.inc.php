@@ -32,7 +32,7 @@
 // Add a picture to an album
 function add_picture($aid, $filepath, $filename, $title = '', $caption = '', $keywords = '', $user1 = '', $user2 = '', $user3 = '', $user4 = '', $category = 0) {
 	global $ERROR, $USER_DATA, $PIC_NEED_APPROVAL;
-	global $xoopsDB, $xoopsUser, $picinID;
+	global $xoopsUser, $picinID;
 	$xcgalDir = basename(dirname(dirname(__FILE__)));
 
 	$myts = icms_core_Textsanitizer::getInstance();
@@ -85,11 +85,11 @@ function add_picture($aid, $filepath, $filename, $title = '', $caption = '', $ke
 		else
 			$quota_opt = "ip = '" . $_SERVER['REMOTE_ADDR'] . "'";
 
-		$result = $xoopsDB->query("SELECT sum(total_filesize) FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE $quota_opt");
-		$record = $xoopsDB->fetchArray($result);
+		$result = icms::$xoopsDB->query("SELECT sum(total_filesize) FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE $quota_opt");
+		$record = icms::$xoopsDB->fetchArray($result);
 		$total_space_used = $record['sum(total_filesize)'];
 		// echo $total_space_used;
-		$xoopsDB->freeRecordSet($result);
+		icms::$xoopsDB->freeRecordSet($result);
 
 		if ($total_space_used + $total_filesize > ($USER_DATA['group_quota'] << 10)) {
 			@unlink($image);
@@ -114,9 +114,9 @@ function add_picture($aid, $filepath, $filename, $title = '', $caption = '', $ke
 	// User ID is not recorded when in admin mode (ie. for batch uploads)
 	$user_id = USER_ID;
 	$user_name = USER_NAME;
-	$query = "INSERT INTO " . $xoopsDB->prefix("xcgal_pictures") . " (aid, filepath, filename, filesize, total_filesize, pwidth, pheight, mtime, ctime, owner_id, owner_name, title, caption, keywords, approved, user1, user2, user3, user4, ip) VALUES ('$aid', '" . $myts->addSlashes($filepath) . "', '" . $myts->addSlashes($filename) . "', '$image_filesize', '$total_filesize', '{$imagesize[0]}', '{$imagesize[1]}','" . time() . "', '" . time() . "', '$user_id','$user_name', '$title', '$caption', '$keywords', '$approved', '$user1', '$user2', '$user3', '$user4','" . $_SERVER['REMOTE_ADDR'] . "')";
-	$result = $xoopsDB->queryf($query);
-	if ($approved == 'YES') $picinID = $xoopsDB->getInsertId();
+	$query = "INSERT INTO " . icms::$xoopsDB->prefix("xcgal_pictures") . " (aid, filepath, filename, filesize, total_filesize, pwidth, pheight, mtime, ctime, owner_id, owner_name, title, caption, keywords, approved, user1, user2, user3, user4, ip) VALUES ('$aid', '" . $myts->addSlashes($filepath) . "', '" . $myts->addSlashes($filename) . "', '$image_filesize', '$total_filesize', '{$imagesize[0]}', '{$imagesize[1]}','" . time() . "', '" . time() . "', '$user_id','$user_name', '$title', '$caption', '$keywords', '$approved', '$user1', '$user2', '$user3', '$user4','" . $_SERVER['REMOTE_ADDR'] . "')";
+	$result = icms::$xoopsDB->queryf($query);
+	if ($approved == 'YES') $picinID = icms::$xoopsDB->getInsertId();
 	if (($approved == 'YES') && is_object($xoopsUser)) $xoopsUser->incrementPost();
 	return $result;
 }

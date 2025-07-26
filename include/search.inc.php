@@ -54,14 +54,14 @@ if ($search_string != '') {
 				$match_word = '%' . str_replace('*', '%', $myts->addSlashes($split_search[$i])) . '%';
 				$match_keyword = '% ' . str_replace('*', '%', $myts->addSlashes($split_search[$i])) . ' %';
 
-				$sql = "SELECT pid " . "FROM " . $xoopsDB->prefix("xcgal_pictures") . " " . "WHERE CONCAT(' ', keywords, ' ') LIKE '$match_keyword' ";
+				$sql = "SELECT pid " . "FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " " . "WHERE CONCAT(' ', keywords, ' ') LIKE '$match_keyword' ";
 
 				if ($query_all) $sql .= "OR filename LIKE '$match_word' " . "OR title LIKE '$match_word' " . "OR caption LIKE '$match_word' " . "OR user1 LIKE '$match_word' " . "OR user2 LIKE '$match_word' " . "OR user3 LIKE '$match_word' " . "OR user4 LIKE '$match_word' ";
 
-				$result = $xoopsDB->query($sql);
-				if ($xoopsDB->getRowsNum($result)) {
+				$result = icms::$xoopsDB->query($sql);
+				if (icms::$xoopsDB->getRowsNum($result)) {
 					$set = '';
-					while ($row = $xoopsDB->fetchArray($result)) {
+					while ($row = icms::$xoopsDB->fetchArray($result)) {
 						$set .= $row['pid'] . ',';
 					} // while
 					if (empty($pic_set)) {
@@ -79,25 +79,25 @@ if ($search_string != '') {
 					}
 				}
 
-				$xoopsDB->freeRecordSet($result);
+				icms::$xoopsDB->freeRecordSet($result);
 
 				$current_match_type = 'and';
 		}
 	}
 
 	if (!empty($pic_set)) {
-		$sql = "SELECT count(*) " . "FROM " . $xoopsDB->prefix("xcgal_pictures") . " " . "WHERE ($pic_set) " . "AND approved = 'YES' " . "$ALBUM_SET";
-		$result = $xoopsDB->query($sql);
-		$nbEnr = $xoopsDB->fetchArray($result);
+		$sql = "SELECT count(*) " . "FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " " . "WHERE ($pic_set) " . "AND approved = 'YES' " . "$ALBUM_SET";
+		$result = icms::$xoopsDB->query($sql);
+		$nbEnr = icms::$xoopsDB->fetchArray($result);
 		$count = $nbEnr['count(*)'];
-		$xoopsDB->freeRecordSet($result);
+		icms::$xoopsDB->freeRecordSet($result);
 
 		if ($select_columns != '*') $select_columns .= ', title, caption';
 
-		$sql = "SELECT $select_columns " . "FROM " . $xoopsDB->prefix("xcgal_pictures") . " " . "WHERE ($pic_set) " . "AND approved = 'YES' " . "$ALBUM_SET $limit";
-		$result = $xoopsDB->query($sql);
+		$sql = "SELECT $select_columns " . "FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " " . "WHERE ($pic_set) " . "AND approved = 'YES' " . "$ALBUM_SET $limit";
+		$result = icms::$xoopsDB->query($sql);
 		$rowset = db_fetch_rowset($result);
-		$xoopsDB->freeRecordSet($result);
+		icms::$xoopsDB->freeRecordSet($result);
 
 		if ($set_caption) foreach ($rowset as $key => $row) {
 			$caption = $rowset[$key]['title'] ? "<span class=\"thumb_title\">" . icms_core_DataFilter::htmlSpecialchars($rowset[$key]['title']) . "</span>" : '';

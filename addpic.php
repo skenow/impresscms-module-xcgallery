@@ -42,10 +42,10 @@ $dir_name = dirname($pic_file) . "/";
 $file_name = basename($pic_file);
 $file_title = substr($file_name, 0, (strlen($file_name) - 4));
 
-$sql = "SELECT pid " . "FROM " . $xoopsDB->prefix("xcgal_pictures") . " " . "WHERE filepath='" . addslashes($dir_name) . "' AND filename='" . addslashes($file_name) . "' " . "LIMIT 1";
-$result = $xoopsDB->query($sql);
+$sql = "SELECT pid " . "FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " " . "WHERE filepath='" . addslashes($dir_name) . "' AND filename='" . addslashes($file_name) . "' " . "LIMIT 1";
+$result = icms::$xoopsDB->query($sql);
 
-if ($xoopsDB->getRowsNum($result)) {
+if (icms::$xoopsDB->getRowsNum($result)) {
 	$file_name = "images/up_dup.gif";
 } elseif (add_picture($aid, $dir_name, $file_name, $file_title)) {
 	$file_name = "images/up_ok.gif";

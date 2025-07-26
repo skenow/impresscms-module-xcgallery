@@ -1,9 +1,9 @@
 <?php
 
 function xcgal_search($queryarray, $andor, $limit, $offset, $userid) {
-	global $xoopsDB, $ALBUM_SET_SEARCH;
+	global $ALBUM_SET_SEARCH;
 	$xcgalCon = search_album_set();
-	$sql = "SELECT pid, filepath, filename, ctime, owner_id, title FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved='YES' AND ctime<=" . time() . "";
+	$sql = "SELECT pid, filepath, filename, ctime, owner_id, title FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE approved='YES' AND ctime<=" . time() . "";
 	if ($userid != 0) {
 		$sql .= " AND owner_id=" . $userid . " $ALBUM_SET_SEARCH";
 	}
@@ -18,10 +18,10 @@ function xcgal_search($queryarray, $andor, $limit, $offset, $userid) {
 		$sql .= ") ";
 	}
 	$sql .= "ORDER BY ctime DESC";
-	$result = $xoopsDB->query($sql, $limit, $offset);
+	$result = icms::$xoopsDB->query($sql, $limit, $offset);
 	$ret = array();
 	$i = 0;
-	while ($myrow = $xoopsDB->fetchArray($result)) {
+	while ($myrow = icms::$xoopsDB->fetchArray($result)) {
 		if ($xcgalCon['search_thumb'] == 1)
 			$ret[$i]['image'] = $xcgalCon['fullpath'] . str_replace("%2F", "/", rawurlencode($myrow['filepath'] . $xcgalCon['thumb_pfx'] . $myrow['filename']));
 		else
@@ -36,7 +36,7 @@ function xcgal_search($queryarray, $andor, $limit, $offset, $userid) {
 }
 
 function search_album_set() {
-	global $ALBUM_SET_SEARCH, $xoopsDB, $xoopsUser;
+	global $ALBUM_SET_SEARCH, $xoopsUser;
 	$xcgalDir = basename(dirname(dirname(__FILE__)));
 	if (is_object($xoopsUser)) {
 		$usergroups = $xoopsUser->getgroups();
@@ -54,15 +54,15 @@ function search_album_set() {
 	if (is_object($xoopsUser) && $xoopsUser->isAdmin($xcgalModule->mid()))
 		$ALBUM_SET_SEARCH = "";
 	else {
-		$result = $xoopsDB->query("SELECT aid FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE visibility NOT IN ($usergroup, 0," . ($user_cat + $buid) . ")");
-		if (($xoopsDB->getRowsNum($result))) {
+		$result = icms::$xoopsDB->query("SELECT aid FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE visibility NOT IN ($usergroup, 0," . ($user_cat + $buid) . ")");
+		if ((icms::$xoopsDB->getRowsNum($result))) {
 			$set = '';
-			while ($album = $xoopsDB->fetchArray($result)) {
+			while ($album = icms::$xoopsDB->fetchArray($result)) {
 				$set .= $album['aid'] . ',';
 			} // while
 			$ALBUM_SET_SEARCH .= 'AND aid NOT IN (' . substr($set, 0, -1) . ') ';
 		}
-		$xoopsDB->freeRecordSet($result);
+		icms::$xoopsDB->freeRecordSet($result);
 	}
 	return $xcgalCon;
 }

@@ -33,11 +33,11 @@ $xcgalDir = basename(dirname(__FILE__));
 require ('include/init.inc.php');
 # include('include/htmlMimeMail.php');
 $myts = icms_core_Textsanitizer::getInstance();
-$xoopsMailer = &getMailer();
+$xoopsMailer = new icms_messaging_Handler();
 if (!USER_CAN_SEND_ECARDS) redirect_header('index.php', 2, _MD_ACCESS_DENIED);
 
 function send_ecard($recipient_email, $recipient_name, $greetings, $msg_content, $sender_name, $sender_email, $image, $n_picname, $redirect_link) {
-	global $xoopsUser, $USER, $xoopsDB;
+	global $xoopsUser, $USER;
 	global $xoopsConfig, $myts, $xcgalDir;
 
 	if (is_object($xoopsUser))
@@ -45,8 +45,8 @@ function send_ecard($recipient_email, $recipient_name, $greetings, $msg_content,
 	else
 		$s_uid = "";
 	$s_time = time() - 3600;
-	$result = $xoopsDB->query("SELECT * from " . $xoopsDB->prefix("xcgal_ecard") . " WHERE (sess_id ='" . session_id() . "' || sender_email = '" . $myts->addSlashes($sender_email) . "' || sender_ip ='" . $_SERVER['REMOTE_ADDR'] . "' " . $s_uid . ") AND s_time > " . $s_time . "");
-	if ($xoopsDB->getRowsNum($result) >= icms::$module->config['ecards_per_hour']) {
+	$result = icms::$xoopsDB->query("SELECT * from " . icms::$xoopsDB->prefix("xcgal_ecard") . " WHERE (sess_id ='" . session_id() . "' || sender_email = '" . $myts->addSlashes($sender_email) . "' || sender_ip ='" . $_SERVER['REMOTE_ADDR'] . "' " . $s_uid . ") AND s_time > " . $s_time . "");
+	if (icms::$xoopsDB->getRowsNum($result) >= icms::$module->config['ecards_per_hour']) {
 		redirect_header('index.php', 2, sprintf(_MD_CARD_PERHOUR, icms::$module->config['ecards_per_hour']));
 		return;
 	}
@@ -65,7 +65,7 @@ function send_ecard($recipient_email, $recipient_name, $greetings, $msg_content,
 	if (count($USER['ecard']) >= (icms::$module->config['ecards_per_hour'] + 2)) array_shift($USER['ecard']);
 
 	$delete_time = time() - (icms::$module->config['ecards_saved_db'] * 86400);
-	$xoopsDB->query("DELETE from " . $xoopsDB->prefix("xcgal_ecard") . " WHERE s_time < " . $delete_time . "");
+	icms::$xoopsDB->query("DELETE from " . icms::$xoopsDB->prefix("xcgal_ecard") . " WHERE s_time < " . $delete_time . "");
 
 	if (is_object($xoopsUser))
 		$sender_uid = $xoopsUser->uid();
@@ -73,16 +73,16 @@ function send_ecard($recipient_email, $recipient_name, $greetings, $msg_content,
 		$sender_uid = 0;
 	$e_id = get_message_id();
 
-	$sql = "INSERT INTO " . $xoopsDB->prefix("xcgal_ecard") . " (e_id, sess_id, sender_ip, sender_uid, sender_name, sender_email, recipient_name, recipient_email, greetings, message, s_time, pid, picked) VALUES ('" . $e_id . "', '" . session_id() . "', '" . $_SERVER['REMOTE_ADDR'] . "', $sender_uid, '" . $myts->addSlashes($sender_name) . "', '" . $myts->addSlashes($sender_email) . "', '" . $myts->addSlashes($recipient_name) . "', '" . $myts->addSlashes($recipient_email) . "', '" . $myts->addSlashes($greetings) . "', '" . $myts->makeTareaData4Save($msg_content) . "', " . time() . ", $image, 0)";
+	$sql = "INSERT INTO " . icms::$xoopsDB->prefix("xcgal_ecard") . " (e_id, sess_id, sender_ip, sender_uid, sender_name, sender_email, recipient_name, recipient_email, greetings, message, s_time, pid, picked) VALUES ('" . $e_id . "', '" . session_id() . "', '" . $_SERVER['REMOTE_ADDR'] . "', $sender_uid, '" . $myts->addSlashes($sender_name) . "', '" . $myts->addSlashes($sender_email) . "', '" . $myts->addSlashes($recipient_name) . "', '" . $myts->addSlashes($recipient_email) . "', '" . $myts->addSlashes($greetings) . "', '" . $myts->makeTareaData4Save($msg_content) . "', " . time() . ", $image, 0)";
 	if (!$xoopsDB->queryF($sql)) {
 		redirect_header('index.php', 2, _MD_CARD_NOTINDB);
 	}
-	$xoopsDB->queryF("UPDATE " . $xoopsDB->prefix("xcgal_pictures") . " SET sent_card=sent_card+1 WHERE pid='" . $image . "'");
+	icms::$xoopsDB->queryF("UPDATE " . icms::$xoopsDB->prefix("xcgal_pictures") . " SET sent_card=sent_card+1 WHERE pid='" . $image . "'");
 	$USER['ecard'][] = time();
 	user_save_profile();
 
 	$myts = icms_core_Textsanitizer::getInstance();
-	$xoopsMailer = &getMailer();
+	$xoopsMailer = new icms_messaging_Handler();
 
 	$xoopsMailer->setFromEmail($sender_email);
 	$xoopsMailer->setFromName($sender_name);
@@ -185,15 +185,15 @@ $recipient_email_warning = '';
 if (!GALLERY_ADMIN_MODE && icms::$module->config['allow_private_albums']) get_private_album_set();
 
 // Get picture thumbnail url
-$result = $xoopsDB->query("SELECT * from " . $xoopsDB->prefix("xcgal_pictures") . " WHERE pid='$pid' $ALBUM_SET");
+$result = icms::$xoopsDB->query("SELECT * from " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE pid='$pid' $ALBUM_SET");
 if (!$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
-$row = $xoopsDB->fetchArray($result);
+$row = icms::$xoopsDB->fetchArray($result);
 $thumb_pic_url = get_pic_url($row, 'thumb');
 
 // Check supplied email address
-//$valid_email_pattern = "^[_\.0-9a-z\-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,6}$";
-//$valid_sender_email = eregi($valid_email_pattern, $sender_email);
-//$valid_recipient_email = eregi($valid_email_pattern,$recipient_email);
+// $valid_email_pattern = "^[_\.0-9a-z\-]+@([0-9a-z][0-9a-z-]+\.)+[a-z]{2,6}$";
+// $valid_sender_email = eregi($valid_email_pattern, $sender_email);
+// $valid_recipient_email = eregi($valid_email_pattern,$recipient_email);
 $valid_sender_email = filter_var($sender_email, FILTER_VALIDATE_EMAIL);
 $valid_recipient_email = filter_var($recipient_email, FILTER_VALIDATE_EMAIL);
 $invalid_email = '<font size="1">' . _MD_CARD_INVALIDE_EMAIL . '</font>';

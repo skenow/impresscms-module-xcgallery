@@ -29,8 +29,8 @@
 // ------------------------------------------------------------------------ //
 define('IN_XCGALLERY', true);
 include "header.php";
-$result = $xoopsDB->query("SELECT count(*) FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'NO'");
-$nbEnr = $xoopsDB->fetchArray($result);
+$result = icms::$xoopsDB->query("SELECT count(*) FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'NO'");
+$nbEnr = icms::$xoopsDB->fetchArray($result);
 $pic_count = $nbEnr['count(*)'];
 if ($pic_count > 0)
 	$pics = "<span style='color: #ff0000; font-weight: bold'>$pic_count</span>";

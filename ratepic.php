@@ -49,39 +49,39 @@ if (!isset($_COOKIE[icms::$module->config['cookie_name'] . '_data'])) {
 
 $location = "displayimage.php?pid=" . $pic . "&amp;pos=" . (-$pic);
 // Retrieve picture/album information & check if user can rate picture
-$sql = "SELECT a.votes as votes_allowed, p.votes as votes, pic_rating " . "FROM " . $xoopsDB->prefix("xcgal_pictures") . " AS p, " . $xoopsDB->prefix("xcgal_albums") . " AS a " . "WHERE p.aid = a.aid AND pid = '$pic' LIMIT 1";
-$result = $xoopsDB->query($sql);
+$sql = "SELECT a.votes as votes_allowed, p.votes as votes, pic_rating " . "FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " AS p, " . icms::$xoopsDB->prefix("xcgal_albums") . " AS a " . "WHERE p.aid = a.aid AND pid = '$pic' LIMIT 1";
+$result = icms::$xoopsDB->query($sql);
 if (!$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
-$row = $xoopsDB->fetchArray($result);
-$xoopsDB->freeRecordSet($result);
+$row = icms::$xoopsDB->fetchArray($result);
+icms::$xoopsDB->freeRecordSet($result);
 if (!USER_CAN_RATE_PICTURES || $row['votes_allowed'] == 'NO') redirect_header($location, 2, _MD_PERM_DENIED);
 
 // Clean votes older votes
 $curr_time = time();
 if (icms::$module->config['keep_votes_time'] > 0) {
 	$clean_before = $curr_time - icms::$module->config['keep_votes_time'] * 86400;
-	$sql = "DELETE " . "FROM " . $xoopsDB->prefix("xcgal_votes") . " " . "WHERE vote_time < $clean_before";
-	$result = $xoopsDB->queryf($sql);
+	$sql = "DELETE " . "FROM " . icms::$xoopsDB->prefix("xcgal_votes") . " " . "WHERE vote_time < $clean_before";
+	$result = icms::$xoopsDB->queryf($sql);
 }
 
 // Check if user already rated this picture
 if (is_object($xoopsUser)) {
 	$vid = $xoopsUser->uid();
-	$sql = "SELECT * " . "FROM " . $xoopsDB->prefix("xcgal_votes") . " " . "WHERE pic_id = '$pic' AND v_uid = '$vid'";
+	$sql = "SELECT * " . "FROM " . icms::$xoopsDB->prefix("xcgal_votes") . " " . "WHERE pic_id = '$pic' AND v_uid = '$vid'";
 } else {
 	$vid = 0;
-	$sql = "SELECT * " . "FROM " . $xoopsDB->prefix("xcgal_votes") . " " . "WHERE pic_id = '$pic' AND vote_time > '" . (time() - 86400) . "' AND ip='" . $_SERVER['REMOTE_ADDR'] . "'";
+	$sql = "SELECT * " . "FROM " . icms::$xoopsDB->prefix("xcgal_votes") . " " . "WHERE pic_id = '$pic' AND vote_time > '" . (time() - 86400) . "' AND ip='" . $_SERVER['REMOTE_ADDR'] . "'";
 }
 
-$result = $xoopsDB->query($sql);
-if ($xoopsDB->getRowsNum($result)) redirect_header($location, 2, _MD_RATE_ALREADY);
+$result = icms::$xoopsDB->query($sql);
+if (icms::$xoopsDB->getRowsNum($result)) redirect_header($location, 2, _MD_RATE_ALREADY);
 
 // Update picture rating
 $new_rating = round(($row['votes'] * $row['pic_rating'] + $rate * 2000) / ($row['votes'] + 1));
-$sql = "UPDATE " . $xoopsDB->prefix("xcgal_pictures") . " " . "SET pic_rating = '$new_rating', votes = votes + 1 " . "WHERE pid = '$pic' LIMIT 1";
-$result = $xoopsDB->queryf($sql);
+$sql = "UPDATE " . icms::$xoopsDB->prefix("xcgal_pictures") . " " . "SET pic_rating = '$new_rating', votes = votes + 1 " . "WHERE pid = '$pic' LIMIT 1";
+$result = icms::$xoopsDB->queryf($sql);
 
 // Update the votes table
-$sql = "INSERT INTO " . $xoopsDB->prefix("xcgal_votes") . " " . "VALUES ('$pic', '" . $_SERVER['REMOTE_ADDR'] . "', '$curr_time', '$vid')";
-$result = $xoopsDB->queryF($sql);
+$sql = "INSERT INTO " . icms::$xoopsDB->prefix("xcgal_votes") . " " . "VALUES ('$pic', '" . $_SERVER['REMOTE_ADDR'] . "', '$curr_time', '$vid')";
+$result = icms::$xoopsDB->queryF($sql);
 redirect_header($location, 2, _MD_RATE_OK);

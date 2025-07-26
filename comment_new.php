@@ -32,17 +32,17 @@ define('IN_XCGALLERY', true);
 require ('include/init.inc.php');
 $com_itemid = isset($_GET['com_itemid']) ? intval($_GET['com_itemid']) : (isset($_POST['com_itemid']) ? intval($_POST['com_itemid']) : 0);
 if ($com_itemid > 0) {
-	$sql = "SELECT a.comments FROM " . $xoopsDB->prefix("xcgal_albums") . " as a, " . $xoopsDB->prefix("xcgal_pictures") . " as p WHERE a.aid=p.aid AND p.pid=" . $com_itemid . "";
-	$result = $xoopsDB->query($sql);
+	$sql = "SELECT a.comments FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " as a, " . icms::$xoopsDB->prefix("xcgal_pictures") . " as p WHERE a.aid=p.aid AND p.pid=" . $com_itemid . "";
+	$result = icms::$xoopsDB->query($sql);
 
-	$CURRENT_ALBUM_DATA = $xoopsDB->fetchArray($result);
+	$CURRENT_ALBUM_DATA = icms::$xoopsDB->fetchArray($result);
 }
 if (USER_CAN_POST_COMMENTS && $CURRENT_ALBUM_DATA['comments'] == 'YES') {
 	if ($com_itemid > 0) {
 		// Get link title
-		$sql = "SELECT title FROM " . $xoopsDB->prefix('xcgal_pictures') . " WHERE pid=" . $com_itemid . "";
-		$result = $xoopsDB->query($sql);
-		$row = $xoopsDB->fetchArray($result);
+		$sql = "SELECT title FROM " . icms::$xoopsDB->prefix('xcgal_pictures') . " WHERE pid=" . $com_itemid . "";
+		$result = icms::$xoopsDB->query($sql);
+		$row = icms::$xoopsDB->fetchArray($result);
 		$com_replytitle = $row['title'];
 		include ICMS_ROOT_PATH . '/include/comment_new.php';
 	}

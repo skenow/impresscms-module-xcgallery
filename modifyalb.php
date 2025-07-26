@@ -37,10 +37,10 @@ if (!(GALLERY_ADMIN_MODE || USER_ADMIN_MODE)) {
 }
 
 function get_subcat_data($parent, $ident = '') {
-	global $CAT_LIST, $xoopsDB;
+	global $CAT_LIST;
 
-	$result = $xoopsDB->query("SELECT cid, name, description FROM " . $xoopsDB->prefix("xcgal_categories") . " WHERE parent = '$parent' AND cid != 1 ORDER BY pos");
-	if ($xoopsDB->getRowsNum($result) > 0) {
+	$result = icms::$xoopsDB->query("SELECT cid, name, description FROM " . icms::$xoopsDB->prefix("xcgal_categories") . " WHERE parent = '$parent' AND cid != 1 ORDER BY pos");
+	if (icms::$xoopsDB->getRowsNum($result) > 0) {
 		$rowset = db_fetch_rowset($result);
 		foreach ($rowset as $subcat) {
 			$CAT_LIST[] = array (
@@ -53,20 +53,20 @@ function get_subcat_data($parent, $ident = '') {
 }
 
 function alb_list_box() {
-	global $album, $PHP_SELF, $xoopsDB;
+	global $album, $PHP_SELF;
 
 	if (GALLERY_ADMIN_MODE) {
-		$sql = "SELECT category, aid, title " . "FROM " . $xoopsDB->prefix("xcgal_albums") . " " .
-		// "LEFT JOIN ".$xoopsDB->prefix("users")." AS u ON category = (".FIRST_USER_CAT." + uid) ".
+		$sql = "SELECT category, aid, title " . "FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " " .
+		// "LEFT JOIN ".icms::$xoopsDB->prefix("users")." AS u ON category = (".FIRST_USER_CAT." + uid) ".
 		"ORDER BY category";
-		$result = $xoopsDB->query($sql);
+		$result = icms::$xoopsDB->query($sql);
 	} else {
-		$result = $xoopsDB->query("SELECT aid, title FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE category = '" . (FIRST_USER_CAT + USER_ID) . "' ORDER BY title");
+		$result = icms::$xoopsDB->query("SELECT aid, title FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE category = '" . (FIRST_USER_CAT + USER_ID) . "' ORDER BY title");
 	}
 	$user_handler = icms::handler('icms_member');
-	if ($xoopsDB->getRowsNum($result) > 0) {
+	if (icms::$xoopsDB->getRowsNum($result) > 0) {
 		$lb = "<select name=\"album_listbox\" class=\"listbox\" onChange=\"if(this.options[this.selectedIndex].value) window.location.href='$PHP_SELF?album='+this.options[this.selectedIndex].value;\" />\n";
-		while ($row = $xoopsDB->fetchArray($result)) {
+		while ($row = icms::$xoopsDB->fetchArray($result)) {
 			if ($row['category'] > FIRST_USER_CAT) {
 				$alb_owner = &$user_handler->getUser($row['category'] - FIRST_USER_CAT);
 				if (is_object($alb_owner)) $row['title'] = "(" . $alb_owner->uname() . ") " . $row['title'];
@@ -82,18 +82,18 @@ function alb_list_box() {
 
 if (!isset($_GET['album'])) {
 	if (GALLERY_ADMIN_MODE) {
-		$results = $xoopsDB->query("SELECT * FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE 1 LIMIT 1");
+		$results = icms::$xoopsDB->query("SELECT * FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE 1 LIMIT 1");
 	} else {
-		$results = $xoopsDB->query("SELECT * FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE category = " . (FIRST_USER_CAT + USER_ID) . " LIMIT 1");
+		$results = icms::$xoopsDB->query("SELECT * FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE category = " . (FIRST_USER_CAT + USER_ID) . " LIMIT 1");
 	}
-	if ($xoopsDB->getRowsNum($results) == 0) redirect_header('index.php', 2, _MD_MODIFYALB_ERR_NO_ALB);
-	$ALBUM_DATA = $xoopsDB->fetchArray($results);
+	if (icms::$xoopsDB->getRowsNum($results) == 0) redirect_header('index.php', 2, _MD_MODIFYALB_ERR_NO_ALB);
+	$ALBUM_DATA = icms::$xoopsDB->fetchArray($results);
 	$album = $ALBUM_DATA['aid'];
 } else {
 	$album = (int) $_GET['album'];
-	$results = $xoopsDB->query("SELECT * FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album'");
+	$results = icms::$xoopsDB->query("SELECT * FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album'");
 	if (!$xoopsDB->getRowsNum($results)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
-	$ALBUM_DATA = $xoopsDB->fetchArray($results);
+	$ALBUM_DATA = icms::$xoopsDB->fetchArray($results);
 }
 
 $cat = $ALBUM_DATA['category'];
@@ -138,8 +138,8 @@ if (!GALLERY_ADMIN_MODE || $ALBUM_DATA['category'] > FIRST_USER_CAT) {
 $xoopsTpl->assign('alb_desc', _MD_MODIFYALB_ALB_DESC);
 $xoopsTpl->assign('album_data_description', $ALBUM_DATA['description']);
 $xoopsTpl->assign('alb_thumb', _MD_MODIFYALB_ALB_THUMB);
-$results = $xoopsDB->query("SELECT pid, filepath, filename, url_prefix FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE aid='$album' AND approved='YES' ORDER BY filename");
-if ($xoopsDB->getRowsNum($results) == 0) {
+$results = icms::$xoopsDB->query("SELECT pid, filepath, filename, url_prefix FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE aid='$album' AND approved='YES' ORDER BY filename");
+if (icms::$xoopsDB->getRowsNum($results) == 0) {
 	$xoopsTpl->assign('no_pic', 1);
 	$xoopsTpl->assign('alb_empty', _MD_MODIFYALB_ALB_EMPTY);
 } else {
@@ -149,7 +149,7 @@ if ($xoopsDB->getRowsNum($results) == 0) {
 	);
 	$pic_url = '';
 	$xoopsTpl->assign('no_pic', '');
-	while ($picture = $xoopsDB->fetchArray($results)) {
+	while ($picture = icms::$xoopsDB->fetchArray($results)) {
 		$thumb_url = get_pic_url($picture, 'thumb');
 		$pic_url .= "Pic[{$picture['pid']}] = '" . $thumb_url . "'\n";
 		if ($picture['pid'] == $ALBUM_DATA['thumb']) $initial_thumb_url = $thumb_url;
@@ -176,14 +176,14 @@ if (!icms::$module->config['allow_private_albums']) {
 				FIRST_USER_CAT + USER_ID => _MD_MODIFYALB_ME_ONLY
 		);
 		if ($ALBUM_DATA['category'] > FIRST_USER_CAT) {
-			$result = $xoopsDB->query("SELECT uname FROM " . $xoopsDB->prefix("users") . " WHERE uid='" . ($ALBUM_DATA['category'] - FIRST_USER_CAT) . "'");
-			if ($xoopsDB->getRowsNum($result)) {
-				$user = $xoopsDB->fetchArray($result);
+			$result = icms::$xoopsDB->query("SELECT uname FROM " . icms::$xoopsDB->prefix("users") . " WHERE uid='" . ($ALBUM_DATA['category'] - FIRST_USER_CAT) . "'");
+			if (icms::$xoopsDB->getRowsNum($result)) {
+				$user = icms::$xoopsDB->fetchArray($result);
 				$options[$ALBUM_DATA['category']] = sprintf(_MD_MODIFYALB_OWNER_ONLY, $user['uname']);
 			}
 		}
-		$result = $xoopsDB->query("SELECT group_id, group_name FROM " . $xoopsDB->prefix("xcgal_usergroups") . " WHERE 1");
-		while ($group = $xoopsDB->fetchArray($result)) {
+		$result = icms::$xoopsDB->query("SELECT group_id, group_name FROM " . icms::$xoopsDB->prefix("xcgal_usergroups") . " WHERE 1");
+		while ($group = icms::$xoopsDB->fetchArray($result)) {
 			$options[$group['group_id']] = sprintf(_MD_MODIFYALB_GROUP_ONLY, $group['group_name']);
 		} // while
 	} else {

@@ -49,10 +49,10 @@ if (isset($_GET['album'])) {
 if (UPLOAD_APPROVAL_MODE && !USER_IS_ADMIN) redirect_header('index.php', 2, _MD_ACCESS_DENIED);
 
 if (EDIT_PICTURES_MODE) {
-	$result = $xoopsDB->query("SELECT title, category FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE aid = '$album_id'");
-	if (!$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
-	$ALBUM_DATA = $xoopsDB->fetchArray($result);
-	$xoopsDB->freeRecordSet($result);
+	$result = icms::$xoopsDB->query("SELECT title, category FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid = '$album_id'");
+	if (!icms::$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
+	$ALBUM_DATA = icms::$xoopsDB->fetchArray($result);
+	icms::$xoopsDB->freeRecordSet($result);
 	$cat = $ALBUM_DATA['category'];
 	$actual_cat = $cat;
 	if ($cat != FIRST_USER_CAT + USER_ID && !GALLERY_ADMIN_MODE) redirect_header('index.php', 2, _MD_PERM_DENIED);
@@ -77,7 +77,7 @@ function get_post_var($var, $pid) {
 }
 
 function process_post_data() {
-	global $xoopsDB;
+	
 	global $user_albums_list, $myts;
 
 	$user_album_set = array ();
@@ -103,11 +103,11 @@ function process_post_data() {
 		$reset_votes = isset($_POST['reset_votes' . $pid]);
 		$del_comments = isset($_POST['del_comments' . $pid]) || $delete;
 
-		$query = "SELECT category, filepath, filename, owner_id FROM " . $xoopsDB->prefix("xcgal_pictures") . ", " . $xoopsDB->prefix("xcgal_albums") . " WHERE " . $xoopsDB->prefix("xcgal_pictures") . ".aid = " . $xoopsDB->prefix("xcgal_albums") . ".aid AND pid='$pid'";
-		$result = $xoopsDB->query($query);
-		if (!$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
-		$pic = $xoopsDB->fetchArray($result);
-		$xoopsDB->freeRecordSet($result);
+		$query = "SELECT category, filepath, filename, owner_id FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . ", " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE " . icms::$xoopsDB->prefix("xcgal_pictures") . ".aid = " . icms::$xoopsDB->prefix("xcgal_albums") . ".aid AND pid='$pid'";
+		$result = icms::$xoopsDB->query($query);
+		if (!icms::$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
+		$pic = icms::$xoopsDB->fetchArray($result);
+		icms::$xoopsDB->freeRecordSet($result);
 
 		if (!USER_IS_ADMIN) {
 			if ($pic['category'] != FIRST_USER_CAT + USER_ID) redirect_header('index.php', 2, _MD_PERM_DENIED . "<br />(picture category = {$pic['category']}/ $pid)");
@@ -137,7 +137,7 @@ function process_post_data() {
 		}
 
 		if ($del_comments) {
-			// $query = "DELETE FROM ".$xoopsDB->prefix("xcgal_comments")." WHERE pid='$pid'";
+			// $query = "DELETE FROM ".icms::$xoopsDB->prefix("xcgal_comments")." WHERE pid='$pid'";
 			// $result =$xoopsDB->query($query);
 			xoops_comment_delete(icms::$module->getVar('mid'), $pid);
 		}
@@ -157,11 +157,11 @@ function process_post_data() {
 				if (is_file($currFile)) @unlink($currFile);
 			}
 
-			$query = "DELETE FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE pid='$pid' LIMIT 1";
-			$result = $xoopsDB->query($query);
+			$query = "DELETE FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE pid='$pid' LIMIT 1";
+			$result = icms::$xoopsDB->query($query);
 		} else {
-			$query = "UPDATE " . $xoopsDB->prefix("xcgal_pictures") . " SET $update WHERE pid='$pid' LIMIT 1";
-			$result = $xoopsDB->query($query);
+			$query = "UPDATE " . icms::$xoopsDB->prefix("xcgal_pictures") . " SET $update WHERE pid='$pid' LIMIT 1";
+			$result = icms::$xoopsDB->query($query);
 			if ($pic['owner_id'] != 0) {
 			    $submitter = new icms_member_user_Object($pic['owner_id']);
 				$submitter->incrementPost();
@@ -225,16 +225,16 @@ function form_alb_list_box() {
 }
 
 function get_user_albums($user_id) {
-	global $USER_ALBUMS_ARRAY, $user_albums_list, $xoopsDB;
+	global $USER_ALBUMS_ARRAY, $user_albums_list;
 
 	if (!isset($USER_ALBUMS_ARRAY[$user_id])) {
-		$user_albums = $xoopsDB->query("SELECT aid, title FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE category='" . (FIRST_USER_CAT + $user_id) . "' ORDER BY title");
-		if ($xoopsDB->getRowsNum($user_albums)) {
+		$user_albums = icms::$xoopsDB->query("SELECT aid, title FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE category='" . (FIRST_USER_CAT + $user_id) . "' ORDER BY title");
+		if (icms::$xoopsDB->getRowsNum($user_albums)) {
 			$user_albums_list = db_fetch_rowset($user_albums);
 		} else {
 			$user_albums_list = array ();
 		}
-		$xoopsDB->freeRecordSet($user_albums);
+		icms::$xoopsDB->freeRecordSet($user_albums);
 		$USER_ALBUMS_ARRAY[$user_id] = $user_albums_list;
 	} else {
 		$user_albums_list = &$USER_ALBUMS_ARRAY[$user_id];
@@ -242,13 +242,13 @@ function get_user_albums($user_id) {
 }
 
 if (USER_IS_ADMIN) {
-	$public_albums = $xoopsDB->query("SELECT aid, title FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE category < '" . FIRST_USER_CAT . "' ORDER BY title");
-	if ($xoopsDB->getRowsNum($public_albums)) {
+	$public_albums = icms::$xoopsDB->query("SELECT aid, title FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE category < '" . FIRST_USER_CAT . "' ORDER BY title");
+	if (icms::$xoopsDB->getRowsNum($public_albums)) {
 		$public_albums_list = db_fetch_rowset($public_albums);
 	} else {
 		$public_albums_list = array ();
 	}
-	$xoopsDB->freeRecordSet($public_albums);
+	icms::$xoopsDB->freeRecordSet($public_albums);
 } else {
 	$public_albums_list = array ();
 }
@@ -266,28 +266,28 @@ $s75 = $count == 75 ? 'selected="selected"' : '';
 $s100 = $count == 100 ? 'selected="selected"' : '';
 
 if (UPLOAD_APPROVAL_MODE) {
-	$result = $xoopsDB->query("SELECT count(*) FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'NO'");
-	$nbEnr = $xoopsDB->fetchArray($result);
+	$result = icms::$xoopsDB->query("SELECT count(*) FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'NO'");
+	$nbEnr = icms::$xoopsDB->fetchArray($result);
 	$pic_count = $nbEnr['count(*)'];
 
-	$sql = "SELECT * " . "FROM " . $xoopsDB->prefix("xcgal_pictures") . " " .
-	// "LEFT JOIN ".$xoopsDB->prefix("users")." AS u ON owner_id = uid ".
+	$sql = "SELECT * " . "FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " " .
+	// "LEFT JOIN ".icms::$xoopsDB->prefix("users")." AS u ON owner_id = uid ".
 	"WHERE approved = 'NO' " . "ORDER BY pid " . "LIMIT $start, $count";
-	$result = $xoopsDB->query($sql);
+	$result = icms::$xoopsDB->query($sql);
 	$form_target = $PHP_SELF . '?mode=upload_approval&amp;start=' . $start . '&amp;count=' . $count;
 	$title = _MD_EDITPICS_UPL_APPROVAL;
 } else {
-	$result = $xoopsDB->query("SELECT count(*) FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE aid = '$album_id'");
-	$nbEnr = $xoopsDB->fetchArray($result);
+	$result = icms::$xoopsDB->query("SELECT count(*) FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE aid = '$album_id'");
+	$nbEnr = icms::$xoopsDB->fetchArray($result);
 	$pic_count = $nbEnr['count(*)'];
-	$xoopsDB->freeRecordSet($result);
+	icms::$xoopsDB->freeRecordSet($result);
 
-	$result = $xoopsDB->query("SELECT * FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE aid = '$album_id' ORDER BY filename LIMIT $start, $count");
+	$result = icms::$xoopsDB->query("SELECT * FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE aid = '$album_id' ORDER BY filename LIMIT $start, $count");
 	$form_target = $PHP_SELF . '?album=' . $album_id . '&amp;start=' . $start . '&amp;count=' . $count;
 	$title = _MD_EDITPICS_EDIT;
 }
 global $HTTP_REFERER;
-if (!$xoopsDB->getRowsNum($result)) redirect_header('admin/index.php', 2, _MD_NO_IMG_TO_DISPLAY);
+if (!icms::$xoopsDB->getRowsNum($result)) redirect_header('admin/index.php', 2, _MD_NO_IMG_TO_DISPLAY);
 
 if ($start + $count < $pic_count) {
 	$next_link = "<a href=\"$next_target\"><b>" . _MD_EDITPICS_NEXT . "</b></a>&nbsp;&nbsp;-&nbsp;&nbsp;";
@@ -330,7 +330,7 @@ $xoopsTpl->assign('user2', icms::$module->config['user_field2_name']);
 $xoopsTpl->assign('user3', icms::$module->config['user_field3_name']);
 $xoopsTpl->assign('user4', icms::$module->config['user_field4_name']);
 
-while ($CURRENT_PIC = $xoopsDB->fetchArray($result)) {
+while ($CURRENT_PIC = icms::$xoopsDB->fetchArray($result)) {
 	if (USER_IS_ADMIN) {
 		get_user_albums($CURRENT_PIC['owner_id']);
 		// $admin_mode=1;
@@ -383,7 +383,7 @@ while ($CURRENT_PIC = $xoopsDB->fetchArray($result)) {
 			'pic_opt' => $pic_opt
 	));
 } // while
-$xoopsDB->freeRecordSet($result);
+icms::$xoopsDB->freeRecordSet($result);
 $xoopsTpl->assign('form', $form);
 $xoopsTpl->assign('apply', _MD_EDITPICS_APPLY);
 user_save_profile();

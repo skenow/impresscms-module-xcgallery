@@ -59,19 +59,19 @@ $myts = icms_core_Textsanitizer::getInstance();
  * @return the HTML code
  */
 function albumselect($id = "album") {
-	global $xoopsDB, $myts;
+	global $myts;
 	static $select = "";
 
 	if ($select == "") {
-		$sql = "SELECT aid, title, category " . "FROM " . $xoopsDB->prefix("xcgal_albums") . " " . "ORDER BY title";
-		$result = $xoopsDB->query($sql);
+		$sql = "SELECT aid, title, category " . "FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " " . "ORDER BY title";
+		$result = icms::$xoopsDB->query($sql);
 		$user_handler = icms::handler('icms_member');
-		while ($row = $xoopsDB->fetchArray($result)) {
+		while ($row = icms::$xoopsDB->fetchArray($result)) {
 			$alb_owner = &$user_handler->getUser($row['category'] - FIRST_USER_CAT);
 			if (is_object($alb_owner)) $row["title"] = "- (" . $alb_owner->uname() . ")" . $row["title"];
 			$select .= "<option value=\"" . $row["aid"] . "\">" . icms_core_DataFilter::htmlSpecialchars($row["title"]) . "</option>";
 		}
-		$xoopsDB->freeRecordSet($result);
+		icms::$xoopsDB->freeRecordSet($result);
 	}
 
 	return "<select name=\"$id\" class=\"listbox\">" . $select . "</select>";
@@ -257,15 +257,15 @@ EOT;
  * @return
  */
 function getallpicindb(&$pic_array, $startdir) {
-	global $xoopsDB;
+	
 
-	$sql = "SELECT filepath, filename " . "FROM " . $xoopsDB->prefix("xcgal_pictures") . " " . "WHERE filepath LIKE '$startdir%'";
-	$result = $xoopsDB->query($sql);
-	while ($row = $xoopsDB->fetchArray($result)) {
+	$sql = "SELECT filepath, filename " . "FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " " . "WHERE filepath LIKE '$startdir%'";
+	$result = icms::$xoopsDB->query($sql);
+	while ($row = icms::$xoopsDB->fetchArray($result)) {
 		$pic_file = $row['filepath'] . $row['filename'];
 		$pic_array[$pic_file] = 1;
 	}
-	$xoopsDB->freeRecordSet($result);
+	icms::$xoopsDB->freeRecordSet($result);
 }
 
 /**
@@ -278,15 +278,15 @@ function getallpicindb(&$pic_array, $startdir) {
  * @return
  */
 function getallalbumsindb(&$album_array) {
-	global $xoopsDB;
+	
 
-	$sql = "SELECT aid, title " . "FROM " . $xoopsDB->prefix("xcgal_albums") . " " . "WHERE 1";
-	$result = $xoopsDB->query($sql);
+	$sql = "SELECT aid, title " . "FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " " . "WHERE 1";
+	$result = icms::$xoopsDB->query($sql);
 
-	while ($row = $xoopsDB->fetchArray($result)) {
+	while ($row = icms::$xoopsDB->fetchArray($result)) {
 		$album_array[$row['aid']] = $row['title'];
 	}
-	$xoopsDB->freeRecordSet($result);
+	icms::$xoopsDB->freeRecordSet($result);
 }
 
 /**

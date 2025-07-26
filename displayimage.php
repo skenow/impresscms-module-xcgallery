@@ -277,7 +277,7 @@ function html_picinfo() {
 // Display the full size image
 function display_fullsize_pic() {
 	global $ALBUM_SET;
-	global $xoopsDB, $pic_out;
+	global $pic_out;
 
 	if (isset($_GET['picfile'])) {
 
@@ -289,12 +289,12 @@ function display_fullsize_pic() {
 		$pic_out = "<img src=\"" . path2url($picname) . "\" $imagesize[3] class=\"image\" border=\"0\" alt=\"$picfile\"/><br />\n";
 	} elseif (isset($_GET['pid'])) {
 		$pid = (int) $_GET['pid'];
-		$sql = "SELECT * " . "FROM " . $xoopsDB->prefix("xcgal_pictures") . " " . "WHERE pid='$pid' $ALBUM_SET";
-		$result = $xoopsDB->query($sql);
+		$sql = "SELECT * " . "FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " " . "WHERE pid='$pid' $ALBUM_SET";
+		$result = icms::$xoopsDB->query($sql);
 
 		if (!$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
 
-		$row = $xoopsDB->fetchArray($result);
+		$row = icms::$xoopsDB->fetchArray($result);
 		$pic_url = get_pic_url($row, 'fullsize');
 		$geom = 'width="' . $row['pwidth'] . '" height="' . $row['pheight'] . '"';
 		$pic_out = "<img src=\"" . $pic_url . "\" $geom class=\"image\" border=\"0\" alt=\"" . htmlspecialchars($row['filename']) . "\" /><br />\n";
@@ -304,15 +304,15 @@ function display_fullsize_pic() {
 // Another function that missed getting into the repository
 
 function get_fullsize_pic() {
-	global $xoopsDB, $ALBUM_SET;
+	global $ALBUM_SET;
 	
 	$pid = (int)$_GET['pid'];
 	$sql =  "SELECT * ".
-		"FROM ".$xoopsDB->prefix("xcgal_pictures")." ".
+		"FROM ".icms::$xoopsDB->prefix("xcgal_pictures")." ".
 		"WHERE pid='$pid' $ALBUM_SET";
-	$result = $xoopsDB->query($sql);
+	$result = icms::$xoopsDB->query($sql);
 	
-	$row = $xoopsDB->fetchArray($result);
+	$row = icms::$xoopsDB->fetchArray($result);
 	$pic_url = get_pic_url($row, 'fullsize');
 	$geom = 'width="' . $row['pwidth'] . '" height="' . $row['pheight'] . '"';
 	$pic_out= "<img src=\"".$pic_url."\" $geom class=\"image\" border=\"0\" alt=\"". htmlspecialchars($row['filename']). "\" /><br />\n";
@@ -321,16 +321,16 @@ function get_fullsize_pic() {
 }
 
 function get_subcat_data($parent, $level) {
-	global $ALBUM_SET_ARRAY, $xoopsDB;
+	global $ALBUM_SET_ARRAY;
 
-	$result = $xoopsDB->query("SELECT cid, name, description FROM " . $xoopsDB->prefix("xcgal_categories") . " WHERE parent = '$parent'");
-	if ($xoopsDB->getRowsNum($result) > 0) {
+	$result = icms::$xoopsDB->query("SELECT cid, name, description FROM " . icms::$xoopsDB->prefix("xcgal_categories") . " WHERE parent = '$parent'");
+	if (icms::$xoopsDB->getRowsNum($result) > 0) {
 		$rowset = db_fetch_rowset($result);
 		foreach ($rowset as $subcat) {
-			$result = $xoopsDB->query("SELECT aid FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE category = {$subcat['cid']}");
-			$album_count = $xoopsDB->getRowsNum($result);
+			$result = icms::$xoopsDB->query("SELECT aid FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE category = {$subcat['cid']}");
+			$album_count = icms::$xoopsDB->getRowsNum($result);
 
-			while ($row = $xoopsDB->fetchArray($result)) {
+			while ($row = icms::$xoopsDB->fetchArray($result)) {
 				$ALBUM_SET_ARRAY[] = $row['aid'];
 			} // while
 		}
@@ -365,8 +365,8 @@ if (!is_numeric($album) && $cat) { // Meta albums, we need to restrict the album
 		else
 			$where = "category = '$cat'";
 
-		$result = $xoopsDB->query("SELECT aid FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE $where");
-		while ($row = $xoopsDB->fetchArray($result)) {
+		$result = icms::$xoopsDB->query("SELECT aid FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE $where");
+		while ($row = icms::$xoopsDB->fetchArray($result)) {
 			$ALBUM_SET_ARRAY[] = $row['aid'];
 		} // while
 		get_subcat_data($cat, icms::$module->config['subcat_level']);
@@ -385,9 +385,9 @@ if (!is_numeric($album) && $cat) { // Meta albums, we need to restrict the album
 
 if ($pos < 0) {
 	$pid = -$pos;
-	$result = $xoopsDB->query("SELECT aid from " . $xoopsDB->prefix("xcgal_pictures") . " WHERE pid='$pid' $ALBUM_SET LIMIT 1");
-	if ($xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
-	$row = $xoopsDB->fetchArray($result);
+	$result = icms::$xoopsDB->query("SELECT aid from " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE pid='$pid' $ALBUM_SET LIMIT 1");
+	if (icms::$xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
+	$row = icms::$xoopsDB->fetchArray($result);
 	$album = $row['aid'];
 	$pic_data = get_pic_data($album, $pic_count, $album_name, -1, -1, false);
 	for ($pos = 0; $pic_data[$pos]['pid'] != $pid && $pos < $pic_count; $pos++ )
@@ -408,10 +408,10 @@ if ($pos < 0) {
 
 // Retrieve data for the current album
 if (isset($CURRENT_PIC_DATA)) {
-	$result = $xoopsDB->query("SELECT title, comments, votes, category FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE aid='{$CURRENT_PIC_DATA['aid']}' LIMIT 1");
+	$result = icms::$xoopsDB->query("SELECT title, comments, votes, category FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='{$CURRENT_PIC_DATA['aid']}' LIMIT 1");
 
 	if (!$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, sprintf(_MD_PIC_IN_INVALID_ALBUM, $CURRENT_PIC_DATA['aid']));
-	$CURRENT_ALBUM_DATA = $xoopsDB->fetchArray($result);
+	$CURRENT_ALBUM_DATA = icms::$xoopsDB->fetchArray($result);
 
 	$album_title = $CURRENT_ALBUM_DATA['title'];
 

@@ -35,15 +35,15 @@ require 'include/init.inc.php';
 $myts = icms_core_Textsanitizer::getInstance();
 
 function get_subcat_data($parent, &$album_set_array, $level) {
-	global $xoopsDB;
+	
 
-	$result = $xoopsDB->query("SELECT cid, name, description FROM " . $xoopsDB->prefix("xcgal_categories") . " WHERE parent = '$parent'");
-	if ($xoopsDB->getRowsNum($result) > 0) {
+	$result = icms::$xoopsDB->query("SELECT cid, name, description FROM " . icms::$xoopsDB->prefix("xcgal_categories") . " WHERE parent = '$parent'");
+	if (icms::$xoopsDB->getRowsNum($result) > 0) {
 		$rowset = db_fetch_rowset($result);
 		foreach ($rowset as $subcat) {
-			$result = $xoopsDB->query("SELECT aid FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE category = {$subcat['cid']}");
-			$album_count = $xoopsDB->getRowsNum($result);
-			while ($row = $xoopsDB->fetchArray($result)) {
+			$result = icms::$xoopsDB->query("SELECT aid FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE category = {$subcat['cid']}");
+			$album_count = icms::$xoopsDB->getRowsNum($result);
+			while ($row = icms::$xoopsDB->fetchArray($result)) {
 				$album_set_array[] = $row['aid'];
 			} // while
 		}
@@ -84,9 +84,9 @@ $cat_data = array ();
 if (!GALLERY_ADMIN_MODE && icms::$module->config['allow_private_albums']) get_private_album_set();
 
 if (is_numeric($album)) {
-	$result = $xoopsDB->query("SELECT category, title FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album' $ALBUM_SET");
-	if ($xoopsDB->getRowsNum($result) > 0) {
-		$CURRENT_ALBUM_DATA = $xoopsDB->fetchArray($result);
+	$result = icms::$xoopsDB->query("SELECT category, title FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album' $ALBUM_SET");
+	if (icms::$xoopsDB->getRowsNum($result) > 0) {
+		$CURRENT_ALBUM_DATA = icms::$xoopsDB->fetchArray($result);
 		$actual_cat = $CURRENT_ALBUM_DATA['category'];
 		breadcrumb($actual_cat, $breadcrumb, $breadcrumb_text);
 		$cat = -$album;
@@ -94,9 +94,9 @@ if (is_numeric($album)) {
 		redirect_header("index.php", 3, _NOPERM);
 } elseif (isset($cat) && $cat) { // Meta albums, we need to restrict the albums to the current category
 	if ($cat < 0) {
-		$result = $xoopsDB->query("SELECT category, title FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE aid='" . (-$cat) . "'");
-		if ($xoopsDB->getRowsNum($result) > 0) {
-			$CURRENT_ALBUM_DATA = $xoopsDB->fetchArray($result);
+		$result = icms::$xoopsDB->query("SELECT category, title FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='" . (-$cat) . "'");
+		if (icms::$xoopsDB->getRowsNum($result) > 0) {
+			$CURRENT_ALBUM_DATA = icms::$xoopsDB->fetchArray($result);
 			$actual_cat = $CURRENT_ALBUM_DATA['category'];
 			$CURRENT_CAT_NAME = icms_core_DataFilter::htmlSpecialchars($CURRENT_ALBUM_DATA['title']);
 		}
@@ -109,8 +109,8 @@ if (is_numeric($album)) {
 		else
 			$where = "category = '$cat'";
 
-		$result = $xoopsDB->query("SELECT aid FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE $where");
-		while ($row = $xoopsDB->fetchArray($result)) {
+		$result = icms::$xoopsDB->query("SELECT aid FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE $where");
+		while ($row = icms::$xoopsDB->fetchArray($result)) {
 			$album_set_array[] = $row['aid'];
 		} // while
 		if ($cat >= FIRST_USER_CAT) {
@@ -121,9 +121,9 @@ if (is_numeric($album)) {
 			else
 				redirect_header('index.php', 2, _MD_NO_EXIST_CAT);
 		} else {
-			$result = $xoopsDB->query("SELECT name FROM " . $xoopsDB->prefix("xcgal_categories") . " WHERE cid = '" . $cat . "'");
-			if ($xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_NO_EXIST_CAT);
-			$row = $xoopsDB->fetchArray($result);
+			$result = icms::$xoopsDB->query("SELECT name FROM " . icms::$xoopsDB->prefix("xcgal_categories") . " WHERE cid = '" . $cat . "'");
+			if (icms::$xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_NO_EXIST_CAT);
+			$row = icms::$xoopsDB->fetchArray($result);
 			$CURRENT_CAT_NAME = icms_core_DataFilter::htmlSpecialchars($row['name']);
 		}
 		get_subcat_data($cat, $album_set_array, icms::$module->config['subcat_level']);

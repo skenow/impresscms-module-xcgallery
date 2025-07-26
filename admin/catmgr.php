@@ -33,26 +33,26 @@ $myts = icms_core_Textsanitizer::getInstance();
 
 // Fix categories that have an invalid parent
 function fix_cat_table() {
-	global $xoopsDB;
+	
 
-	$result = $xoopsDB->query("SELECT cid FROM " . $xoopsDB->prefix("xcgal_categories") . " WHERE 1");
-	if ($xoopsDB->getRowsNum($result) > 0) {
+	$result = icms::$xoopsDB->query("SELECT cid FROM " . icms::$xoopsDB->prefix("xcgal_categories") . " WHERE 1");
+	if (icms::$xoopsDB->getRowsNum($result) > 0) {
 		$set = '';
-		while ($row = $xoopsDB->fetchArray($result))
+		while ($row = icms::$xoopsDB->fetchArray($result))
 			$set .= $row['cid'] . ',';
 		$set = '(' . substr($set, 0, -1) . ')';
-		$sql = "UPDATE " . $xoopsDB->prefix("xcgal_categories") . " " . "SET parent = '0' " . "WHERE parent=cid OR parent NOT IN $set";
-		$result = $xoopsDB->queryf($sql);
+		$sql = "UPDATE " . icms::$xoopsDB->prefix("xcgal_categories") . " " . "SET parent = '0' " . "WHERE parent=cid OR parent NOT IN $set";
+		$result = icms::$xoopsDB->queryf($sql);
 	}
 }
 
 function get_subcat_data($parent, $ident = '') {
-	global $CAT_LIST, $xoopsDB, $myts;
+	global $CAT_LIST, $myts;
 
-	$sql = "SELECT cid, name, description " . "FROM " . $xoopsDB->prefix("xcgal_categories") . " " . "WHERE parent = '$parent' " . "ORDER BY pos";
-	$result = $xoopsDB->query($sql);
+	$sql = "SELECT cid, name, description " . "FROM " . icms::$xoopsDB->prefix("xcgal_categories") . " " . "WHERE parent = '$parent' " . "ORDER BY pos";
+	$result = icms::$xoopsDB->query($sql);
 
-	if (($cat_count = $xoopsDB->getRowsNum($result)) > 0) {
+	if (($cat_count = icms::$xoopsDB->getRowsNum($result)) > 0) {
 		$rowset = db_fetch_rowset($result);
 		$pos = 0;
 		foreach ($rowset as $subcat) {
@@ -70,10 +70,10 @@ function get_subcat_data($parent, $ident = '') {
 }
 
 function update_cat_order() {
-	global $CAT_LIST, $xoopsDB;
+	global $CAT_LIST;
 
 	foreach ($CAT_LIST as $category)
-		$xoopsDB->queryf("UPDATE " . $xoopsDB->prefix("xcgal_categories") . " SET pos='{$category['pos']}' WHERE cid = '{$category['cid']}' LIMIT 1");
+		icms::$xoopsDB->queryf("UPDATE " . icms::$xoopsDB->prefix("xcgal_categories") . " SET pos='{$category['pos']}' WHERE cid = '{$category['cid']}' LIMIT 1");
 }
 
 function cat_list_box($highlight = 0, $curr_cat, $on_change_refresh = true) {
@@ -148,8 +148,8 @@ switch ($op) {
 		$pos1 = (int) $_GET['pos1'];
 		$pos2 = (int) $_GET['pos2'];
 
-		$xoopsDB->queryf("UPDATE " . $xoopsDB->prefix("xcgal_categories") . " SET pos='$pos1' WHERE cid = '$cid1' LIMIT 1");
-		$xoopsDB->queryf("UPDATE " . $xoopsDB->prefix("xcgal_categories") . " SET pos='$pos2' WHERE cid = '$cid2' LIMIT 1");
+		icms::$xoopsDB->queryf("UPDATE " . icms::$xoopsDB->prefix("xcgal_categories") . " SET pos='$pos1' WHERE cid = '$cid1' LIMIT 1");
+		icms::$xoopsDB->queryf("UPDATE " . icms::$xoopsDB->prefix("xcgal_categories") . " SET pos='$pos2' WHERE cid = '$cid2' LIMIT 1");
 		break;
 
 	case 'setparent':
@@ -158,17 +158,17 @@ switch ($op) {
 		$cid = (int) $_GET['cid'];
 		$parent = (int) $_GET['parent'];
 
-		$xoopsDB->queryf("UPDATE " . $xoopsDB->prefix("xcgal_categories") . " SET parent='$parent', pos='-1' WHERE cid = '$cid' LIMIT 1");
+		icms::$xoopsDB->queryf("UPDATE " . icms::$xoopsDB->prefix("xcgal_categories") . " SET parent='$parent', pos='-1' WHERE cid = '$cid' LIMIT 1");
 		break;
 
 	case 'editcat':
 		if (!isset($_GET['cid'])) redirect_header('index.php', 2, sprintf(_AM_CAT_MISS_PARAM, 'editcat'));
 
 		$cid = (int) $_GET['cid'];
-		$result = $xoopsDB->query("SELECT cid, name, parent, description FROM " . $xoopsDB->prefix("xcgal_categories") . " WHERE cid = '$cid' LIMIT 1");
+		$result = icms::$xoopsDB->query("SELECT cid, name, parent, description FROM " . icms::$xoopsDB->prefix("xcgal_categories") . " WHERE cid = '$cid' LIMIT 1");
 
 		if (!$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _AM_CAT_UNKOWN);
-		$current_category = $xoopsDB->fetchArray($result);
+		$current_category = icms::$xoopsDB->fetchArray($result);
 		break;
 
 	case 'updatecat':
@@ -179,7 +179,7 @@ switch ($op) {
 		$name = trim($_POST['name']) ? $myts->addSlashes($_POST['name']) : '&lt;???&gt;';
 		$description = $myts->makeTareaData4Save($_POST['description']);
 
-		$xoopsDB->queryf("UPDATE " . $xoopsDB->prefix("xcgal_categories") . " SET parent='$parent', name='$name', description='$description' WHERE cid = '$cid' LIMIT 1");
+		icms::$xoopsDB->queryf("UPDATE " . icms::$xoopsDB->prefix("xcgal_categories") . " SET parent='$parent', name='$name', description='$description' WHERE cid = '$cid' LIMIT 1");
 		break;
 
 	case 'createcat':
@@ -189,7 +189,7 @@ switch ($op) {
 		$name = trim($_POST['name']) ? $myts->addSlashes($_POST['name']) : '&lt;???&gt;';
 		$description = $myts->makeTareaData4Save($_POST['description']);
 
-		$xoopsDB->queryF("INSERT INTO " . $xoopsDB->prefix("xcgal_categories") . " (pos, parent, name, description) VALUES ('10000', '$parent', '$name', '$description')");
+		icms::$xoopsDB->queryF("INSERT INTO " . icms::$xoopsDB->prefix("xcgal_categories") . " (pos, parent, name, description) VALUES ('10000', '$parent', '$name', '$description')");
 		break;
 
 	case 'deletecat':
@@ -197,14 +197,14 @@ switch ($op) {
 
 		$cid = (int) $_GET['cid'];
 
-		$result = $xoopsDB->query("SELECT parent FROM " . $xoopsDB->prefix("xcgal_categories") . " WHERE cid = '$cid' LIMIT 1");
+		$result = icms::$xoopsDB->query("SELECT parent FROM " . icms::$xoopsDB->prefix("xcgal_categories") . " WHERE cid = '$cid' LIMIT 1");
 		if ($cid == 1) redirect_header('index.php', 2, _AM_CAT_UGAL_CAT_RO);
 		if (!$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _AM_CAT_UNKOWN);
-		$del_category = $xoopsDB->fetchArray($result);
+		$del_category = icms::$xoopsDB->fetchArray($result);
 		$parent = $del_category['parent'];
-		$result = $xoopsDB->queryf("UPDATE " . $xoopsDB->prefix("xcgal_categories") . " SET parent='$parent' WHERE parent = '$cid'");
-		$result = $xoopsDB->queryf("UPDATE " . $xoopsDB->prefix("xcgal_albums") . " SET category='$parent' WHERE category = '$cid'");
-		$result = $xoopsDB->queryf("DELETE FROM " . $xoopsDB->prefix("xcgal_categories") . " WHERE cid='$cid' LIMIT 1");
+		$result = icms::$xoopsDB->queryf("UPDATE " . icms::$xoopsDB->prefix("xcgal_categories") . " SET parent='$parent' WHERE parent = '$cid'");
+		$result = icms::$xoopsDB->queryf("UPDATE " . icms::$xoopsDB->prefix("xcgal_albums") . " SET category='$parent' WHERE category = '$cid'");
+		$result = icms::$xoopsDB->queryf("DELETE FROM " . icms::$xoopsDB->prefix("xcgal_categories") . " WHERE cid='$cid' LIMIT 1");
 		break;
 }
 

@@ -291,12 +291,12 @@ function xcgal_block_meta_edit($options) {
 }
 
 function get_subcat_data_block($parent, $ident = '') {
-	global $CAT_LIST_BLOCK, $xoopsDB, $myts;
+	global $CAT_LIST_BLOCK, $myts;
 	$myts = icms_core_Textsanitizer::getInstance();
-	$sql = "SELECT cid, name, description " . "FROM " . $xoopsDB->prefix("xcgal_categories") . " " . "WHERE parent = '$parent' " . "ORDER BY pos";
-	$result = $xoopsDB->query($sql);
+	$sql = "SELECT cid, name, description " . "FROM " . icms::$xoopsDB->prefix("xcgal_categories") . " " . "WHERE parent = '$parent' " . "ORDER BY pos";
+	$result = icms::$xoopsDB->query($sql);
 
-	if (($cat_count = $xoopsDB->getRowsNum($result)) > 0) {
+	if (($cat_count = icms::$xoopsDB->getRowsNum($result)) > 0) {
 		$rowset = fetch_rowset_block($result);
 		$pos = 0;
 		foreach ($rowset as $subcat) {
@@ -315,7 +315,7 @@ function get_subcat_data_block($parent, $ident = '') {
 
 function pic_data_block($album, $count, $set_caption, $category = "") {
 	global $ALBUM_SET_BLOCK, $GLOBALS;
-	global $xoopsDB, $xcgalModule;
+	global $xcgalModule;
 	$xcgalDir = basename(dirname(dirname(__FILE__)));
 	if ($category !== "") {$filter = " AND category = " . $category;}
 	
@@ -329,9 +329,9 @@ function pic_data_block($album, $count, $set_caption, $category = "") {
 			$module_handler = &xoops_gethandler('module');
 			$xcgalModule = $module_handler->getByDirname($xcgalDir);
 			include_once XOOPS_ROOT_PATH . "/include/comment_constants.php";
-			$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xoopscomments") . ", " . $xoopsDB->prefix("xcgal_pictures") . " WHERE com_modid = " . $xcgalModule->mid() . " AND approved = 'YES' AND pid = com_itemid AND com_status=" . XOOPS_COMMENT_ACTIVE . " $ALBUM_SET_BLOCK ORDER by com_id DESC LIMIT $count");
+			$result = icms::$xoopsDB->query("SELECT $select_columns FROM " . icms::$xoopsDB->prefix("xoopscomments") . ", " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE com_modid = " . $xcgalModule->mid() . " AND approved = 'YES' AND pid = com_itemid AND com_status=" . XOOPS_COMMENT_ACTIVE . " $ALBUM_SET_BLOCK ORDER by com_id DESC LIMIT $count");
 			$rowset = fetch_rowset_block($result);
-			$xoopsDB->freeRecordSet($result);
+			icms::$xoopsDB->freeRecordSet($result);
 
 			$comment_config = $xcgalModule->getInfo('comments');
 			if ($set_caption) foreach ($rowset as $key => $row) {
@@ -354,9 +354,9 @@ function pic_data_block($album, $count, $set_caption, $category = "") {
 		case '2': // Last uploads
 			$select_columns .= ', owner_id';
 
-			$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' $ALBUM_SET_BLOCK ORDER BY pid DESC LIMIT $count");
+			$result = icms::$xoopsDB->query("SELECT $select_columns FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' $ALBUM_SET_BLOCK ORDER BY pid DESC LIMIT $count");
 			$rowset = fetch_rowset_block($result);
-			$xoopsDB->freeRecordSet($result);
+			icms::$xoopsDB->freeRecordSet($result);
 			if ($set_caption) foreach ($rowset as $key => $row) {
 				$user_handler = icms::handler('icms_member');
 				$pic_owner = &$user_handler->getUser($row['owner_id']);
@@ -375,9 +375,9 @@ function pic_data_block($album, $count, $set_caption, $category = "") {
 		case '3': // Most viewed pictures
 			$select_columns .= ', hits';
 
-			$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES'AND hits > 0 $ALBUM_SET_BLOCK ORDER BY hits DESC LIMIT $count");
+			$result = icms::$xoopsDB->query("SELECT $select_columns FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES'AND hits > 0 $ALBUM_SET_BLOCK ORDER BY hits DESC LIMIT $count");
 			$rowset = fetch_rowset_block($result);
-			$xoopsDB->freeRecordSet($result);
+			icms::$xoopsDB->freeRecordSet($result);
 
 			if ($set_caption) foreach ($rowset as $key => $row) {
 				$caption = "<span style=\" font-weight : bold; font-size: 10px; padding: 2px; display : block;\">" . sprintf(_MB_FUNC_VIEW, $row['hits']) . '</span>';
@@ -390,9 +390,9 @@ function pic_data_block($album, $count, $set_caption, $category = "") {
 		case '4': // Top rated pictures
 			$select_columns .= ', pic_rating, votes';
 
-			$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' AND votes > 0 $ALBUM_SET_BLOCK ORDER BY ROUND((pic_rating+1)/2000) DESC, votes DESC LIMIT $count");
+			$result = icms::$xoopsDB->query("SELECT $select_columns FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' AND votes > 0 $ALBUM_SET_BLOCK ORDER BY ROUND((pic_rating+1)/2000) DESC, votes DESC LIMIT $count");
 			$rowset = fetch_rowset_block($result);
-			$xoopsDB->freeRecordSet($result);
+			icms::$xoopsDB->freeRecordSet($result);
 
 			if ($set_caption) foreach ($rowset as $key => $row) {
 				$caption = "<span style=\" font-weight : bold; font-size: 10px; padding: 2px; display : block;\">" . '<img src="' . XOOPS_URL . '/modules/".$xcgalDir."/images/rating' . round($row['pic_rating'] / 2000) . '.gif" align="absmiddle"/>' . '<br />' . sprintf(_MB_FUNC_VOTE, $row['votes']) . '</span>';
@@ -402,18 +402,18 @@ function pic_data_block($album, $count, $set_caption, $category = "") {
 			break;
 
 		case '1': // Random pictures
-			$result = $xoopsDB->query("SELECT count(*) from " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' $ALBUM_SET_BLOCK");
-			$nbEnr = $xoopsDB->fetchArray($result);
+			$result = icms::$xoopsDB->query("SELECT count(*) from " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' $ALBUM_SET_BLOCK");
+			$nbEnr = icms::$xoopsDB->fetchArray($result);
 			$pic_count = $nbEnr['count(*)'];
-			$xoopsDB->freeRecordSet($result);
+			icms::$xoopsDB->freeRecordSet($result);
 
 			// if we have more than 1000 pictures, we limit the number of picture returned
 			// by the SELECT statement as ORDER BY RAND() is time consuming
 			if ($pic_count > 1000) {
-				$result = $xoopsDB->query("SELECT count(*) from " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES'");
-				$nbEnr = $xoopsDB->fetchArray($result);
+				$result = icms::$xoopsDB->query("SELECT count(*) from " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES'");
+				$nbEnr = icms::$xoopsDB->fetchArray($result);
 				$total_count = $nbEnr['count(*)'];
-				$xoopsDB->freeRecordSet($result);
+				icms::$xoopsDB->freeRecordSet($result);
 
 				$granularity = floor($total_count / RANDPOS_MAX_PIC_BLOCK);
 				$cor_gran = ceil($total_count / $pic_count);
@@ -421,26 +421,26 @@ function pic_data_block($album, $count, $set_caption, $category = "") {
 				for ($i = 1; $i <= $cor_gran; $i++ )
 					$random_num_set = rand(0, $granularity) . ', ';
 				$random_num_set = substr($random_num_set, 0, -2);
-				$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE  randpos IN ($random_num_set) AND approved = 'YES' $ALBUM_SET_BLOCK ORDER BY RAND() LIMIT $count");
+				$result = icms::$xoopsDB->query("SELECT $select_columns FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE  randpos IN ($random_num_set) AND approved = 'YES' $ALBUM_SET_BLOCK ORDER BY RAND() LIMIT $count");
 			} else {
-				$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' $ALBUM_SET_BLOCK ORDER BY RAND() LIMIT $count");
+				$result = icms::$xoopsDB->query("SELECT $select_columns FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' $ALBUM_SET_BLOCK ORDER BY RAND() LIMIT $count");
 			}
 
 			$rowset = array();
-			while ($row = $xoopsDB->fetchArray($result)) {
+			while ($row = icms::$xoopsDB->fetchArray($result)) {
 				$row['caption_text'] = '';
 				$rowset[-$row['pid']] = $row;
 			}
-			$xoopsDB->freeRecordSet($result);
+			icms::$xoopsDB->freeRecordSet($result);
 
 			return $rowset;
 			break;
 		case '6': // Top sent ecards
 			$select_columns .= ', sent_card';
 
-			$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' AND sent_card >0 $ALBUM_SET_BLOCK ORDER BY sent_card DESC LIMIT $count");
+			$result = icms::$xoopsDB->query("SELECT $select_columns FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' AND sent_card >0 $ALBUM_SET_BLOCK ORDER BY sent_card DESC LIMIT $count");
 			$rowset = fetch_rowset_block($result);
-			$xoopsDB->freeRecordSet($result);
+			icms::$xoopsDB->freeRecordSet($result);
 
 			if ($set_caption) foreach ($rowset as $key => $row) {
 				$caption = "<span style=\" font-weight : bold; font-size: 10px; padding: 2px; display : block;\">" . sprintf(_MB_FUNC_CARD, $row['sent_card']) . '</span>';
@@ -450,9 +450,9 @@ function pic_data_block($album, $count, $set_caption, $category = "") {
 		case '7': // Last hits
 			$select_columns .= ', mtime';
 
-			$result = $xoopsDB->query("SELECT $select_columns FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' $ALBUM_SET_BLOCK ORDER BY mtime DESC LIMIT $count");
+			$result = icms::$xoopsDB->query("SELECT $select_columns FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE approved = 'YES' $ALBUM_SET_BLOCK ORDER BY mtime DESC LIMIT $count");
 			$rowset = fetch_rowset_block($result);
-			$xoopsDB->freeRecordSet($result);
+			icms::$xoopsDB->freeRecordSet($result);
 
 			if ($set_caption) foreach ($rowset as $key => $row) {
 				$caption = "<span style=\" font-weight : bold; font-size: 10px; padding: 2px; display : block;\">" . formatTimestamp($row['mtime'], 'm') . '</span>';
@@ -464,17 +464,17 @@ function pic_data_block($album, $count, $set_caption, $category = "") {
 }
 
 function fetch_rowset_block($result) {
-	global $xoopsDB;
+	
 	$rowset = array();
 
-	while ($row = $xoopsDB->fetchArray($result))
+	while ($row = icms::$xoopsDB->fetchArray($result))
 		$rowset[] = $row;
 
 	return $rowset;
 }
 
 function block_album_set() {
-	global $ALBUM_SET_BLOCK, $xoopsDB, $xoopsUser;
+	global $ALBUM_SET_BLOCK, $xoopsUser;
 	$xcgalDir = basename(dirname(dirname(__FILE__)));
 	if (is_object($xoopsUser)) {
 		$usergroups = $xoopsUser->getgroups();
@@ -489,14 +489,14 @@ function block_album_set() {
 	if (is_object($xoopsUser) && ($xoopsUser->isAdmin($xcgalModule->mid())))
 		$ALBUM_SET_BLOCK = "";
 	else {
-		$result = $xoopsDB->query("SELECT aid FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE visibility NOT IN ($usergroup, 0," . (BLOCK_FIRST_USER_CAT + $buid) . ")");
-		if (($xoopsDB->getRowsNum($result))) {
+		$result = icms::$xoopsDB->query("SELECT aid FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE visibility NOT IN ($usergroup, 0," . (BLOCK_FIRST_USER_CAT + $buid) . ")");
+		if ((icms::$xoopsDB->getRowsNum($result))) {
 			$set = '';
-			while ($album = $xoopsDB->fetchArray($result)) {
+			while ($album = icms::$xoopsDB->fetchArray($result)) {
 				$set .= $album['aid'] . ',';
 			} // while
 			$ALBUM_SET_BLOCK .= 'AND aid NOT IN (' . substr($set, 0, -1) . ') ';
 		}
-		$xoopsDB->freeRecordSet($result);
+		icms::$xoopsDB->freeRecordSet($result);
 	}
 }

@@ -35,56 +35,56 @@ $member_handler = icms::handler('icms_member');
 $groups = &$member_handler->getGroups();
 
 function synchronize() {
-	global $xoopsDB, $groups, $member_handler;
+	global $groups, $member_handler;
 	$group_exist2 = array();
 	foreach ($groups as $gr) {
 		$group_exist2[$gr->getVar('groupid')] = FALSE;
 	}
-	$result = $xoopsDB->query("SELECT * FROM " . $xoopsDB->prefix("xcgal_usergroups") . " WHERE 1 ORDER BY group_id");
+	$result = icms::$xoopsDB->query("SELECT * FROM " . icms::$xoopsDB->prefix("xcgal_usergroups") . " WHERE 1 ORDER BY group_id");
 
-	while ($myrow = $xoopsDB->fetchArray($result)) {
+	while ($myrow = icms::$xoopsDB->fetchArray($result)) {
 		$group_exist1 = FALSE;
 		// var_dump($myrow['xgroupid']);
 		foreach ($groups as $group) {
 			if ($myrow['xgroupid'] == $group->getVar('groupid')) {
 				if ($myrow['group_name'] != $group->getVar('name')) {
-					$xoopsDB->query("UPDATE " . $xoopsDB->prefix("xcgal_usergroups") . " SET group_name = '" . $group->getVar('name') . "' WHERE xgroupid = '" . (int) $myrow['xgroupid'] . "'");
+					icms::$xoopsDB->query("UPDATE " . icms::$xoopsDB->prefix("xcgal_usergroups") . " SET group_name = '" . $group->getVar('name') . "' WHERE xgroupid = '" . (int) $myrow['xgroupid'] . "'");
 				}
 				$group_exist1 = TRUE;
 				$group_exist2[$group->getVar('groupid')] = TRUE;
 			}
 		}
 		if (!$group_exist1) {
-			$xoopsDB->query("DELETE FROM " . $xoopsDB->prefix("xcgal_usergroups") . " WHERE xgroupid = '" . (int) $myrow['xgroupid'] . "'");
+			icms::$xoopsDB->query("DELETE FROM " . icms::$xoopsDB->prefix("xcgal_usergroups") . " WHERE xgroupid = '" . (int) $myrow['xgroupid'] . "'");
 		}
 	}
 	// for ($i = 0; $i < count($group_exist2); $i++) {
 	foreach ($group_exist2 as $key => $value) {
 		if (!$value) {
 			$group = &$member_handler->getGroup($key);
-			$result = $xoopsDB->queryF("INSERT INTO " . $xoopsDB->prefix("xcgal_usergroups") . " VALUES (" . $key . ", '" . $group->getVar('name') . "', 1024, 0, 1, 1, 1, 1,1,1, 1, " . $key . ")");
+			$result = icms::$xoopsDB->queryF("INSERT INTO " . icms::$xoopsDB->prefix("xcgal_usergroups") . " VALUES (" . $key . ", '" . $group->getVar('name') . "', 1024, 0, 1, 1, 1, 1,1,1, 1, " . $key . ")");
 		}
 	}
 }
 
 function display_group_list() {
-	global $xoopsDB, $tdstyle, $buffer, $groups;
+	global $tdstyle, $buffer, $groups;
 
 	$count = count($groups);
-	$result = $xoopsDB->query("SELECT * FROM " . $xoopsDB->prefix("xcgal_usergroups") . " WHERE 1 ORDER BY group_id");
-	if (!$xoopsDB->getRowsNum($result)) {
+	$result = icms::$xoopsDB->query("SELECT * FROM " . icms::$xoopsDB->prefix("xcgal_usergroups") . " WHERE 1 ORDER BY group_id");
+	if (!icms::$xoopsDB->getRowsNum($result)) {
 
 		// print_r($groups);
 		for ($i = 0; $i < $count; $i++ ) {
 			$id = $groups[$i]->getVar('groupid');
 			if (XOOPS_GROUP_ADMIN == $id) {
-				$result = $xoopsDB->queryF("INSERT INTO " . $xoopsDB->prefix("xcgal_usergroups") . " VALUES (1, '" . $groups[$i]->getVar('name') . "', 0, 1, 1, 1, 1, 1, 1, 0, 0,1)");
+				$result = icms::$xoopsDB->queryF("INSERT INTO " . icms::$xoopsDB->prefix("xcgal_usergroups") . " VALUES (1, '" . $groups[$i]->getVar('name') . "', 0, 1, 1, 1, 1, 1, 1, 0, 0,1)");
 			} elseif (XOOPS_GROUP_USERS == $id) {
-				$result = $xoopsDB->queryF("INSERT INTO " . $xoopsDB->prefix("xcgal_usergroups") . " VALUES (2, '" . $groups[$i]->getVar('name') . "', 1024, 0, 1, 1, 1, 1, 1,1,0, 2)");
+				$result = icms::$xoopsDB->queryF("INSERT INTO " . icms::$xoopsDB->prefix("xcgal_usergroups") . " VALUES (2, '" . $groups[$i]->getVar('name') . "', 1024, 0, 1, 1, 1, 1, 1,1,0, 2)");
 			} elseif (XOOPS_GROUP_ANONYMOUS == $id) {
-				$result = $xoopsDB->queryF("INSERT INTO " . $xoopsDB->prefix("xcgal_usergroups") . " VALUES (3, '" . $groups[$i]->getVar('name') . "', 0, 0, 0, 0, 1, 0, 0 ,1,1,3)");
+				$result = icms::$xoopsDB->queryF("INSERT INTO " . icms::$xoopsDB->prefix("xcgal_usergroups") . " VALUES (3, '" . $groups[$i]->getVar('name') . "', 0, 0, 0, 0, 1, 0, 0 ,1,1,3)");
 			} else {
-				$result = $xoopsDB->queryF("INSERT INTO " . $xoopsDB->prefix("xcgal_usergroups") . " VALUES (" . $id . ", '" . $groups[$i]->getVar('name') . "', 1024, 0, 1, 1, 1, 1,1,1, 1, " . $id . ")");
+				$result = icms::$xoopsDB->queryF("INSERT INTO " . icms::$xoopsDB->prefix("xcgal_usergroups") . " VALUES (" . $id . ", '" . $groups[$i]->getVar('name') . "', 1024, 0, 1, 1, 1, 1,1,1, 1, " . $id . ")");
 			}
 		}
 
@@ -95,7 +95,7 @@ function display_group_list() {
 	$field_list = array('can_rate_pictures', 'can_send_ecards', 'can_post_comments', 'can_upload_pictures', 'pub_upl_need_approval', 'can_create_albums', 'priv_upl_need_approval');
 	$tdstyle = "even";
 	echo $buffer;
-	while ($group = $xoopsDB->fetchArray($result)) {
+	while ($group = icms::$xoopsDB->fetchArray($result)) {
 		$group['group_name'] = $group['group_name'];
 		if ($tdstyle == "even")
 			$tdstyle = "odd";
@@ -127,7 +127,7 @@ EOT;
 		}
 		echo "</tr>";
 	} // while
-	$xoopsDB->freeRecordSet($result);
+	icms::$xoopsDB->freeRecordSet($result);
 }
 
 function get_post_var($var) {
@@ -136,7 +136,7 @@ function get_post_var($var) {
 }
 
 function process_post_data() {
-	global $xoopsDB;
+	
 
 	$field_list = array('group_quota', 'can_rate_pictures', 'can_send_ecards', 'can_post_comments', 'can_upload_pictures', 'pub_upl_need_approval', 'can_create_albums', 'priv_upl_need_approval');
 
@@ -152,7 +152,7 @@ function process_post_data() {
 			}
 		}
 		$set_statment = substr($set_statment, 0, -1);
-		$xoopsDB->query("UPDATE " . $xoopsDB->prefix("xcgal_usergroups") . " SET $set_statment WHERE group_id = '$group_id' LIMIT 1");
+		icms::$xoopsDB->query("UPDATE " . icms::$xoopsDB->prefix("xcgal_usergroups") . " SET $set_statment WHERE group_id = '$group_id' LIMIT 1");
 	}
 }
 

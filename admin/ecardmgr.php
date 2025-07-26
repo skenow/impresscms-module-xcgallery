@@ -32,16 +32,16 @@ include "header.php";
 $xcgalDir = basename(dirname(dirname(__FILE__)));
 
 function delete_cards($e_ids) {
-	global $xoopsDB;
+	
 
 	foreach ($e_ids as $e_id) {
-		$xoopsDB->query("DELETE FROM " . $xoopsDB->prefix("xcgal_ecard") . " WHERE e_id = '" . $e_id . "'");
+		icms::$xoopsDB->query("DELETE FROM " . icms::$xoopsDB->prefix("xcgal_ecard") . " WHERE e_id = '" . $e_id . "'");
 	}
 }
 
 $card_per_page = 25;
 $delete_time = time() - (icms::$module->config['ecards_saved_db'] * 86400);
-$xoopsDB->queryf("DELETE from " . $xoopsDB->prefix("xcgal_ecard") . " WHERE s_time < " . $delete_time . "");
+icms::$xoopsDB->queryf("DELETE from " . icms::$xoopsDB->prefix("xcgal_ecard") . " WHERE s_time < " . $delete_time . "");
 
 if (isset($_POST['card_action'])) {
 	if ($_POST['card_action'] == 1) {
@@ -50,11 +50,11 @@ if (isset($_POST['card_action'])) {
 			delete_cards($ecard_array);
 		}
 	} elseif ($_POST['card_action'] == 2) {
-		$xoopsDB->query("DELETE FROM " . $xoopsDB->prefix("xcgal_ecard") . "");
+		icms::$xoopsDB->query("DELETE FROM " . icms::$xoopsDB->prefix("xcgal_ecard") . "");
 	} elseif ($_POST['card_action'] == 3) {
-		$xoopsDB->query("DELETE FROM " . $xoopsDB->prefix("xcgal_ecard") . " WHERE picked=1");
+		icms::$xoopsDB->query("DELETE FROM " . icms::$xoopsDB->prefix("xcgal_ecard") . " WHERE picked=1");
 	} elseif ($_POST['card_action'] == 4) {
-		$xoopsDB->query("DELETE FROM " . $xoopsDB->prefix("xcgal_ecard") . " WHERE picked=0");
+		icms::$xoopsDB->query("DELETE FROM " . icms::$xoopsDB->prefix("xcgal_ecard") . " WHERE picked=0");
 	}
 }
 $tab_tmpl = array('left_text' => '<td width="100%%" align="left" valign="middle" class="tableh1_compact" style="white-space: nowrap"><b>' . _AM_CARDMGR_CONPAGE . '</b></td>' . "\n",
@@ -65,13 +65,13 @@ $tab_tmpl = array('left_text' => '<td width="100%%" align="left" valign="middle"
 $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
 
 $lower_limit = ($page - 1) * $card_per_page;
-$result = $xoopsDB->query("SELECT count(*) FROM " . $xoopsDB->prefix("xcgal_ecard") . " WHERE 1");
-$nbEnr = $xoopsDB->fetchArray($result);
+$result = icms::$xoopsDB->query("SELECT count(*) FROM " . icms::$xoopsDB->prefix("xcgal_ecard") . " WHERE 1");
+$nbEnr = icms::$xoopsDB->fetchArray($result);
 $card_count = $nbEnr['count(*)'];
-$xoopsDB->freeRecordSet($result);
+icms::$xoopsDB->freeRecordSet($result);
 $total_pages = ceil($card_count / $card_per_page);
 $tabs = create_tabs($card_count, $page, $total_pages, $tab_tmpl);
-$result = $xoopsDB->query("SELECT * FROM " . $xoopsDB->prefix("xcgal_ecard") . " ORDER BY s_time DESC LIMIT $lower_limit, $card_per_page");
+$result = icms::$xoopsDB->query("SELECT * FROM " . icms::$xoopsDB->prefix("xcgal_ecard") . " ORDER BY s_time DESC LIMIT $lower_limit, $card_per_page");
 
 icms_cp_header();
 
@@ -91,7 +91,7 @@ echo "<table border='0' cellpadding='0' cellspacing='1' width='100%' class='oute
 echo "<tr><td class=\"head\"><input name='allbox' id='allbox' onclick='xoopsCheckAll(\"ecard\", \"allbox\");' type='checkbox' value='Check All' /></td><td class=\"head\">" . _AM_CARDMGR_TIME . "</td><td class=\"head\">" . _AM_CARDMGR_SUNAME . "</td><td class=\"head\">" . _AM_CARDMGR_SEMAIL . "</td><td class=\"head\">" . _AM_CARDMGR_SIP . "</td><td class=\"head\">" . _AM_CARDMGR_PID . "</td><td class=\"head\">" . _AM_CARDMGR_STATUS . "</td></tr>";
 $tdstyle = "even";
 $user_handler = icms::handler('icms_member');
-while ($row = $xoopsDB->fetchArray($result)) {
+while ($row = icms::$xoopsDB->fetchArray($result)) {
 	if ($tdstyle == "even")
 		$tdstyle = "odd";
 	else

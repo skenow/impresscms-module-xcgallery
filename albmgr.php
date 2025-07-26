@@ -35,10 +35,10 @@ require ('include/init.inc.php');
 if (!(GALLERY_ADMIN_MODE || USER_ADMIN_MODE)) redirect_header('index.php', 2, _MD_ACCESS_DENIED);
 
 function get_subcat_data($parent, $ident = '') {
-	global $CAT_LIST, $xoopsDB;
+	global $CAT_LIST;
 
-	$result = $xoopsDB->query("SELECT cid, name, description FROM " . $xoopsDB->prefix("xcgal_categories") . " WHERE parent = '$parent' AND cid != 1 ORDER BY pos");
-	if ($xoopsDB->getRowsNum($result) > 0) {
+	$result = icms::$xoopsDB->query("SELECT cid, name, description FROM " . icms::$xoopsDB->prefix("xcgal_categories") . " WHERE parent = '$parent' AND cid != 1 ORDER BY pos");
+	if (icms::$xoopsDB->getRowsNum($result) > 0) {
 		$rowset = db_fetch_rowset($result);
 		foreach ($rowset as $subcat) {
 			$CAT_LIST[] = array (
@@ -65,9 +65,9 @@ $cat = isset($_GET['cat']) ? ($_GET['cat']) : 0;
 if ($cat == 1) $cat = 0;
 
 if (GALLERY_ADMIN_MODE) {
-	$result = $xoopsDB->query("SELECT aid, title FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE category = $cat ORDER BY pos ASC");
+	$result = icms::$xoopsDB->query("SELECT aid, title FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE category = $cat ORDER BY pos ASC");
 } elseif (USER_ADMIN_MODE) {
-	$result = $xoopsDB->query("SELECT aid, title FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE category = " . (USER_ID + FIRST_USER_CAT) . " ORDER BY pos ASC");
+	$result = icms::$xoopsDB->query("SELECT aid, title FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE category = " . (USER_ID + FIRST_USER_CAT) . " ORDER BY pos ASC");
 } else
 	redirect_header('index.php', 2, _MD_PERM_DENIED);
 $rowset = db_fetch_rowset($result);

@@ -73,19 +73,19 @@ function form_alb_list_box() {
 }
 
 if (GALLERY_ADMIN_MODE) {
-	$public_albums = $xoopsDB->query("SELECT aid, title FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE category < " . FIRST_USER_CAT . " ORDER BY title");
+	$public_albums = icms::$xoopsDB->query("SELECT aid, title FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE category < " . FIRST_USER_CAT . " ORDER BY title");
 } else {
-	$public_albums = $xoopsDB->query("SELECT aid, title FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE category < " . FIRST_USER_CAT . " AND uploads='YES' ORDER BY title");
+	$public_albums = icms::$xoopsDB->query("SELECT aid, title FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE category < " . FIRST_USER_CAT . " AND uploads='YES' ORDER BY title");
 }
-if ($xoopsDB->getRowsNum($public_albums)) {
+if (icms::$xoopsDB->getRowsNum($public_albums)) {
 	$public_albums_list = db_fetch_rowset($public_albums);
 } else {
 	$public_albums_list = array ();
 }
 
 if (USER_ID) {
-	$user_albums = $xoopsDB->query("SELECT aid, title FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE category='" . (FIRST_USER_CAT + USER_ID) . "' ORDER BY title");
-	if ($xoopsDB->getRowsNum($user_albums)) {
+	$user_albums = icms::$xoopsDB->query("SELECT aid, title FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE category='" . (FIRST_USER_CAT + USER_ID) . "' ORDER BY title");
+	if (icms::$xoopsDB->getRowsNum($user_albums)) {
 		$user_albums_list = db_fetch_rowset($user_albums);
 	} else {
 		$user_albums_list = array ();
@@ -94,10 +94,10 @@ if (USER_ID) {
 	$user_albums_list = array ();
 }
 get_private_album_set();
-$other_user = $xoopsDB->query("SELECT aid, title, category FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE category > " . FIRST_USER_CAT . " AND uploads='YES' AND category!='" . (FIRST_USER_CAT + USER_ID) . "' $ALBUM_SET ORDER BY category");
+$other_user = icms::$xoopsDB->query("SELECT aid, title, category FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE category > " . FIRST_USER_CAT . " AND uploads='YES' AND category!='" . (FIRST_USER_CAT + USER_ID) . "' $ALBUM_SET ORDER BY category");
 
 // var_dump($other_user);
-if ($xoopsDB->getRowsNum($other_user)) {
+if (icms::$xoopsDB->getRowsNum($other_user)) {
 	$other_user_albums_list = db_fetch_rowset($other_user);
 } else {
 	$other_user_albums_list = array ();

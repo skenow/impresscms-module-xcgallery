@@ -32,7 +32,7 @@ include "header.php";
 
 // if (!GALLERY_ADMIN_MODE) redirect_header('index.php',2,$lang_errors['access_denied']);
 function list_users() {
-	global $PHP_SELF, $xoopsDB, $xoopsConfig;
+	global $PHP_SELF, $xoopsConfig;
 
 	$sort = (!isset($_GET['sort']) || !isset($sort_codes[$_GET['sort']])) ? 'name_a' : $_GET['sort'];
 	$tab_tmpl = array('left_text' => '<td width="100%%" align="left" valign="middle" class="tableh1_compact" style="white-space: nowrap"><b>' . _AM_USERMGR_UONPAGE . '</b></td>' . "\n",
@@ -41,10 +41,10 @@ function list_users() {
 		'active_tab' => '<td><img src="../images/spacer.gif" width="1" height="1"></td>' . "\n" . '<td align="center" valign="middle" class="tableb_compact"><b>%d</b></td>',
 		'inactive_tab' => '<td><img src="../images/spacer.gif" width="1" height="1"></td>' . "\n" . '<td align="center" valign="middle" class="navmenu"><a href="' . $PHP_SELF . '?page=%d&op=showuser"<b>%d</b></a></td>' . "\n");
 
-	$result = $xoopsDB->query("SELECT COUNT(DISTINCT owner_id) as owners FROM " . $xoopsDB->prefix("xcgal_pictures") . " ");
-	$nbEnr = $xoopsDB->fetchArray($result);
+	$result = icms::$xoopsDB->query("SELECT COUNT(DISTINCT owner_id) as owners FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " ");
+	$nbEnr = icms::$xoopsDB->fetchArray($result);
 	$user_count = $nbEnr['owners'];
-	$xoopsDB->freeRecordSet($result);
+	icms::$xoopsDB->freeRecordSet($result);
 	$byte = _AM_GRPMGR_KB;
 	if (!$user_count) redirect_header('index.php', 2, _AM_USERMGR_NOUSER);
 
@@ -54,12 +54,12 @@ function list_users() {
 	$total_pages = ceil($user_count / $user_per_page);
 
 	$sql = "SELECT owner_id, COUNT(pid) as pic_count, " . "ROUND(SUM(total_filesize)/1024) as disk_usage " . "FROM " .
-	// "LEFT JOIN ".$xoopsDB->prefix("xcgal_albums")." AS a ON category = ".FIRST_USER_CAT." + uid ".
-	"" . $xoopsDB->prefix("xcgal_pictures") . " " . "GROUP BY owner_id " . "LIMIT $lower_limit, $user_per_page";
-	$sql2 = "SELECT category, COUNT(aid) as alb FROM " . "" . $xoopsDB->prefix("xcgal_albums") . " WHERE category > " . FIRST_USER_CAT . " " . "GROUP BY category ";
+	// "LEFT JOIN ".icms::$xoopsDB->prefix("xcgal_albums")." AS a ON category = ".FIRST_USER_CAT." + uid ".
+	"" . icms::$xoopsDB->prefix("xcgal_pictures") . " " . "GROUP BY owner_id " . "LIMIT $lower_limit, $user_per_page";
+	$sql2 = "SELECT category, COUNT(aid) as alb FROM " . "" . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE category > " . FIRST_USER_CAT . " " . "GROUP BY category ";
 
-	$result = $xoopsDB->query($sql);
-	$result2 = $xoopsDB->query($sql2);
+	$result = icms::$xoopsDB->query($sql);
+	$result2 = icms::$xoopsDB->query($sql2);
 	$albs = db_fetch_rowset($result2);
 	$tabs = create_tabs($user_count, $page, $total_pages, $tab_tmpl);
 
@@ -70,7 +70,7 @@ function list_users() {
 
 	$tdstyle = "even";
 	$user_handler = icms::handler('icms_member');
-	while ($user = $xoopsDB->fetchArray($result)) {
+	while ($user = icms::$xoopsDB->fetchArray($result)) {
 		$pic_owner = &$user_handler->getUser($user['owner_id']);
 		if ($user['pic_count'] && is_object($pic_owner)) {
 			$usr_link_start = '<a href="../index.php?cat=' . ($user['owner_id'] + FIRST_USER_CAT) . '" target="_blank">';
@@ -106,7 +106,7 @@ EOT;
 		
 EOT;
 	} // while
-	$xoopsDB->freeRecordSet($result);
+	icms::$xoopsDB->freeRecordSet($result);
 	echo <<<EOT
 	        <tr>
 	                <td colspan="8" class="foot">
@@ -123,21 +123,21 @@ EOT;
 }
 
 function list_deleted_users() {
-	global $PHP_SELF, $xoopsDB;
+	global $PHP_SELF;
 	global $CAT_LIST, $member_handler;
 
 	get_subcat_data(0);
 	$box = cat_list_box();
-	$sql = "SELECT aid, title, category, pic_count " . "FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE category > " . FIRST_USER_CAT . "";
+	$sql = "SELECT aid, title, category, pic_count " . "FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE category > " . FIRST_USER_CAT . "";
 	// "GROUP BY category";
-	$result = $xoopsDB->query($sql);
+	$result = icms::$xoopsDB->query($sql);
 	if (!$result) return;
 	echo "<form method=\"post\" name=\"deluseralb\" action=\"{$PHP_SELF}\">";
 	echo "<table border='0' cellpadding='0' cellspacing='1' width='100%' class='outer'><tr><th colspan='6'>" . _AM_USERMGR_ULIST . "</th></tr>";
 	echo "<tr><td class=\"head\">" . _AM_USERMGR_ALB . "</td><td class=\"head\">" . _AM_USERMGR_DELUID . "</td><td class=\"head\" colspan=\"4\">" . _AM_USERMGR_OPT . "</td></tr>";
 
 	$tdstyle = "even";
-	while ($deluser = $xoopsDB->fetchArray($result)) {
+	while ($deluser = icms::$xoopsDB->fetchArray($result)) {
 		$deleted = &$member_handler->getUser(($deluser['category'] - FIRST_USER_CAT));
 		if (!is_object($deleted)) {
 			if ($tdstyle == "even")
@@ -157,7 +157,7 @@ function list_deleted_users() {
 }
 
 function movealb() {
-	global $xoopsDB;
+	
 	if (!isset($_POST['album']) || !is_array($_POST['album'])) return;
 	$album_array = &$_POST['album'];
 	foreach ($album_array as $key => $value) {
@@ -167,19 +167,19 @@ function movealb() {
 	}
 	foreach ($album_array as $alb) {
 		if ($alb[1] != -1) {
-			$query = "UPDATE " . $xoopsDB->prefix("xcgal_albums") . " SET category='" . $alb[1] . "' WHERE aid='" . $alb[0] . "' LIMIT 1";
-			$update = $xoopsDB->query($query);
+			$query = "UPDATE " . icms::$xoopsDB->prefix("xcgal_albums") . " SET category='" . $alb[1] . "' WHERE aid='" . $alb[0] . "' LIMIT 1";
+			$update = icms::$xoopsDB->query($query);
 		}
 	}
 }
 
 function get_subcat_data($parent, $ident = '') {
-	global $CAT_LIST, $xoopsDB;
+	global $CAT_LIST;
 
-	$sql = "SELECT cid, name, description " . "FROM " . $xoopsDB->prefix("xcgal_categories") . " " . "WHERE parent = '$parent' " . "ORDER BY pos";
-	$result = $xoopsDB->query($sql);
+	$sql = "SELECT cid, name, description " . "FROM " . icms::$xoopsDB->prefix("xcgal_categories") . " " . "WHERE parent = '$parent' " . "ORDER BY pos";
+	$result = icms::$xoopsDB->query($sql);
 
-	if (($cat_count = $xoopsDB->getRowsNum($result)) > 0) {
+	if (($cat_count = icms::$xoopsDB->getRowsNum($result)) > 0) {
 		$rowset = db_fetch_rowset($result);
 		$pos = 0;
 		foreach ($rowset as $subcat) {

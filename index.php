@@ -48,25 +48,25 @@ function html_albummenu($id) {
 }
 
 function get_subcat_data($parent, &$cat_data, &$album_set_array, $level, $ident = '') {
-	global $HIDE_USER_CAT, $xoopsDB, $myts;
+	global $HIDE_USER_CAT, $myts;
 	
-	$sql = $xoopsDB->query("SELECT cid, name, description FROM " . $xoopsDB->prefix("xcgal_categories") . " WHERE parent = '$parent'  ORDER BY pos");
+	$sql = icms::$xoopsDB->query("SELECT cid, name, description FROM " . icms::$xoopsDB->prefix("xcgal_categories") . " WHERE parent = '$parent'  ORDER BY pos");
 	
-	if ($xoopsDB->getRowsNum($sql) > 0) {
+	if (icms::$xoopsDB->getRowsNum($sql) > 0) {
 		// $rowset = db_fetch_rowset($result);
-		while ($subcat = $xoopsDB->fetchArray($sql)) {
+		while ($subcat = icms::$xoopsDB->fetchArray($sql)) {
 	
 			if ($subcat['cid'] == USER_GAL_CAT) {
-				$result = $xoopsDB->query("SELECT aid FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE category >= " . FIRST_USER_CAT);
-				$album_count = $xoopsDB->getRowsNum($result);
-				while ($row = $xoopsDB->fetchArray($result)) {
+				$result = icms::$xoopsDB->query("SELECT aid FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE category >= " . FIRST_USER_CAT);
+				$album_count = icms::$xoopsDB->getRowsNum($result);
+				while ($row = icms::$xoopsDB->fetchArray($result)) {
 					$album_set_array[] = $row['aid'];
 				} // while
-				$xoopsDB->freeRecordSet($result);
+				icms::$xoopsDB->freeRecordSet($result);
 	
-				$result = $xoopsDB->query("SELECT * FROM " . $xoopsDB->prefix("xcgal_pictures") . ", " . $xoopsDB->prefix("xcgal_albums") . " WHERE " . $xoopsDB->prefix("xcgal_pictures") . ".aid = " . $xoopsDB->prefix("xcgal_albums") . ".aid AND category >= " . FIRST_USER_CAT);
-				$pic_count = $xoopsDB->getRowsNum($result);
-				$xoopsDB->freeRecordSet($result);
+				$result = icms::$xoopsDB->query("SELECT * FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . ", " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE " . icms::$xoopsDB->prefix("xcgal_pictures") . ".aid = " . icms::$xoopsDB->prefix("xcgal_albums") . ".aid AND category >= " . FIRST_USER_CAT);
+				$pic_count = icms::$xoopsDB->getRowsNum($result);
+				icms::$xoopsDB->freeRecordSet($result);
 				$subcat['description'] = preg_replace("/<br \/>/i", '<br />' . $ident, $myts->makeTareaData4Show($subcat['description']));
 				$link = $ident . "<a href=index.php?cat={$subcat['cid']}>" . icms_core_DataFilter::htmlSpecialchars($subcat['name']) . "</a>";
 				if ($album_count) {
@@ -81,16 +81,16 @@ function get_subcat_data($parent, &$cat_data, &$album_set_array, $level, $ident 
 					$HIDE_USER_CAT = 1;
 				}
 			} else {
-				$result = $xoopsDB->query("SELECT aid FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE category = {$subcat['cid']}");
-				$album_count = $xoopsDB->getRowsNum($result);
-				while ($row = $xoopsDB->fetchArray($result)) {
+				$result = icms::$xoopsDB->query("SELECT aid FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE category = {$subcat['cid']}");
+				$album_count = icms::$xoopsDB->getRowsNum($result);
+				while ($row = icms::$xoopsDB->fetchArray($result)) {
 					$album_set_array[] = $row['aid'];
 				} // while
-				$xoopsDB->freeRecordSet($result);
+				icms::$xoopsDB->freeRecordSet($result);
 	
-				$result = $xoopsDB->query("SELECT * FROM " . $xoopsDB->prefix("xcgal_pictures") . ", " . $xoopsDB->prefix("xcgal_albums") . " WHERE " . $xoopsDB->prefix("xcgal_pictures") . ".approved='YES' AND " . $xoopsDB->prefix("xcgal_pictures") . ".aid = " . $xoopsDB->prefix("xcgal_albums") . ".aid AND category = {$subcat['cid']}");
-				$pic_count = $xoopsDB->getRowsNum($result);
-				$xoopsDB->freeRecordSet($result);
+				$result = icms::$xoopsDB->query("SELECT * FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . ", " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE " . icms::$xoopsDB->prefix("xcgal_pictures") . ".approved='YES' AND " . icms::$xoopsDB->prefix("xcgal_pictures") . ".aid = " . icms::$xoopsDB->prefix("xcgal_albums") . ".aid AND category = {$subcat['cid']}");
+				$pic_count = icms::$xoopsDB->getRowsNum($result);
+				icms::$xoopsDB->freeRecordSet($result);
 	
 				$subcat['name'] = icms_core_DataFilter::htmlSpecialchars($subcat['name']);
 				$subcat['description'] = preg_replace("/<br \/>/i", '<br />' . $ident, $myts->makeTareaData4Show($subcat['description']));
@@ -119,7 +119,7 @@ function get_subcat_data($parent, &$cat_data, &$album_set_array, $level, $ident 
 function get_cat_list(&$breadcrumb, &$cat_data, &$statistics) {
 	global $ALBUM_SET, $CURRENT_CAT_NAME, $BREADCRUMB_TEXT, $STATS_IN_ALB_LIST;
 	global $HIDE_USER_CAT;
-	global $xoopsDB;
+	
 	
 	$cat = isset($_GET['cat']) ? (int) $_GET['cat'] : 0;
 	
@@ -134,14 +134,14 @@ function get_cat_list(&$breadcrumb, &$cat_data, &$statistics) {
 	// Treat the album set
 	if ($cat) {
 		if ($cat == USER_GAL_CAT) {
-			$result = $xoopsDB->query("SELECT aid FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE category >= " . FIRST_USER_CAT);
+			$result = icms::$xoopsDB->query("SELECT aid FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE category >= " . FIRST_USER_CAT);
 		} else {
-			$result = $xoopsDB->query("SELECT aid FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE category = '$cat'");
+			$result = icms::$xoopsDB->query("SELECT aid FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE category = '$cat'");
 		}
-		while ($row = $xoopsDB->fetchArray($result)) {
+		while ($row = icms::$xoopsDB->fetchArray($result)) {
 			$album_set_array[] = $row['aid'];
 		} // while
-		$xoopsDB->freeRecordSet($result);
+		icms::$xoopsDB->freeRecordSet($result);
 	}
 	if (count($album_set_array) && $cat) {
 		$set = '';
@@ -157,24 +157,24 @@ function get_cat_list(&$breadcrumb, &$cat_data, &$statistics) {
 	
 	// Gather gallery statistics
 	if ($cat == 0) {
-		$result = $xoopsDB->query("SELECT * FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE 1");
-		$album_count = $xoopsDB->getRowsNum($result);
-		$xoopsDB->freeRecordSet($result);
+		$result = icms::$xoopsDB->query("SELECT * FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE 1");
+		$album_count = icms::$xoopsDB->getRowsNum($result);
+		icms::$xoopsDB->freeRecordSet($result);
 	
-		$result = $xoopsDB->query("SELECT * FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE 1 AND approved='YES'");
-		$picture_count = $xoopsDB->getRowsNum($result);
-		$xoopsDB->freeRecordSet($result);
+		$result = icms::$xoopsDB->query("SELECT * FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE 1 AND approved='YES'");
+		$picture_count = icms::$xoopsDB->getRowsNum($result);
+		icms::$xoopsDB->freeRecordSet($result);
 	
 		$comment_count = xoops_comment_count(icms::$module->getVar('mid'));
 	
-		$result = $xoopsDB->query("SELECT * FROM " . $xoopsDB->prefix("xcgal_categories") . " WHERE 1");
-		$cat_count = $xoopsDB->getRowsNum($result) - $HIDE_USER_CAT;
-		$xoopsDB->freeRecordSet($result);
+		$result = icms::$xoopsDB->query("SELECT * FROM " . icms::$xoopsDB->prefix("xcgal_categories") . " WHERE 1");
+		$cat_count = icms::$xoopsDB->getRowsNum($result) - $HIDE_USER_CAT;
+		icms::$xoopsDB->freeRecordSet($result);
 	
-		$result = $xoopsDB->query("SELECT sum(hits) FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE 1");
-		$nbEnr = $xoopsDB->fetchArray($result);
+		$result = icms::$xoopsDB->query("SELECT sum(hits) FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE 1");
+		$nbEnr = icms::$xoopsDB->fetchArray($result);
 		$hit_count = (int) $nbEnr['sum(hits)'];
-		$xoopsDB->freeRecordSet($result);
+		icms::$xoopsDB->freeRecordSet($result);
 	
 		if (count($cat_data)) {
 			$statistics = strtr(_MD_INDEX_STAT1, array (
@@ -194,20 +194,20 @@ function get_cat_list(&$breadcrumb, &$cat_data, &$statistics) {
 			));
 		}
 	} elseif ($cat >= FIRST_USER_CAT && $ALBUM_SET) {
-		$result = $xoopsDB->query("SELECT count(*) FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE 1 $current_album_set");
-		$nbEnr = $xoopsDB->fetchArray($result);
+		$result = icms::$xoopsDB->query("SELECT count(*) FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE 1 $current_album_set");
+		$nbEnr = icms::$xoopsDB->fetchArray($result);
 		$album_count = $nbEnr['count(*)'];
-		$xoopsDB->freeRecordSet($result);
+		icms::$xoopsDB->freeRecordSet($result);
 	
-		$result = $xoopsDB->query("SELECT count(*) FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE 1 $current_album_set");
-		$nbEnr = $xoopsDB->fetchArray($result);
+		$result = icms::$xoopsDB->query("SELECT count(*) FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE 1 $current_album_set");
+		$nbEnr = icms::$xoopsDB->fetchArray($result);
 		$picture_count = $nbEnr['count(*)'];
-		$xoopsDB->freeRecordSet($result);
+		icms::$xoopsDB->freeRecordSet($result);
 	
-		$result = $xoopsDB->query("SELECT sum(hits) FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE 1 $current_album_set");
-		$nbEnr = $xoopsDB->fetchArray($result);
+		$result = icms::$xoopsDB->query("SELECT sum(hits) FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE 1 $current_album_set");
+		$nbEnr = icms::$xoopsDB->fetchArray($result);
 		$hit_count = (int) $nbEnr['sum(hits)'];
-		$xoopsDB->freeRecordSet($result);
+		icms::$xoopsDB->freeRecordSet($result);
 	
 		$statistics = strtr(_MD_INDEX_STAT2, array (
 			'[pictures]' => $picture_count,
@@ -220,19 +220,19 @@ function get_cat_list(&$breadcrumb, &$cat_data, &$statistics) {
 }
 
 function list_users() {
-	global $PAGE, $FORBIDDEN_SET, $xoopsDB, $myts;
+	global $PAGE, $FORBIDDEN_SET, $myts;
 	
-	$sql = "SELECT category, COUNT(DISTINCT a.aid) as alb_count, COUNT(DISTINCT pid) as pic_count, MAX(pid) as thumb_pid FROM " . $xoopsDB->prefix("xcgal_albums") . " AS a, " . "" . $xoopsDB->prefix("xcgal_pictures") . " AS p WHERE category > " . FIRST_USER_CAT . " AND p.aid = a.aid AND approved = 'YES' " . "$FORBIDDEN_SET " . "GROUP BY category " . "ORDER BY category ";
-	$result = $xoopsDB->query($sql);
+	$sql = "SELECT category, COUNT(DISTINCT a.aid) as alb_count, COUNT(DISTINCT pid) as pic_count, MAX(pid) as thumb_pid FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " AS a, " . "" . icms::$xoopsDB->prefix("xcgal_pictures") . " AS p WHERE category > " . FIRST_USER_CAT . " AND p.aid = a.aid AND approved = 'YES' " . "$FORBIDDEN_SET " . "GROUP BY category " . "ORDER BY category ";
+	$result = icms::$xoopsDB->query($sql);
 	
-	$user_count = $xoopsDB->getRowsNum($result);
+	$user_count = icms::$xoopsDB->getRowsNum($result);
 	if (!$user_count) {
 		redirect_header('index.php', 2, _MD_INDEX_NO_UGAL);
 	
 		return;
 	}
 	$rowset = db_fetch_rowset($result);
-	$xoopsDB->freeRecordSet($result);
+	icms::$xoopsDB->freeRecordSet($result);
 	
 	$user_per_page = icms::$module->config['thumbcols'] * icms::$module->config['thumbrows'];
 	$totalPages = ceil($user_count / $user_per_page);
@@ -250,11 +250,11 @@ function list_users() {
 		$user_album_count = $user['alb_count'];
 	
 		if ($user_pic_count) {
-			$sql = "SELECT filepath, filename, url_prefix, pwidth, pheight FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE pid='$user_thumb_pid'";
-			$result = $xoopsDB->query($sql);
-			if ($xoopsDB->getRowsNum($result)) {
-				$picture = $xoopsDB->fetchArray($result);
-				$xoopsDB->freeRecordSet($result);
+			$sql = "SELECT filepath, filename, url_prefix, pwidth, pheight FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE pid='$user_thumb_pid'";
+			$result = icms::$xoopsDB->query($sql);
+			if (icms::$xoopsDB->getRowsNum($result)) {
+				$picture = icms::$xoopsDB->fetchArray($result);
+				icms::$xoopsDB->freeRecordSet($result);
 	
 				$image_size = compute_img_size($picture['pwidth'], $picture['pheight'], icms::$module->config['thumb_width']);
 				$user_thumb = "<img src=\"" . get_pic_url($picture, 'thumb') . "\" {$image_size['geom']} alt=\"\" border=\"0\" class=\"image\" />";
@@ -283,17 +283,17 @@ function list_users() {
 // List all albums
 function list_albums() {
 	global $USER, $PAGE, $lastup_date_fmt, $USER_DATA;
-	global $xoopsDB;
+	
 	$myts = icms_core_Textsanitizer::getInstance();
 	$cat = isset($_GET['cat']) ? (int) $_GET['cat'] : 0;
 	
 	$alb_per_page = icms::$module->config['albums_per_page'];
 	$maxTab = icms::$module->config['max_tabs'];
 	
-	$result = $xoopsDB->query("SELECT count(*) FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE category = '$cat'");
-	$nbEnr = $xoopsDB->fetchArray($result);
+	$result = icms::$xoopsDB->query("SELECT count(*) FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE category = '$cat'");
+	$nbEnr = icms::$xoopsDB->fetchArray($result);
 	$nbAlb = $nbEnr['count(*)'];
-	$xoopsDB->freeRecordSet($result);
+	icms::$xoopsDB->freeRecordSet($result);
 	
 	if ($nbAlb == 0) {
 		return;
@@ -306,10 +306,10 @@ function list_albums() {
 	$upper_limit = min($nbAlb, $PAGE * $alb_per_page);
 	$limit = "LIMIT " . $lower_limit . "," . ($upper_limit - $lower_limit);
 	
-	$sql = "SELECT a.aid, a.title, description, visibility, filepath, filename, url_prefix, pwidth, pheight FROM " . $xoopsDB->prefix("xcgal_albums") . " as a LEFT JOIN " . $xoopsDB->prefix("xcgal_pictures") . " as p ON thumb=pid WHERE category = '$cat' ORDER BY pos " . "$limit";
-	$alb_thumbs_q = $xoopsDB->query($sql);
+	$sql = "SELECT a.aid, a.title, description, visibility, filepath, filename, url_prefix, pwidth, pheight FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " as a LEFT JOIN " . icms::$xoopsDB->prefix("xcgal_pictures") . " as p ON thumb=pid WHERE category = '$cat' ORDER BY pos " . "$limit";
+	$alb_thumbs_q = icms::$xoopsDB->query($sql);
 	$alb_thumbs = db_fetch_rowset($alb_thumbs_q);
-	$xoopsDB->freeRecordSet($alb_thumbs_q);
+	icms::$xoopsDB->freeRecordSet($alb_thumbs_q);
 	
 	$disp_album_count = count($alb_thumbs);
 	$album_set = '';
@@ -318,10 +318,10 @@ function list_albums() {
 	}
 	$album_set = '(' . substr($album_set, 0, -2) . ')';
 	
-	$sql = "SELECT aid, count(pid) as pic_count, max(pid) as last_pid, max(ctime) as last_upload FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE aid IN $album_set AND approved = 'YES' GROUP BY aid";
-	$alb_stats_q = $xoopsDB->query($sql);
+	$sql = "SELECT aid, count(pid) as pic_count, max(pid) as last_pid, max(ctime) as last_upload FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE aid IN $album_set AND approved = 'YES' GROUP BY aid";
+	$alb_stats_q = icms::$xoopsDB->query($sql);
 	$alb_stats = db_fetch_rowset($alb_stats_q);
-	$xoopsDB->freeRecordSet($alb_stats_q);
+	icms::$xoopsDB->freeRecordSet($alb_stats_q);
 	
 	foreach ($alb_stats as $key => $value) {
 		$cross_ref[$value['aid']] = &$alb_stats[$key];
@@ -347,10 +347,10 @@ function list_albums() {
 				if ($alb_thumb['filename']) {
 					$picture = &$alb_thumb;
 				} else {
-					$sql = "SELECT filepath, filename, url_prefix, pwidth, pheight FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE pid='{$alb_stat['last_pid']}'";
-					$result = $xoopsDB->query($sql);
-					$picture = $xoopsDB->fetchArray($result);
-					$xoopsDB->freeRecordSet($result);
+					$sql = "SELECT filepath, filename, url_prefix, pwidth, pheight FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE pid='{$alb_stat['last_pid']}'";
+					$result = icms::$xoopsDB->query($sql);
+					$picture = icms::$xoopsDB->fetchArray($result);
+					icms::$xoopsDB->freeRecordSet($result);
 				}
 				$image_size = compute_img_size($picture['pwidth'], $picture['pheight'], icms::$module->config['alb_list_thumb_size']);
 				$alb_list[$alb_idx]['thumb_pic'] = "<img src=\"" . get_pic_url($picture, 'thumb') . "\" {$image_size['geom']} alt=\"\" border=\"0\" class=\"image\" />";
@@ -474,12 +474,12 @@ if ($cat != 0) {
 
 include_once "../../footer.php";
 // Speed-up the random image query by 'keying' the image table
-$result = $xoopsDB->query("SELECT count(*) FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE 1");
-$nbEnr = $xoopsDB->fetchArray($result);
-$xoopsDB->freeRecordSet($result);
+$result = icms::$xoopsDB->query("SELECT count(*) FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE 1");
+$nbEnr = icms::$xoopsDB->fetchArray($result);
+icms::$xoopsDB->freeRecordSet($result);
 $pic_count = $nbEnr['count(*)'];
 $granularity = floor($pic_count / RANDPOS_MAX_PIC);
 if ($granularity != RANDPOS_INTERVAL && $pic_count > RANDPOS_MAX_PIC) {
-	$result = $xoopsDB->queryf("UPDATE " . $xoopsDB->prefix("xcgal_pictures") . " SET randpos = ROUND(RAND()*$granularity) WHERE 1");
-	$result = $xoopsDB->queryf("UPDATE " . $xoopsDB->prefix("xcgal_config") . " SET value = '$granularity' WHERE name = 'randpos_interval'");
+	$result = icms::$xoopsDB->queryf("UPDATE " . icms::$xoopsDB->prefix("xcgal_pictures") . " SET randpos = ROUND(RAND()*$granularity) WHERE 1");
+	$result = icms::$xoopsDB->queryf("UPDATE " . icms::$xoopsDB->prefix("xcgal_config") . " SET value = '$granularity' WHERE name = 'randpos_interval'");
 }

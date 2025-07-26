@@ -118,7 +118,7 @@ function output_caption() {
 }
 
 function delete_picture($pid) {
-	global $header_printed, $xoopsDB;
+	global $header_printed;
 	global $del_pic;
 	if (!$header_printed) output_table_header();
 	$myts = icms_core_Textsanitizer::getInstance();
@@ -126,15 +126,15 @@ function delete_picture($pid) {
 	$red = "<img src=\"images/red.gif\" border=\"0\" width=\"12\" height=\"12\" alt=\"\" /><br />";
 
 	if (USER_IS_ADMIN) {
-		$query = "SELECT aid, filepath, filename FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE pid='$pid'";
-		$result = $xoopsDB->query($query);
+		$query = "SELECT aid, filepath, filename FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE pid='$pid'";
+		$result = icms::$xoopsDB->query($query);
 		if (!$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
-		$pic = $xoopsDB->fetchArray($result);
+		$pic = icms::$xoopsDB->fetchArray($result);
 	} else {
-		$query = "SELECT " . $xoopsDB->prefix("xcgal_pictures") . ".aid as aid, category, filepath, filename FROM " . $xoopsDB->prefix("xcgal_pictures") . ", " . $xoopsDB->prefix("xcgal_albums") . " WHERE " . $xoopsDB->prefix("xcgal_pictures") . ".aid = " . $xoopsDB->prefix("xcgal_albums") . ".aid AND pid='$pid'";
-		$result = $xoopsDB->query($query);
+		$query = "SELECT " . icms::$xoopsDB->prefix("xcgal_pictures") . ".aid as aid, category, filepath, filename FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . ", " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE " . icms::$xoopsDB->prefix("xcgal_pictures") . ".aid = " . icms::$xoopsDB->prefix("xcgal_albums") . ".aid AND pid='$pid'";
+		$result = icms::$xoopsDB->query($query);
 		if (!$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
-		$pic = $xoopsDB->fetchArray($result);
+		$pic = icms::$xoopsDB->fetchArray($result);
 		if ($pic['category'] != FIRST_USER_CAT + USER_ID) redirect_header('index.php', 2, _MD_PERM_DENIED);
 	}
 
@@ -171,10 +171,10 @@ function delete_picture($pid) {
 		$del_pic .= "&nbsp;";
 	$del_pic .= "</td>";
 
-	$query = "DELETE FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE pid='$pid' LIMIT 1";
-	$result = $xoopsDB->queryf($query);
+	$query = "DELETE FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE pid='$pid' LIMIT 1";
+	$result = icms::$xoopsDB->queryf($query);
 	$del_pic .= "<td class=\"even\" align=\"center\">";
-	if ($xoopsDB->getAffectedRows() > 0)
+	if (icms::$xoopsDB->getAffectedRows() > 0)
 		$del_pic .= $green;
 	else
 		$del_pic .= $red;
@@ -186,32 +186,32 @@ function delete_picture($pid) {
 }
 
 function delete_album($aid) {
-	global $xoopsDB;
+	
 	global $del_message, $del_pic, $pic_del;
-	$query = "SELECT title, category FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE aid ='$aid'";
-	$result = $xoopsDB->query($query);
+	$query = "SELECT title, category FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid ='$aid'";
+	$result = icms::$xoopsDB->query($query);
 	if (!$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
-	$album_data = $xoopsDB->fetchArray($result);
+	$album_data = icms::$xoopsDB->fetchArray($result);
 
 	if (!GALLERY_ADMIN_MODE) {
 		if ($album_data['category'] != FIRST_USER_CAT + USER_ID) redirect_header('index.php', 2, _MD_PERM_DENIED);
 	}
 
-	$query = "SELECT pid FROM " . $xoopsDB->prefix("xcgal_pictures") . " WHERE aid='$aid'";
-	$result = $xoopsDB->query($query);
+	$query = "SELECT pid FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE aid='$aid'";
+	$result = icms::$xoopsDB->query($query);
 
 	// Delete all files
 	$pic_del = '';
-	while ($pic = $xoopsDB->fetchArray($result)) {
+	while ($pic = icms::$xoopsDB->fetchArray($result)) {
 		delete_picture($pic['pid']);
 		$pic_del .= $del_pic;
 		$del_pic = '';
 	}
 
 	// Delete album
-	$query = "DELETE from " . $xoopsDB->prefix("xcgal_albums") . " WHERE aid='$aid'";
-	$result = $xoopsDB->queryf($query);
-	if ($xoopsDB->getAffectedRows() > 0) {
+	$query = "DELETE from " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='$aid'";
+	$result = icms::$xoopsDB->queryf($query);
+	if (icms::$xoopsDB->getAffectedRows() > 0) {
 		$del_message = sprintf(_MD_DEL_ALB_DEL_SUC, $album_data['title']);
 	} else
 		$del_message = '';
@@ -280,8 +280,8 @@ switch ($what) {
 		foreach ($orig_sort_order as $album) {
 			$op = parse_orig_sort_order($album);
 			if (count($op) == 2) {
-				$query = "UPDATE " . $xoopsDB->prefix("xcgal_albums") . " SET pos='{$op['pos']}' WHERE aid='{$op['aid']}' $restrict LIMIT 1";
-				$xoopsDB->query($query);
+				$query = "UPDATE " . icms::$xoopsDB->prefix("xcgal_albums") . " SET pos='{$op['pos']}' WHERE aid='{$op['aid']}' $restrict LIMIT 1";
+				icms::$xoopsDB->query($query);
 			} else {
 				redirect_header('index.php', 2, sprintf(_MD_DEL_INVALID, $_POST['sort_order']));
 			}
@@ -309,13 +309,13 @@ switch ($what) {
 						$category = FIRST_USER_CAT + USER_ID;
 					}
 					$create_update = sprintf(_MD_DEL_CREATE, $op['album_nm']);
-					$query = "INSERT INTO " . $xoopsDB->prefix("xcgal_albums") . " (category, title, uploads, pos, description) VALUES ('$category', '" . addslashes($op['album_nm']) . "', 'NO',  '{$op['album_sort']}', '')";
-					$xoopsDB->queryf($query);
+					$query = "INSERT INTO " . icms::$xoopsDB->prefix("xcgal_albums") . " (category, title, uploads, pos, description) VALUES ('$category', '" . addslashes($op['album_nm']) . "', 'NO',  '{$op['album_sort']}', '')";
+					icms::$xoopsDB->queryf($query);
 					break;
 				case '2':
 					$create_update = sprintf(_MD_DEL_UPDATE, $op['album_no'], $op['album_nm'], $op['album_sort']);
-					$query = "UPDATE " . $xoopsDB->prefix("xcgal_albums") . " SET title='" . addslashes($op['album_nm']) . "', pos='{$op['album_sort']}' WHERE aid='{$op['album_no']}' $restrict LIMIT 1";
-					$xoopsDB->queryf($query);
+					$query = "UPDATE " . icms::$xoopsDB->prefix("xcgal_albums") . " SET title='" . addslashes($op['album_nm']) . "', pos='{$op['album_sort']}' WHERE aid='{$op['album_no']}' $restrict LIMIT 1";
+					icms::$xoopsDB->queryf($query);
 					break;
 				default:
 					redirect_header('index.php', 2, _MD_DEL_INVALID);

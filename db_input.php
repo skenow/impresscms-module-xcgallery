@@ -59,13 +59,13 @@ switch ($event) {
 		if (!$title) redirect_header('index.php', 2, _MD_DB_ALB_NEED_TITLE);
 
 		if (GALLERY_ADMIN_MODE) {
-			$query = "UPDATE " . $xoopsDB->prefix("xcgal_albums") . " SET title='$title', description='$description', category='$category', thumb='$thumb', uploads='$uploads', comments='$comments', votes='$votes', visibility='$visibility' WHERE aid='$aid' LIMIT 1";
+			$query = "UPDATE " . icms::$xoopsDB->prefix("xcgal_albums") . " SET title='$title', description='$description', category='$category', thumb='$thumb', uploads='$uploads', comments='$comments', votes='$votes', visibility='$visibility' WHERE aid='$aid' LIMIT 1";
 		} else {
 			$category = FIRST_USER_CAT + USER_ID;
 			if ($visibility != $category && (is_array($USER_DATA['group_id']) && in_array($visibility, $USER_DATA['group_id']))) $visibility = 0;
-			$query = "UPDATE " . $xoopsDB->prefix("xcgal_albums") . " SET title='$title', description='$description', thumb='$thumb',  comments='$comments', votes='$votes', visibility='$visibility' WHERE aid='$aid' AND category='$category' LIMIT 1";
+			$query = "UPDATE " . icms::$xoopsDB->prefix("xcgal_albums") . " SET title='$title', description='$description', thumb='$thumb',  comments='$comments', votes='$votes', visibility='$visibility' WHERE aid='$aid' AND category='$category' LIMIT 1";
 		}
-		$update = $xoopsDB->query($query);
+		$update = icms::$xoopsDB->query($query);
 		if (!$xoopsDB->getAffectedRows()) redirect_header("modifyalb.php?album=$aid", 2, _MD_DB_NO_NEED);
 		redirect_header("modifyalb.php?album=$aid", 2, _MD_DB_ALB_UPDATED);
 		exit();
@@ -90,16 +90,16 @@ switch ($event) {
 
 		// Check if the album id provided is valid
 		if (!GALLERY_ADMIN_MODE) {
-			$result = $xoopsDB->query("SELECT category FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album' and (uploads = 'YES' OR category = '" . (USER_ID + FIRST_USER_CAT) . "')");
-			if ($xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_DB_UNKOWN);
-			$row = $xoopsDB->fetchArray($result);
-			$xoopsDB->freeRecordSet($result);
+			$result = icms::$xoopsDB->query("SELECT category FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album' and (uploads = 'YES' OR category = '" . (USER_ID + FIRST_USER_CAT) . "')");
+			if (icms::$xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_DB_UNKOWN);
+			$row = icms::$xoopsDB->fetchArray($result);
+			icms::$xoopsDB->freeRecordSet($result);
 			$category = $row['category'];
 		} else {
-			$result = $xoopsDB->query("SELECT category FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album'");
-			if ($xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_DB_UNKOWN);
-			$row = $xoopsDB->fetchArray($result);
-			$xoopsDB->freeRecordSet($result);
+			$result = icms::$xoopsDB->query("SELECT category FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album'");
+			if (icms::$xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_DB_UNKOWN);
+			$row = icms::$xoopsDB->fetchArray($result);
+			icms::$xoopsDB->freeRecordSet($result);
 			$category = $row['category'];
 		}
 
@@ -236,16 +236,16 @@ switch ($event) {
 
 			// Check if the album id provided is valid
 			if (!GALLERY_ADMIN_MODE) {
-				$result = $xoopsDB->query("SELECT category FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album' and (uploads = 'YES' OR category = '" . (USER_ID + FIRST_USER_CAT) . "')");
-				if ($xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_DB_UNKOWN);
-				$row = $xoopsDB->fetchArray($result);
-				$xoopsDB->freeRecordSet($result);
+				$result = icms::$xoopsDB->query("SELECT category FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album' and (uploads = 'YES' OR category = '" . (USER_ID + FIRST_USER_CAT) . "')");
+				if (icms::$xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_DB_UNKOWN);
+				$row = icms::$xoopsDB->fetchArray($result);
+				icms::$xoopsDB->freeRecordSet($result);
 				$category = $row['category'];
 			} else {
-				$result = $xoopsDB->query("SELECT category FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album'");
-				if ($xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_DB_UNKOWN);
-				$row = $xoopsDB->fetchArray($result);
-				$xoopsDB->freeRecordSet($result);
+				$result = icms::$xoopsDB->query("SELECT category FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album'");
+				if (icms::$xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_DB_UNKOWN);
+				$row = icms::$xoopsDB->fetchArray($result);
+				icms::$xoopsDB->freeRecordSet($result);
 				$category = $row['category'];
 			}
 
@@ -358,16 +358,16 @@ switch ($event) {
 
 			// Check if the album id provided is valid
 			if (!GALLERY_ADMIN_MODE) {
-				$result = $xoopsDB->query("SELECT category FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album' and (uploads = 'YES' OR category = '" . (USER_ID + FIRST_USER_CAT) . "')");
-				if ($xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_DB_UNKOWN);
-				$row = $xoopsDB->fetchArray($result);
-				$xoopsDB->freeRecordSet($result);
+				$result = icms::$xoopsDB->query("SELECT category FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album' and (uploads = 'YES' OR category = '" . (USER_ID + FIRST_USER_CAT) . "')");
+				if (icms::$xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_DB_UNKOWN);
+				$row = icms::$xoopsDB->fetchArray($result);
+				icms::$xoopsDB->freeRecordSet($result);
 				$category = $row['category'];
 			} else {
-				$result = $xoopsDB->query("SELECT category FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album'");
-				if ($xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_DB_UNKOWN);
-				$row = $xoopsDB->fetchArray($result);
-				$xoopsDB->freeRecordSet($result);
+				$result = icms::$xoopsDB->query("SELECT category FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album'");
+				if (icms::$xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_DB_UNKOWN);
+				$row = icms::$xoopsDB->fetchArray($result);
+				icms::$xoopsDB->freeRecordSet($result);
 				$category = $row['category'];
 			}
 
@@ -480,16 +480,16 @@ switch ($event) {
 
 			// Check if the album id provided is valid
 			if (!GALLERY_ADMIN_MODE) {
-				$result = $xoopsDB->query("SELECT category FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album' and (uploads = 'YES' OR category = '" . (USER_ID + FIRST_USER_CAT) . "')");
-				if ($xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_DB_UNKOWN);
-				$row = $xoopsDB->fetchArray($result);
-				$xoopsDB->freeRecordSet($result);
+				$result = icms::$xoopsDB->query("SELECT category FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album' and (uploads = 'YES' OR category = '" . (USER_ID + FIRST_USER_CAT) . "')");
+				if (icms::$xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_DB_UNKOWN);
+				$row = icms::$xoopsDB->fetchArray($result);
+				icms::$xoopsDB->freeRecordSet($result);
 				$category = $row['category'];
 			} else {
-				$result = $xoopsDB->query("SELECT category FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album'");
-				if ($xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_DB_UNKOWN);
-				$row = $xoopsDB->fetchArray($result);
-				$xoopsDB->freeRecordSet($result);
+				$result = icms::$xoopsDB->query("SELECT category FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album'");
+				if (icms::$xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_DB_UNKOWN);
+				$row = icms::$xoopsDB->fetchArray($result);
+				icms::$xoopsDB->freeRecordSet($result);
 				$category = $row['category'];
 			}
 
@@ -602,16 +602,16 @@ switch ($event) {
 
 			// Check if the album id provided is valid
 			if (!GALLERY_ADMIN_MODE) {
-				$result = $xoopsDB->query("SELECT category FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album' and (uploads = 'YES' OR category = '" . (USER_ID + FIRST_USER_CAT) . "')");
-				if ($xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_DB_UNKOWN);
-				$row = $xoopsDB->fetchArray($result);
-				$xoopsDB->freeRecordSet($result);
+				$result = icms::$xoopsDB->query("SELECT category FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album' and (uploads = 'YES' OR category = '" . (USER_ID + FIRST_USER_CAT) . "')");
+				if (icms::$xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_DB_UNKOWN);
+				$row = icms::$xoopsDB->fetchArray($result);
+				icms::$xoopsDB->freeRecordSet($result);
 				$category = $row['category'];
 			} else {
-				$result = $xoopsDB->query("SELECT category FROM " . $xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album'");
-				if ($xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_DB_UNKOWN);
-				$row = $xoopsDB->fetchArray($result);
-				$xoopsDB->freeRecordSet($result);
+				$result = icms::$xoopsDB->query("SELECT category FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album'");
+				if (icms::$xoopsDB->getRowsNum($result) == 0) redirect_header('index.php', 2, _MD_DB_UNKOWN);
+				$row = icms::$xoopsDB->fetchArray($result);
+				icms::$xoopsDB->freeRecordSet($result);
 				$category = $row['category'];
 			}
 

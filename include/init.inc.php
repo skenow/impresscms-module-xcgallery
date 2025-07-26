@@ -104,19 +104,19 @@ require ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/include/functions.inc.php";
 user_get_profile();
 
 // Authenticate
-if (is_object($xoopsUser)) {
-	$cookie_uid = $xoopsUser->getVar('uid');
+if (is_object(icms::$user)) {
+	$cookie_uid = icms::$user->getVar('uid');
 	// $cookie_pass = substr(addslashes($_COOKIE[$CONFIG['cookie_name'] . '_pass']), 0, 32);
 } else {
 	$cookie_uid = 0;
 	$cookie_pass = '*';
 }
-if (is_object($xoopsUser)) {
-	$usergroups = $xoopsUser->getGroups();
+if (is_object(icms::$user)) {
+	$usergroups = icms::$user->getGroups();
 	$usergroup = implode(",", $usergroups);
-	$mygroup = $xoopsUser->getGroups();
-	$sql = "SELECT * FROM " . $xoopsDB->prefix("xcgal_usergroups") . " WHERE xgroupid IN ({$usergroup})";
-	$results = $xoopsDB->query($sql);
+	$mygroup = icms::$user->getGroups();
+	$sql = "SELECT * FROM " . icms::$xoopsDB->prefix("xcgal_usergroups") . " WHERE xgroupid IN ({$usergroup})";
+	$results = icms::$xoopsDB->query($sql);
 	$USER_DATA['can_send_ecards'] = 0;
 	$USER_DATA['can_rate_pictures'] = 0;
 	$USER_DATA['can_post_comments'] = 0;
@@ -126,7 +126,7 @@ if (is_object($xoopsUser)) {
 	$USER_DATA['priv_upl_need_approval'] = 1;
 	$USER_DATA['group_quota'] = 0;
 	$USER_DATA['group_id'] = $usergroups;
-	while ($ugroup = $xoopsDB->fetchArray($results)) {
+	while ($ugroup = icms::$xoopsDB->fetchArray($results)) {
 		if ($ugroup['can_send_ecards'] == 1) $USER_DATA['can_send_ecards'] = $ugroup['can_send_ecards'];
 		if ($ugroup['can_rate_pictures'] == 1) $USER_DATA['can_rate_pictures'] = $ugroup['can_rate_pictures'];
 		if ($ugroup['can_post_comments'] == 1) $USER_DATA['can_post_comments'] = $ugroup['can_post_comments'];
@@ -137,25 +137,25 @@ if (is_object($xoopsUser)) {
 		if ($ugroup['group_quota'] > $USER_DATA['group_quota']) $USER_DATA['group_quota'] = $ugroup['group_quota'];
 	} // while
 
-	if ($xoopsUser->isAdmin(icms::$module->getVar('mid')))
+	if (icms::$user->isAdmin(icms::$module->getVar('mid')))
 		define('USER_IS_ADMIN', 1);
 	else
 		define('USER_IS_ADMIN', 0);
-	// $USER_DATA = $xoopsDB->fetchArray($results);
-	$USER_DATA['user_email'] = $xoopsUser->getVar('email');
-	define('USER_ID', $xoopsUser->getVar('uid'));
-	define('USER_NAME', $xoopsUser->getVar('uname'));
+	// $USER_DATA = icms::$xoopsDB->fetchArray($results);
+	$USER_DATA['user_email'] = icms::$user->getVar('email');
+	define('USER_ID', icms::$user->getVar('uid'));
+	define('USER_NAME', icms::$user->getVar('uname'));
 	define('USER_CAN_SEND_ECARDS', (int) $USER_DATA['can_send_ecards']);
 	define('USER_CAN_RATE_PICTURES', (int) $USER_DATA['can_rate_pictures']);
 	define('USER_CAN_POST_COMMENTS', (int) $USER_DATA['can_post_comments']);
 	define('USER_CAN_UPLOAD_PICTURES', (int) $USER_DATA['can_upload_pictures']);
 	define('USER_CAN_CREATE_ALBUMS', (int) $USER_DATA['can_create_albums']);
 	define('USER_CAN_SEE_FULL', 1);
-	$xoopsDB->freeRecordSet($results);
+	icms::$xoopsDB->freeRecordSet($results);
 } else {
-	$results = $xoopsDB->query("SELECT * FROM " . $xoopsDB->prefix("xcgal_usergroups") . " WHERE group_id = " . XOOPS_GROUP_ANONYMOUS . "");
-	if (!($xoopsDB->getRowsNum($results))) die('<b>Coppermine critical error</b>:<br />The group table does not contain the Anonymous group !');
-	$USER_DATA = $xoopsDB->fetchArray($results);
+	$results = icms::$xoopsDB->query("SELECT * FROM " . icms::$xoopsDB->prefix("xcgal_usergroups") . " WHERE group_id = " . XOOPS_GROUP_ANONYMOUS . "");
+	if (!(icms::$xoopsDB->getRowsNum($results))) die('<b>Coppermine critical error</b>:<br />The group table does not contain the Anonymous group !');
+	$USER_DATA = icms::$xoopsDB->fetchArray($results);
 	define('USER_ID', 0);
 	define('USER_NAME', $xoopsConfig['anonymous']);
 	define('USER_IS_ADMIN', 0);
@@ -165,7 +165,7 @@ if (is_object($xoopsUser)) {
 	define('USER_CAN_UPLOAD_PICTURES', (int) $USER_DATA['can_upload_pictures']);
 	define('USER_CAN_CREATE_ALBUMS', 0);
 	define('USER_CAN_SEE_FULL', 0);
-	$xoopsDB->freeRecordSet($results);
+	icms::$xoopsDB->freeRecordSet($results);
 }
 
 // Test if admin mode
