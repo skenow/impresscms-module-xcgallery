@@ -26,7 +26,7 @@ CREATE TABLE xcgal_albums (
   category int(11) NOT NULL default '0',
   pic_count int(11) NOT NULL default '0',
   thumb int(11) NOT NULL default '0',
-  last_addition datetime NOT NULL default '0000-00-00 00:00:00',
+  last_addition datetime NOT NULL default CURRENT_TIMESTAMP,
   stat_uptodate enum('YES','NO') NOT NULL default 'NO',
   PRIMARY KEY  (aid),
   KEY alb_category (category)
