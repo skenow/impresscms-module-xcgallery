@@ -166,7 +166,7 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 	if ($limit2 == 1) {
 		$select_columns = '*';
 	} else {
-		$select_columns = 'pid, filepath, filename, url_prefix, filesize, pwidth, pheight, ctime';
+		$select_columns = 'pid, filepath, filename, url_prefix, filesize, pwidth, pheight, ctime, title, aid';
 	}
 
 	// Regular albums
