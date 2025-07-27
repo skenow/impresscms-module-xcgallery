@@ -65,8 +65,8 @@ if (icms::$module->config['keep_votes_time'] > 0) {
 }
 
 // Check if user already rated this picture
-if (is_object($xoopsUser)) {
-	$vid = $xoopsUser->uid();
+if (is_object(icms::$user)) {
+	$vid = icms::$user->uid();
 	$sql = "SELECT * " . "FROM " . icms::$xoopsDB->prefix("xcgal_votes") . " " . "WHERE pic_id = '$pic' AND v_uid = '$vid'";
 } else {
 	$vid = 0;

@@ -31,7 +31,7 @@ define('IN_XCGALLERY', true);
 
 require ("include/init.inc.php");
 
-if (!is_object($xoopsUser) || !($xoopsUser->isAdmin(icms::$module->mid()))) redirect_header(ICMS_URL . "/", 3, _NOPERM);
+if (!is_object(icms::$user) || !(icms::$user->isAdmin(icms::$module->mid()))) redirect_header(ICMS_URL . "/", 3, _NOPERM);
 
 define("GIS_GIF", 1);
 define("GIS_JPG", 2);

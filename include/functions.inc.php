@@ -8,7 +8,7 @@
 
 // Decode the user profile contained in a cookie
 function user_get_profile() {
-	global $USER, $_COOKIE, $xoopsUser;
+	global $USER, $_COOKIE;
 
 	if (isset($_COOKIE[icms::$module->config['cookie_name'] . '_data'])) {
 		$USER = @unserialize(@base64_decode($_COOKIE[icms::$module->config['cookie_name'] . '_data']));
@@ -127,9 +127,9 @@ function create_tabs($items, $curr_page, $total_pages, $template) {
 
 // Get the list of albums that the current user can't see
 function get_private_album_set() {
-	global $ALBUM_SET, $USER_DATA, $FORBIDDEN_SET, $xoopsUser, $suid;
-	if (is_object($xoopsUser)) {
-		$usergroups = $xoopsUser->getgroups();
+	global $ALBUM_SET, $USER_DATA, $FORBIDDEN_SET, $suid;
+	if (is_object(icms::$user)) {
+		$usergroups = icms::$user->getgroups();
 		$usergroup = implode(",", $usergroups);
 	} else
 		$usergroup = XOOPS_GROUP_ANONYMOUS;

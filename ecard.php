@@ -37,11 +37,11 @@ $xoopsMailer = new icms_messaging_Handler();
 if (!USER_CAN_SEND_ECARDS) redirect_header('index.php', 2, _MD_ACCESS_DENIED);
 
 function send_ecard($recipient_email, $recipient_name, $greetings, $msg_content, $sender_name, $sender_email, $image, $n_picname, $redirect_link) {
-	global $xoopsUser, $USER;
+	global $USER;
 	global $xoopsConfig, $myts, $xcgalDir;
 
-	if (is_object($xoopsUser))
-		$s_uid = "|| sender_uid = " . $xoopsUser->uid();
+	if (is_object(icms::$user))
+		$s_uid = "|| sender_uid = " . icms::$user->uid();
 	else
 		$s_uid = "";
 	$s_time = time() - 3600;
@@ -67,8 +67,8 @@ function send_ecard($recipient_email, $recipient_name, $greetings, $msg_content,
 	$delete_time = time() - (icms::$module->config['ecards_saved_db'] * 86400);
 	icms::$xoopsDB->query("DELETE from " . icms::$xoopsDB->prefix("xcgal_ecard") . " WHERE s_time < " . $delete_time . "");
 
-	if (is_object($xoopsUser))
-		$sender_uid = $xoopsUser->uid();
+	if (is_object(icms::$user))
+		$sender_uid = icms::$user->uid();
 	else
 		$sender_uid = 0;
 	$e_id = get_message_id();

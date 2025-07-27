@@ -36,12 +36,12 @@ function xcgal_search($queryarray, $andor, $limit, $offset, $userid) {
 }
 
 function search_album_set() {
-	global $ALBUM_SET_SEARCH, $xoopsUser;
+	global $ALBUM_SET_SEARCH;
 	$xcgalDir = basename(dirname(dirname(__FILE__)));
-	if (is_object($xoopsUser)) {
-		$usergroups = $xoopsUser->getgroups();
+	if (is_object(icms::$user)) {
+		$usergroups = icms::$user->getgroups();
 		$usergroup = implode(",", $usergroups);
-		$buid = $xoopsUser->uid();
+		$buid = icms::$user->uid();
 	} else {
 		$usergroup = XOOPS_GROUP_ANONYMOUS;
 		$buid = 0;
@@ -51,7 +51,7 @@ function search_album_set() {
 	$xcgalModule = $module_handler->getByDirname($xcgalDir);
 	$config_handler = &xoops_gethandler('config');
 	$xcgalCon = &$config_handler->getConfigsByCat(0, $xcgalModule->mid());
-	if (is_object($xoopsUser) && $xoopsUser->isAdmin($xcgalModule->mid()))
+	if (is_object(icms::$user) && icms::$user->isAdmin($xcgalModule->mid()))
 		$ALBUM_SET_SEARCH = "";
 	else {
 		$result = icms::$xoopsDB->query("SELECT aid FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE visibility NOT IN ($usergroup, 0," . ($user_cat + $buid) . ")");

@@ -141,7 +141,7 @@ function xcgal_block_filmstrip_func($options) {
 			$thumb_list[$i]['pos'] = $key < 0 ? $key : $i - 1 - $options[5];
 			$thumb_list[$i]['image'] = XOOPS_URL . "/modules/" . $xcgalDir . "/" . $xcgalConfig['fullpath'] . str_replace("%2F", "/", rawurlencode($row['filepath'] . $xcgalConfig['normal_pfx'] . $row['filename']));
 			$thumb_list[$i]['caption'] = $row['caption_text'];
-			$thumb_list[$i]['title'] = $row['title']; 
+			$thumb_list[$i]['title'] = $row['title'];
 			$thumb_list[$i]['pid'] = $row['pid'];
 			$thumb_list[$i]['link_tgt'] = XOOPS_URL . "/modules/" . $xcgalDir . "/displayimage.php?pid={$row['pid']}&amp;album={$album}&amp;pos={$key}&amp;cat=";
 			$thumb_list[$i]['i'] = $i;
@@ -474,19 +474,19 @@ function fetch_rowset_block($result) {
 }
 
 function block_album_set() {
-	global $ALBUM_SET_BLOCK, $xoopsUser;
+	global $ALBUM_SET_BLOCK;
 	$xcgalDir = basename(dirname(dirname(__FILE__)));
-	if (is_object($xoopsUser)) {
-		$usergroups = $xoopsUser->getgroups();
+	if (is_object(icms::$user)) {
+		$usergroups = icms::$user->getgroups();
 		$usergroup = implode(",", $usergroups);
-		$buid = $xoopsUser->uid();
+		$buid = icms::$user->uid();
 	} else {
 		$usergroup = XOOPS_GROUP_ANONYMOUS;
 		$buid = 0;
 	}
 	$module_handler = &xoops_gethandler('module');
 	$xcgalModule = $module_handler->getByDirname($xcgalDir);
-	if (is_object($xoopsUser) && ($xoopsUser->isAdmin($xcgalModule->mid())))
+	if (is_object(icms::$user) && (icms::$user->isAdmin($xcgalModule->mid())))
 		$ALBUM_SET_BLOCK = "";
 	else {
 		$result = icms::$xoopsDB->query("SELECT aid FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE visibility NOT IN ($usergroup, 0," . (BLOCK_FIRST_USER_CAT + $buid) . ")");

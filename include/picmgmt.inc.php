@@ -32,7 +32,7 @@
 // Add a picture to an album
 function add_picture($aid, $filepath, $filename, $title = '', $caption = '', $keywords = '', $user1 = '', $user2 = '', $user3 = '', $user4 = '', $category = 0) {
 	global $ERROR, $USER_DATA, $PIC_NEED_APPROVAL;
-	global $xoopsUser, $picinID;
+	global $picinID;
 	$xcgalDir = basename(dirname(dirname(__FILE__)));
 
 	$myts = icms_core_Textsanitizer::getInstance();
@@ -80,7 +80,7 @@ function add_picture($aid, $filepath, $filename, $title = '', $caption = '', $ke
 
 	// Test if disk quota exceeded
 	if (!USER_IS_ADMIN && $USER_DATA['group_quota']) {
-		if (is_object($xoopsUser))
+		if (is_object(icms::$user))
 			$quota_opt = "owner_id = '" . USER_ID . "'";
 		else
 			$quota_opt = "ip = '" . $_SERVER['REMOTE_ADDR'] . "'";
@@ -117,7 +117,7 @@ function add_picture($aid, $filepath, $filename, $title = '', $caption = '', $ke
 	$query = "INSERT INTO " . icms::$xoopsDB->prefix("xcgal_pictures") . " (aid, filepath, filename, filesize, total_filesize, pwidth, pheight, mtime, ctime, owner_id, owner_name, title, caption, keywords, approved, user1, user2, user3, user4, ip) VALUES ('$aid', '" . $myts->addSlashes($filepath) . "', '" . $myts->addSlashes($filename) . "', '$image_filesize', '$total_filesize', '{$imagesize[0]}', '{$imagesize[1]}','" . time() . "', '" . time() . "', '$user_id','$user_name', '$title', '$caption', '$keywords', '$approved', '$user1', '$user2', '$user3', '$user4','" . $_SERVER['REMOTE_ADDR'] . "')";
 	$result = icms::$xoopsDB->queryf($query);
 	if ($approved == 'YES') $picinID = icms::$xoopsDB->getInsertId();
-	if (($approved == 'YES') && is_object($xoopsUser)) $xoopsUser->incrementPost();
+	if (($approved == 'YES') && is_object(icms::$user)) icms::$user->incrementPost();
 	return $result;
 }
 

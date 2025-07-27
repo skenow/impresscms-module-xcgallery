@@ -192,7 +192,7 @@ if (!icms::$module->config['allow_private_albums']) {
 				FIRST_USER_CAT + USER_ID => _MD_MODIFYALB_ME_ONLY
 		);
 		$member_handler = icms::handler('icms_member');
-		$usergroups = $xoopsUser->getgroups();
+		$usergroups = icms::$user->getgroups();
 		// var_dump($usergroups);
 		foreach ($usergroups as $ugr) {
 			$group = &$member_handler->getGroup($ugr);

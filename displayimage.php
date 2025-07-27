@@ -34,7 +34,7 @@ define('IN_XCGALLERY', true);
 require 'include/init.inc.php';
 // include "../../header.php";
 
-if (((icms::$module->config['anosee']) != 1) && !is_object($xoopsUser)) {
+if (((icms::$module->config['anosee']) != 1) && !is_object(icms::$user)) {
 	redirect_header(ICMS_URL . "/user.php", 2, _NOPERM);
 	exit();
 }
