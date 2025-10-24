@@ -51,7 +51,7 @@ if (icms::$module->config['make_intermediate'] && max($row['pwidth'], $row['phei
 	$n_picname = get_pic_url($row, 'fullsize');
 }
 
-$msg_content = $myts->makeTareaData4Show($row['message'], 0);
+$msg_content = $myts->displayTarea($row['message'], 0);
 if (!stristr($n_picname, 'http:')) $n_picname = ICMS_URL . "/modules/" . $xcgalDir . "/" . $n_picname;
 require_once ICMS_ROOT_PATH . '/class/template.php';
 $xoopsTpl = new XoopsTpl();

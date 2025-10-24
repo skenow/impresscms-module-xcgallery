@@ -102,7 +102,7 @@ if ($search_string != '') {
 		if ($set_caption) foreach ($rowset as $key => $row) {
 			$caption = $rowset[$key]['title'] ? "<span class=\"thumb_title\">" . icms_core_DataFilter::htmlSpecialchars($rowset[$key]['title']) . "</span>" : '';
 			if (icms::$module->config['caption_in_thumbview']) {
-				$caption .= $rowset[$key]['caption'] ? "<span class=\"thumb_caption\">" . $myts->makeTareaData4Show($rowset[$key]['caption'], 0) . "</span>" : '';
+				$caption .= $rowset[$key]['caption'] ? "<span class=\"thumb_caption\">" . $myts->displayTarea($rowset[$key]['caption'], 0) . "</span>" : '';
 			}
 			$rowset[$key]['caption_text'] = $caption;
 		}

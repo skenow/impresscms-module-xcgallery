@@ -177,7 +177,7 @@ switch ($op) {
 		$cid = (int) $_POST['cid'];
 		$parent = (int) $_POST['parent'];
 		$name = trim($_POST['name']) ? $myts->addSlashes($_POST['name']) : '&lt;???&gt;';
-		$description = $myts->makeTareaData4Save($_POST['description']);
+		$description = $myts->addSlashes($_POST['description']);
 
 		icms::$xoopsDB->queryf("UPDATE " . icms::$xoopsDB->prefix("xcgal_categories") . " SET parent='$parent', name='$name', description='$description' WHERE cid = '$cid' LIMIT 1");
 		break;
@@ -187,7 +187,7 @@ switch ($op) {
 
 		$parent = (int) $_POST['parent'];
 		$name = trim($_POST['name']) ? $myts->addSlashes($_POST['name']) : '&lt;???&gt;';
-		$description = $myts->makeTareaData4Save($_POST['description']);
+		$description = $myts->addSlashes($_POST['description']);
 
 		icms::$xoopsDB->queryF("INSERT INTO " . icms::$xoopsDB->prefix("xcgal_categories") . " (pos, parent, name, description) VALUES ('10000', '$parent', '$name', '$description')");
 		break;

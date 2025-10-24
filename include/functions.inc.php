@@ -190,7 +190,7 @@ function get_pic_data($album, &$count, &$album_name, $limit1 = -1, $limit2 = -1,
 		if ($set_caption) foreach ($rowset as $key => $row) {
 			$caption = $rowset[$key]['title'] ? "<span class=\"thumb_title\">" . $rowset[$key]['title'] . "</span>" : '';
 			if (icms::$module->config['caption_in_thumbview']) {
-				$caption .= $rowset[$key]['caption'] ? "<span class=\"thumb_caption\">" . $myts->makeTareaData4Show($rowset[$key]['caption'], 0) . "</span>" : '';
+				$caption .= $rowset[$key]['caption'] ? "<span class=\"thumb_caption\">" . $myts->displayTarea($rowset[$key]['caption'], 0) . "</span>" : '';
 			}
 			if (icms::$module->config['display_comment_count']) {
 				$comments_nr = xoops_comment_count(icms::$module->mid(), $row['pid']);

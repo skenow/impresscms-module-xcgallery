@@ -49,7 +49,7 @@ switch ($event) {
 		$aid = (int) $_POST['aid'];
 		$title = $myts->addSlashes(trim($_POST['title']));
 		$category = (int) $_POST['category'];
-		$description = $myts->makeTareaData4Save(trim($_POST['description']), 0);
+		$description = $myts->addSlashes(trim($_POST['description']), 0);
 		$thumb = (int) $_POST['thumb'];
 		$visibility = (int) $_POST['visibility'];
 		$uploads = $_POST['uploads'] == 'YES' ? 'YES' : 'NO';
@@ -81,7 +81,7 @@ switch ($event) {
 		if (trim($title) == '') {
 			$title = substr($myts->addSlashes($_FILES['userpicture']['name']), 0, (strlen($_FILES['userpicture']['name']) - 4));
 		}
-		$caption = $myts->makeTareaData4Save($_POST['caption'], 0);
+		$caption = $myts->addSlashes($_POST['caption'], 0);
 		$keywords = $myts->addSlashes($_POST['keywords']);
 		$user1 = $myts->addSlashes($_POST['user1']);
 		$user2 = $myts->addSlashes($_POST['user2']);

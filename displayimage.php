@@ -169,7 +169,7 @@ function html_picture() {
 	}
 
 	if ($CURRENT_PIC_DATA['caption']) {
-		$xoopsTpl->assign('pic_caption', $myts->makeTareaData4Show($CURRENT_PIC_DATA['caption'], 0));
+		$xoopsTpl->assign('pic_caption', $myts->displayTarea($CURRENT_PIC_DATA['caption'], 0));
 	} else {
 		$xoopsTpl->assign('pic_caption', '');
 	}

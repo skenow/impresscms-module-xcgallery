@@ -73,7 +73,7 @@ function send_ecard($recipient_email, $recipient_name, $greetings, $msg_content,
 		$sender_uid = 0;
 	$e_id = get_message_id();
 
-	$sql = "INSERT INTO " . icms::$xoopsDB->prefix("xcgal_ecard") . " (e_id, sess_id, sender_ip, sender_uid, sender_name, sender_email, recipient_name, recipient_email, greetings, message, s_time, pid, picked) VALUES ('" . $e_id . "', '" . session_id() . "', '" . $_SERVER['REMOTE_ADDR'] . "', $sender_uid, '" . $myts->addSlashes($sender_name) . "', '" . $myts->addSlashes($sender_email) . "', '" . $myts->addSlashes($recipient_name) . "', '" . $myts->addSlashes($recipient_email) . "', '" . $myts->addSlashes($greetings) . "', '" . $myts->makeTareaData4Save($msg_content) . "', " . time() . ", $image, 0)";
+	$sql = "INSERT INTO " . icms::$xoopsDB->prefix("xcgal_ecard") . " (e_id, sess_id, sender_ip, sender_uid, sender_name, sender_email, recipient_name, recipient_email, greetings, message, s_time, pid, picked) VALUES ('" . $e_id . "', '" . session_id() . "', '" . $_SERVER['REMOTE_ADDR'] . "', $sender_uid, '" . $myts->addSlashes($sender_name) . "', '" . $myts->addSlashes($sender_email) . "', '" . $myts->addSlashes($recipient_name) . "', '" . $myts->addSlashes($recipient_email) . "', '" . $myts->addSlashes($greetings) . "', '" . $myts->addSlashes($msg_content) . "', " . time() . ", $image, 0)";
 	if (!$xoopsDB->queryF($sql)) {
 		redirect_header('index.php', 2, _MD_CARD_NOTINDB);
 	}
@@ -128,7 +128,7 @@ function build_html_card($sender_name, $sender_email, $n_picname, $message, $gre
 	global $myts, $xoopsConfig, $xcgalDir;
 	if (!stristr($n_picname, 'http:')) $n_picname = ICMS_URL . "/modules/" . $xcgalDir . "/" . $n_picname;
 
-	$msg_content = $myts->makeTareaData4Show($message, 0);
+	$msg_content = $myts->displayTarea($message, 0);
 
 	require_once ICMS_ROOT_PATH . '/class/template.php';
 	$ecardTpl = new XoopsTpl();
