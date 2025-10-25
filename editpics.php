@@ -339,15 +339,12 @@ while ($CURRENT_PIC = icms::$xoopsDB->fetchArray($result)) {
 	// $form.=create_form($data);
 	form_alb_list_box();
 	form_pic_info();
-	ob_start();
-	$GLOBALS["caption{$CURRENT_PIC['pid']}"] = icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC['caption']);
-	xoopsCodeTarea("caption{$CURRENT_PIC['pid']}", 37, 8);
-	$xoops_codes = ob_get_contents();
-	ob_end_clean();
-	ob_start();
-	xoopsSmilies(("caption" . $CURRENT_PIC['pid']));
-	$smilies = ob_get_contents();
-	ob_end_clean();
+	
+	$value = icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC['caption']);
+	$name = "caption{$CURRENT_PIC['pid']}";
+	$caption = icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC['caption']);
+	$xoops_codes = new icms_form_elements_Dhtmltextarea($caption, $name, $value, 8, 37);
+	
 	$value_field1 = icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC['user1']);
 	$name_field1 = 'user1' . $CURRENT_PIC['pid'];
 	$value_field2 = icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC['user2']);
@@ -368,8 +365,7 @@ while ($CURRENT_PIC = icms::$xoopsDB->fetchArray($result)) {
 			'alb_opt' => $alb_opt,
 			'title_name' => ('title' . $CURRENT_PIC['pid']),
 			'title_value' => icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC['title']),
-			'xoops_codes' => $xoops_codes,
-			'xoops_smilies' => $smilies,
+			'xoops_codes' => $xoops_codes->render(),
 			'keywords_value' => icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC['keywords']),
 			'keywords_name' => ('keywords' . $CURRENT_PIC['pid']),
 			'name_field1' => $name_field1,
