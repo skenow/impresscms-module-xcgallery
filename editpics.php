@@ -36,8 +36,8 @@ if (!(USER_IS_ADMIN || USER_ADMIN_MODE)) redirect_header('index.php', 2, _MD_ACC
 
 define('UPLOAD_APPROVAL_MODE', isset($_GET['mode']));
 define('EDIT_PICTURES_MODE', !isset($_GET['mode']));
-include_once ICMS_ROOT_PATH . "/include/xoopscodes.php";
 $myts = icms_core_Textsanitizer::getInstance();
+
 if (isset($_GET['album'])) {
 	$album_id = (int) $_GET['album'];
 } elseif (isset($_GET['album'])) {
