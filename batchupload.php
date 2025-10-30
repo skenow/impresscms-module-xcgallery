@@ -36,8 +36,7 @@ if (file_exists("language/" . $xoopsConfig['language'] . "/admin.php")) {
 } else {
 	include_once "language/english/admin.php";
 }
-include_once ICMS_ROOT_PATH . "/include/xoopscodes.php";
-include_once ICMS_ROOT_PATH . '/class/module.errorhandler.php';
+
 // $eh = new ErrorHandler;
 $xcgalDir = basename(dirname(__FILE__));
 $alb_path = ICMS_ROOT_PATH . "/modules/" . $xcgalDir . "/";
