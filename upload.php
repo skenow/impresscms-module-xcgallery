@@ -116,16 +116,12 @@ $xoopsOption['template_main'] = 'xcgal_upload.html';
 include ICMS_ROOT_PATH . "/header.php";
 $xoopsTpl->assign('icms_module_header', $xcgal_module_header);
 
-ob_start();
-$GLOBALS["caption"] = icms_core_DataFilter::htmlSpecialchars("");
+$caption = icms_core_DataFilter::htmlSpecialchars("");
+$name = "caption";
+$value = icms_core_DataFilter::htmlSpecialchars("");
+$picDescription = new icms_form_elements_Dhtmltextarea($caption, $name, $value, 8, 37);
+$xoopsTpl->assign('xoops_codes', $picDescription->render());
 
-xoopsCodeTarea("caption", 37, 8);
-$xoopsTpl->assign('xoops_codes', ob_get_contents());
-ob_end_clean();
-ob_start();
-xoopsSmilies("caption");
-$xoopsTpl->assign('xoops_smilies', ob_get_contents());
-ob_end_clean();
 $xoopsTpl->assign('max_upl', sprintf(_MD_UPL_MAX_FSIZE, icms::$module->config['max_upl_size']));
 $xoopsTpl->assign('lang_upload', _MD_UPL_TITLE);
 $xoopsTpl->assign('lang_album', _MD_ALBUM);

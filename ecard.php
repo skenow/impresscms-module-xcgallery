@@ -243,17 +243,12 @@ $xoopsTpl->assign('recipient_email_warning', $recipient_email_warning);
 $xoopsTpl->assign('lang_ecard_greetings', _MD_CARD_GREETINGS);
 $xoopsTpl->assign('greetings', $greetings);
 $xoopsTpl->assign('lang_ecard_message', _MD_CARD_MESSAGE);
-include_once ICMS_ROOT_PATH . "/include/xoopscodes.php";
-$myts = icms_core_Textsanitizer::getInstance();
-ob_start();
-$GLOBALS["message"] = icms_core_DataFilter::htmlSpecialchars($message);
-xoopsCodeTarea("message", 60, 8);
-$xoopsTpl->assign('xoops_codes', ob_get_contents());
-ob_end_clean();
-ob_start();
-xoopsSmilies("message");
-$xoopsTpl->assign('xoops_smilies', ob_get_contents());
-ob_end_clean();
+
+$value = icms_core_DataFilter::htmlSpecialchars($message);
+$name = "message";
+$caption = icms_core_DataFilter::htmlSpecialchars($message);
+$msgArea = new icms_form_elements_Dhtmltextarea($caption, $name, $value, 8, 60);
+$xoopsTpl->assign('xoops_codes', $msgArea->render());
 
 user_save_profile();
 $xoopsTpl->assign('gallery', icms::$module->getVar('name'));

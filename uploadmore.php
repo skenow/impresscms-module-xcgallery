@@ -115,17 +115,6 @@ if (!count($public_albums_list) && !count($user_albums_list) && !USER_CAN_CREATE
 $xoopsOption['template_main'] = 'xcgal_uploadmore.html';
 include ICMS_ROOT_PATH . "/header.php";
 $xoopsTpl->assign('icms_module_header', $xcgal_module_header);
-
-ob_start();
-$GLOBALS["caption"] = icms_core_DataFilter::htmlSpecialchars("");
-
-xoopsCodeTarea("caption", 37, 8);
-$xoopsTpl->assign('xoops_codes', ob_get_contents());
-ob_end_clean();
-ob_start();
-xoopsSmilies("caption");
-$xoopsTpl->assign('xoops_smilies', ob_get_contents());
-ob_end_clean();
 $xoopsTpl->assign('max_upl', sprintf(_MD_UPL_MAX_FSIZE, icms::$module->config['max_upl_size']));
 $xoopsTpl->assign('lang_upload', _MD_UPL_TITLE);
 $xoopsTpl->assign('lang_album', _MD_ALBUM);
