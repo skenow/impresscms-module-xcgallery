@@ -41,7 +41,7 @@ icms::$xoopsDB->queryf("DELETE from " . icms::$xoopsDB->prefix("xcgal_ecard") . 
 
 $result = icms::$xoopsDB->query("SELECT * FROM " . icms::$xoopsDB->prefix("xcgal_ecard") . " as e, " . icms::$xoopsDB->prefix("xcgal_pictures") . " as p WHERE e.e_id ='" . $data . "' AND e.pid=p.pid");
 
-if (!$xoopsDB->getRowsNum($result))
+if (!icms::$xoopsDB->getRowsNum($result))
 	redirect_header('index.php', 2, "Sorry, can't find e-card!");
 else
 	$row = icms::$xoopsDB->fetchArray($result);

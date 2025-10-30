@@ -92,7 +92,7 @@ if (!isset($_GET['album'])) {
 } else {
 	$album = (int) $_GET['album'];
 	$results = icms::$xoopsDB->query("SELECT * FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album'");
-	if (!$xoopsDB->getRowsNum($results)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
+	if (!icms::$xoopsDB->getRowsNum($results)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
 	$ALBUM_DATA = icms::$xoopsDB->fetchArray($results);
 }
 

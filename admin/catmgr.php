@@ -167,7 +167,7 @@ switch ($op) {
 		$cid = (int) $_GET['cid'];
 		$result = icms::$xoopsDB->query("SELECT cid, name, parent, description FROM " . icms::$xoopsDB->prefix("xcgal_categories") . " WHERE cid = '$cid' LIMIT 1");
 
-		if (!$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _AM_CAT_UNKOWN);
+		if (!icms::$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _AM_CAT_UNKOWN);
 		$current_category = icms::$xoopsDB->fetchArray($result);
 		break;
 
@@ -199,7 +199,7 @@ switch ($op) {
 
 		$result = icms::$xoopsDB->query("SELECT parent FROM " . icms::$xoopsDB->prefix("xcgal_categories") . " WHERE cid = '$cid' LIMIT 1");
 		if ($cid == 1) redirect_header('index.php', 2, _AM_CAT_UGAL_CAT_RO);
-		if (!$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _AM_CAT_UNKOWN);
+		if (!icms::$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _AM_CAT_UNKOWN);
 		$del_category = icms::$xoopsDB->fetchArray($result);
 		$parent = $del_category['parent'];
 		$result = icms::$xoopsDB->queryf("UPDATE " . icms::$xoopsDB->prefix("xcgal_categories") . " SET parent='$parent' WHERE parent = '$cid'");

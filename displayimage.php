@@ -292,7 +292,7 @@ function display_fullsize_pic() {
 		$sql = "SELECT * " . "FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " " . "WHERE pid='$pid' $ALBUM_SET";
 		$result = icms::$xoopsDB->query($sql);
 
-		if (!$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
+		if (!icms::$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
 
 		$row = icms::$xoopsDB->fetchArray($result);
 		$pic_url = get_pic_url($row, 'fullsize');
@@ -410,7 +410,7 @@ if ($pos < 0) {
 if (isset($CURRENT_PIC_DATA)) {
 	$result = icms::$xoopsDB->query("SELECT title, comments, votes, category FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='{$CURRENT_PIC_DATA['aid']}' LIMIT 1");
 
-	if (!$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, sprintf(_MD_PIC_IN_INVALID_ALBUM, $CURRENT_PIC_DATA['aid']));
+	if (!icms::$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, sprintf(_MD_PIC_IN_INVALID_ALBUM, $CURRENT_PIC_DATA['aid']));
 	$CURRENT_ALBUM_DATA = icms::$xoopsDB->fetchArray($result);
 
 	$album_title = $CURRENT_ALBUM_DATA['title'];

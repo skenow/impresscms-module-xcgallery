@@ -66,7 +66,7 @@ switch ($event) {
 			$query = "UPDATE " . icms::$xoopsDB->prefix("xcgal_albums") . " SET title='$title', description='$description', thumb='$thumb',  comments='$comments', votes='$votes', visibility='$visibility' WHERE aid='$aid' AND category='$category' LIMIT 1";
 		}
 		$update = icms::$xoopsDB->query($query);
-		if (!$xoopsDB->getAffectedRows()) redirect_header("modifyalb.php?album=$aid", 2, _MD_DB_NO_NEED);
+		if (!icms::$xoopsDB->getAffectedRows()) redirect_header("modifyalb.php?album=$aid", 2, _MD_DB_NO_NEED);
 		redirect_header("modifyalb.php?album=$aid", 2, _MD_DB_ALB_UPDATED);
 		exit();
 		break;

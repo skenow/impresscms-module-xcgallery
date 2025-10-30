@@ -128,12 +128,12 @@ function delete_picture($pid) {
 	if (USER_IS_ADMIN) {
 		$query = "SELECT aid, filepath, filename FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE pid='$pid'";
 		$result = icms::$xoopsDB->query($query);
-		if (!$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
+		if (!icms::$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
 		$pic = icms::$xoopsDB->fetchArray($result);
 	} else {
 		$query = "SELECT " . icms::$xoopsDB->prefix("xcgal_pictures") . ".aid as aid, category, filepath, filename FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . ", " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE " . icms::$xoopsDB->prefix("xcgal_pictures") . ".aid = " . icms::$xoopsDB->prefix("xcgal_albums") . ".aid AND pid='$pid'";
 		$result = icms::$xoopsDB->query($query);
-		if (!$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
+		if (!icms::$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
 		$pic = icms::$xoopsDB->fetchArray($result);
 		if ($pic['category'] != FIRST_USER_CAT + USER_ID) redirect_header('index.php', 2, _MD_PERM_DENIED);
 	}
@@ -190,7 +190,7 @@ function delete_album($aid) {
 	global $del_message, $del_pic, $pic_del;
 	$query = "SELECT title, category FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid ='$aid'";
 	$result = icms::$xoopsDB->query($query);
-	if (!$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
+	if (!icms::$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
 	$album_data = icms::$xoopsDB->fetchArray($result);
 
 	if (!GALLERY_ADMIN_MODE) {

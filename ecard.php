@@ -74,7 +74,7 @@ function send_ecard($recipient_email, $recipient_name, $greetings, $msg_content,
 	$e_id = get_message_id();
 
 	$sql = "INSERT INTO " . icms::$xoopsDB->prefix("xcgal_ecard") . " (e_id, sess_id, sender_ip, sender_uid, sender_name, sender_email, recipient_name, recipient_email, greetings, message, s_time, pid, picked) VALUES ('" . $e_id . "', '" . session_id() . "', '" . $_SERVER['REMOTE_ADDR'] . "', $sender_uid, '" . icms_core_DataFilter::addSlashes($sender_name) . "', '" . icms_core_DataFilter::addSlashes($sender_email) . "', '" . icms_core_DataFilter::addSlashes($recipient_name) . "', '" . icms_core_DataFilter::addSlashes($recipient_email) . "', '" . icms_core_DataFilter::addSlashes($greetings) . "', '" . icms_core_DataFilter::addSlashes($msg_content) . "', " . time() . ", $image, 0)";
-	if (!$xoopsDB->queryF($sql)) {
+	if (!icms::$xoopsDB->queryF($sql)) {
 		redirect_header('index.php', 2, _MD_CARD_NOTINDB);
 	}
 	icms::$xoopsDB->queryF("UPDATE " . icms::$xoopsDB->prefix("xcgal_pictures") . " SET sent_card=sent_card+1 WHERE pid='" . $image . "'");
@@ -186,7 +186,7 @@ if (!GALLERY_ADMIN_MODE && icms::$module->config['allow_private_albums']) get_pr
 
 // Get picture thumbnail url
 $result = icms::$xoopsDB->query("SELECT * from " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE pid='$pid' $ALBUM_SET");
-if (!$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
+if (!icms::$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
 $row = icms::$xoopsDB->fetchArray($result);
 $thumb_pic_url = get_pic_url($row, 'thumb');
 

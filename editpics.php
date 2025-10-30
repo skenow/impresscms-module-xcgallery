@@ -138,7 +138,7 @@ function process_post_data() {
 
 		if ($del_comments) {
 			// $query = "DELETE FROM ".icms::$xoopsDB->prefix("xcgal_comments")." WHERE pid='$pid'";
-			// $result =$xoopsDB->query($query);
+			// $result =icms::$xoopsDB->query($query);
 			xoops_comment_delete(icms::$module->getVar('mid'), $pid);
 		}
 

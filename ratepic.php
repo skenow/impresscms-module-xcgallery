@@ -51,7 +51,7 @@ $location = "displayimage.php?pid=" . $pic . "&amp;pos=" . (-$pic);
 // Retrieve picture/album information & check if user can rate picture
 $sql = "SELECT a.votes as votes_allowed, p.votes as votes, pic_rating " . "FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " AS p, " . icms::$xoopsDB->prefix("xcgal_albums") . " AS a " . "WHERE p.aid = a.aid AND pid = '$pic' LIMIT 1";
 $result = icms::$xoopsDB->query($sql);
-if (!$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
+if (!icms::$xoopsDB->getRowsNum($result)) redirect_header('index.php', 2, _MD_NON_EXIST_AP);
 $row = icms::$xoopsDB->fetchArray($result);
 icms::$xoopsDB->freeRecordSet($result);
 if (!USER_CAN_RATE_PICTURES || $row['votes_allowed'] == 'NO') redirect_header($location, 2, _MD_PERM_DENIED);
