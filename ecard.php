@@ -45,7 +45,7 @@ function send_ecard($recipient_email, $recipient_name, $greetings, $msg_content,
 	else
 		$s_uid = "";
 	$s_time = time() - 3600;
-	$result = icms::$xoopsDB->query("SELECT * from " . icms::$xoopsDB->prefix("xcgal_ecard") . " WHERE (sess_id ='" . session_id() . "' || sender_email = '" . $myts->addSlashes($sender_email) . "' || sender_ip ='" . $_SERVER['REMOTE_ADDR'] . "' " . $s_uid . ") AND s_time > " . $s_time . "");
+	$result = icms::$xoopsDB->query("SELECT * from " . icms::$xoopsDB->prefix("xcgal_ecard") . " WHERE (sess_id ='" . session_id() . "' || sender_email = '" . icms_core_DataFilter::addSlashes($sender_email) . "' || sender_ip ='" . $_SERVER['REMOTE_ADDR'] . "' " . $s_uid . ") AND s_time > " . $s_time . "");
 	if (icms::$xoopsDB->getRowsNum($result) >= icms::$module->config['ecards_per_hour']) {
 		redirect_header('index.php', 2, sprintf(_MD_CARD_PERHOUR, icms::$module->config['ecards_per_hour']));
 		return;
@@ -73,7 +73,7 @@ function send_ecard($recipient_email, $recipient_name, $greetings, $msg_content,
 		$sender_uid = 0;
 	$e_id = get_message_id();
 
-	$sql = "INSERT INTO " . icms::$xoopsDB->prefix("xcgal_ecard") . " (e_id, sess_id, sender_ip, sender_uid, sender_name, sender_email, recipient_name, recipient_email, greetings, message, s_time, pid, picked) VALUES ('" . $e_id . "', '" . session_id() . "', '" . $_SERVER['REMOTE_ADDR'] . "', $sender_uid, '" . $myts->addSlashes($sender_name) . "', '" . $myts->addSlashes($sender_email) . "', '" . $myts->addSlashes($recipient_name) . "', '" . $myts->addSlashes($recipient_email) . "', '" . $myts->addSlashes($greetings) . "', '" . $myts->addSlashes($msg_content) . "', " . time() . ", $image, 0)";
+	$sql = "INSERT INTO " . icms::$xoopsDB->prefix("xcgal_ecard") . " (e_id, sess_id, sender_ip, sender_uid, sender_name, sender_email, recipient_name, recipient_email, greetings, message, s_time, pid, picked) VALUES ('" . $e_id . "', '" . session_id() . "', '" . $_SERVER['REMOTE_ADDR'] . "', $sender_uid, '" . icms_core_DataFilter::addSlashes($sender_name) . "', '" . icms_core_DataFilter::addSlashes($sender_email) . "', '" . icms_core_DataFilter::addSlashes($recipient_name) . "', '" . icms_core_DataFilter::addSlashes($recipient_email) . "', '" . icms_core_DataFilter::addSlashes($greetings) . "', '" . icms_core_DataFilter::addSlashes($msg_content) . "', " . time() . ", $image, 0)";
 	if (!$xoopsDB->queryF($sql)) {
 		redirect_header('index.php', 2, _MD_CARD_NOTINDB);
 	}

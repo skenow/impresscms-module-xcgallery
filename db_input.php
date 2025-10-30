@@ -47,9 +47,9 @@ switch ($event) {
 		if (!(USER_ADMIN_MODE || GALLERY_ADMIN_MODE)) redirect_header('index.php', 2, _MD_PERM_DENIED);
 
 		$aid = (int) $_POST['aid'];
-		$title = $myts->addSlashes(trim($_POST['title']));
+		$title = icms_core_DataFilter::addSlashes(trim($_POST['title']));
 		$category = (int) $_POST['category'];
-		$description = $myts->addSlashes(trim($_POST['description']), 0);
+		$description = icms_core_DataFilter::addSlashes(trim($_POST['description']), 0);
 		$thumb = (int) $_POST['thumb'];
 		$visibility = (int) $_POST['visibility'];
 		$uploads = $_POST['uploads'] == 'YES' ? 'YES' : 'NO';
@@ -77,16 +77,16 @@ switch ($event) {
 		if (!USER_CAN_UPLOAD_PICTURES) redirect_header('index.php', 2, _MD_PERM_DENIED);
 
 		$album = (int) $_POST['album'];
-		$title = $myts->addSlashes($_POST['title']);
+		$title = icms_core_DataFilter::addSlashes($_POST['title']);
 		if (trim($title) == '') {
-			$title = substr($myts->addSlashes($_FILES['userpicture']['name']), 0, (strlen($_FILES['userpicture']['name']) - 4));
+			$title = substr(icms_core_DataFilter::addSlashes($_FILES['userpicture']['name']), 0, (strlen($_FILES['userpicture']['name']) - 4));
 		}
-		$caption = $myts->addSlashes($_POST['caption'], 0);
-		$keywords = $myts->addSlashes($_POST['keywords']);
-		$user1 = $myts->addSlashes($_POST['user1']);
-		$user2 = $myts->addSlashes($_POST['user2']);
-		$user3 = $myts->addSlashes($_POST['user3']);
-		$user4 = $myts->addSlashes($_POST['user4']);
+		$caption = icms_core_DataFilter::addSlashes($_POST['caption'], 0);
+		$keywords = icms_core_DataFilter::addSlashes($_POST['keywords']);
+		$user1 = icms_core_DataFilter::addSlashes($_POST['user1']);
+		$user2 = icms_core_DataFilter::addSlashes($_POST['user2']);
+		$user3 = icms_core_DataFilter::addSlashes($_POST['user3']);
+		$user4 = icms_core_DataFilter::addSlashes($_POST['user4']);
 
 		// Check if the album id provided is valid
 		if (!GALLERY_ADMIN_MODE) {
@@ -133,7 +133,7 @@ switch ($event) {
 		$forbidden_chars = strtr(icms::$module->config['forbidden_fname_char'], array('&amp;' => '&', '&quot;' => '"', '&lt;' => '<', '&gt;' => '>'));
 
 		// Check that the file uploaded has a valid extension
-		$_FILES['userpicture']['name'] = $myts->addSlashes($_FILES['userpicture']['name']);
+		$_FILES['userpicture']['name'] = icms_core_DataFilter::addSlashes($_FILES['userpicture']['name']);
 		$picture_name = strtr($_FILES['userpicture']['name'], $forbidden_chars, str_repeat('_', strlen(icms::$module->config['forbidden_fname_char'])));
 		if (!preg_match("/(.+)\.(.*?)\Z/", $picture_name, $matches)) {
 			$matches[1] = 'invalid_fname';
@@ -229,9 +229,9 @@ switch ($event) {
 		# first pic:
 		if ($_FILES['userpicture1']['tmp_name'] != "") {
 
-			$title = $myts->addSlashes($_POST['title1']);
+			$title = icms_core_DataFilter::addSlashes($_POST['title1']);
 			if (trim($title) == '') {
-				$title = $myts->addSlashes($_FILES['userpicture1']['name']);
+				$title = icms_core_DataFilter::addSlashes($_FILES['userpicture1']['name']);
 			}
 
 			// Check if the album id provided is valid
@@ -279,7 +279,7 @@ switch ($event) {
 			$forbidden_chars = strtr(icms::$module->config['forbidden_fname_char'], array('&amp;' => '&', '&quot;' => '"', '&lt;' => '<', '&gt;' => '>'));
 
 			// Check that the file uploaded has a valid extension
-			$_FILES['userpicture1']['name'] = $myts->addSlashes($_FILES['userpicture1']['name']);
+			$_FILES['userpicture1']['name'] = icms_core_DataFilter::addSlashes($_FILES['userpicture1']['name']);
 			$picture_name = strtr($_FILES['userpicture1']['name'], $forbidden_chars, str_repeat('_', strlen(icms::$module->config['forbidden_fname_char'])));
 			if (!preg_match("/(.+)\.(.*?)\Z/", $picture_name, $matches)) {
 				$matches[1] = 'invalid_fname';
@@ -351,9 +351,9 @@ switch ($event) {
 
 		# second pic:
 		if ($_FILES['userpicture2']['tmp_name'] != "") {
-			$title = $myts->addSlashes($_POST['title2']);
+			$title = icms_core_DataFilter::addSlashes($_POST['title2']);
 			if (trim($title) == '') {
-				$title = $myts->addSlashes($_FILES['userpicture2']['name']);
+				$title = icms_core_DataFilter::addSlashes($_FILES['userpicture2']['name']);
 			}
 
 			// Check if the album id provided is valid
@@ -401,7 +401,7 @@ switch ($event) {
 			$forbidden_chars = strtr(icms::$module->config['forbidden_fname_char'], array('&amp;' => '&', '&quot;' => '"', '&lt;' => '<', '&gt;' => '>'));
 
 			// Check that the file uploaded has a valid extension
-			$_FILES['userpicture2']['name'] = $myts->addSlashes($_FILES['userpicture2']['name']);
+			$_FILES['userpicture2']['name'] = icms_core_DataFilter::addSlashes($_FILES['userpicture2']['name']);
 			$picture_name = strtr($_FILES['userpicture2']['name'], $forbidden_chars, str_repeat('_', strlen(icms::$module->config['forbidden_fname_char'])));
 			if (!preg_match("/(.+)\.(.*?)\Z/", $picture_name, $matches)) {
 				$matches[1] = 'invalid_fname';
@@ -473,9 +473,9 @@ switch ($event) {
 
 		# 3rd pic:
 		if ($_FILES['userpicture3']['tmp_name'] != "") {
-			$title = $myts->addSlashes($_POST['title3']);
+			$title = icms_core_DataFilter::addSlashes($_POST['title3']);
 			if (trim($title) == '') {
-				$title = $myts->addSlashes($_FILES['userpicture3']['name']);
+				$title = icms_core_DataFilter::addSlashes($_FILES['userpicture3']['name']);
 			}
 
 			// Check if the album id provided is valid
@@ -523,7 +523,7 @@ switch ($event) {
 			$forbidden_chars = strtr(icms::$module->config['forbidden_fname_char'], array('&amp;' => '&', '&quot;' => '"', '&lt;' => '<', '&gt;' => '>'));
 
 			// Check that the file uploaded has a valid extension
-			$_FILES['userpicture3']['name'] = $myts->addSlashes($_FILES['userpicture3']['name']);
+			$_FILES['userpicture3']['name'] = icms_core_DataFilter::addSlashes($_FILES['userpicture3']['name']);
 			$picture_name = strtr($_FILES['userpicture3']['name'], $forbidden_chars, str_repeat('_', strlen(icms::$module->config['forbidden_fname_char'])));
 			if (!preg_match("/(.+)\.(.*?)\Z/", $picture_name, $matches)) {
 				$matches[1] = 'invalid_fname';
@@ -595,9 +595,9 @@ switch ($event) {
 
 		# 4th pic:
 		if ($_FILES['userpicture4']['tmp_name'] != "") {
-			$title = $myts->addSlashes($_POST['title4']);
+			$title = icms_core_DataFilter::addSlashes($_POST['title4']);
 			if (trim($title) == '') {
-				$title = $myts->addSlashes($_FILES['userpicture4']['name']);
+				$title = icms_core_DataFilter::addSlashes($_FILES['userpicture4']['name']);
 			}
 
 			// Check if the album id provided is valid
@@ -645,7 +645,7 @@ switch ($event) {
 			$forbidden_chars = strtr(icms::$module->config['forbidden_fname_char'], array('&amp;' => '&', '&quot;' => '"', '&lt;' => '<', '&gt;' => '>'));
 
 			// Check that the file uploaded has a valid extension
-			$_FILES['userpicture4']['name'] = $myts->addSlashes($_FILES['userpicture4']['name']);
+			$_FILES['userpicture4']['name'] = icms_core_DataFilter::addSlashes($_FILES['userpicture4']['name']);
 			$picture_name = strtr($_FILES['userpicture4']['name'], $forbidden_chars, str_repeat('_', strlen(icms::$module->config['forbidden_fname_char'])));
 			if (!preg_match("/(.+)\.(.*?)\Z/", $picture_name, $matches)) {
 				$matches[1] = 'invalid_fname';

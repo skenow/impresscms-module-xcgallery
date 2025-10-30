@@ -114,7 +114,7 @@ function add_picture($aid, $filepath, $filename, $title = '', $caption = '', $ke
 	// User ID is not recorded when in admin mode (ie. for batch uploads)
 	$user_id = USER_ID;
 	$user_name = USER_NAME;
-	$query = "INSERT INTO " . icms::$xoopsDB->prefix("xcgal_pictures") . " (aid, filepath, filename, filesize, total_filesize, pwidth, pheight, mtime, ctime, owner_id, owner_name, title, caption, keywords, approved, user1, user2, user3, user4, ip) VALUES ('$aid', '" . $myts->addSlashes($filepath) . "', '" . $myts->addSlashes($filename) . "', '$image_filesize', '$total_filesize', '{$imagesize[0]}', '{$imagesize[1]}','" . time() . "', '" . time() . "', '$user_id','$user_name', '$title', '$caption', '$keywords', '$approved', '$user1', '$user2', '$user3', '$user4','" . $_SERVER['REMOTE_ADDR'] . "')";
+	$query = "INSERT INTO " . icms::$xoopsDB->prefix("xcgal_pictures") . " (aid, filepath, filename, filesize, total_filesize, pwidth, pheight, mtime, ctime, owner_id, owner_name, title, caption, keywords, approved, user1, user2, user3, user4, ip) VALUES ('$aid', '" . icms_core_DataFilter::addSlashes($filepath) . "', '" . icms_core_DataFilter::addSlashes($filename) . "', '$image_filesize', '$total_filesize', '{$imagesize[0]}', '{$imagesize[1]}','" . time() . "', '" . time() . "', '$user_id','$user_name', '$title', '$caption', '$keywords', '$approved', '$user1', '$user2', '$user3', '$user4','" . $_SERVER['REMOTE_ADDR'] . "')";
 	$result = icms::$xoopsDB->queryf($query);
 	if ($approved == 'YES') $picinID = icms::$xoopsDB->getInsertId();
 	if (($approved == 'YES') && is_object(icms::$user)) icms::$user->incrementPost();

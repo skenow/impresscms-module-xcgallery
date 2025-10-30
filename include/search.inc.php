@@ -51,8 +51,8 @@ if ($search_string != '') {
 			default:
 				if (empty($split_search[$i])) break;
 
-				$match_word = '%' . str_replace('*', '%', $myts->addSlashes($split_search[$i])) . '%';
-				$match_keyword = '% ' . str_replace('*', '%', $myts->addSlashes($split_search[$i])) . ' %';
+				$match_word = '%' . str_replace('*', '%', icms_core_DataFilter::addSlashes($split_search[$i])) . '%';
+				$match_keyword = '% ' . str_replace('*', '%', icms_core_DataFilter::addSlashes($split_search[$i])) . ' %';
 
 				$sql = "SELECT pid " . "FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " " . "WHERE CONCAT(' ', keywords, ' ') LIKE '$match_keyword' ";
 
