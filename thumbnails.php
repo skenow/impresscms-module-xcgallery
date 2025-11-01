@@ -159,5 +159,5 @@ $xoopsTpl->assign('gallery', icms::$module->getVar('name'));
 
 main_menu();
 do_footer();
-$xoopsTpl->assign('xoops_pagetitle', icms_core_DataFilter::htmlSpecialchars($CURRENT_ALBUM_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars(icms::$module->name()));
+$xoopsTpl->assign('icms_pagetitle', icms_core_DataFilter::htmlSpecialchars($CURRENT_ALBUM_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars(icms::$module->getVar('name')));
 include_once "../../footer.php";

@@ -218,7 +218,7 @@ function html_picinfo() {
 	$submitter = &$user_handler->getUser($CURRENT_PIC_DATA['owner_id']);
 
 	if (is_object($submitter)) {
-		$info[_MD_DIS_UPLOADER] = '<span class="alblink"><a href="' . ICMS_URL . '/userinfo.php?uid=' . $submitter->uid() . '">' . $submitter->uname() . '</a>&nbsp;&nbsp;<a href="thumbnails.php?album=usearch&amp;suid=' . $submitter->uid() . '" title="' . _MD_DIS_VIEW_MORE_BY . ' ' . $submitter->uname() . '"><img src="images/more.gif" align="middle" alt=""/></a></span>';
+		$info[_MD_DIS_UPLOADER] = '<span class="alblink"><a href="' . ICMS_URL . '/userinfo.php?uid=' . $submitter->getVar('uid') . '">' . $submitter->getVar('uname') . '</a>&nbsp;&nbsp;<a href="thumbnails.php?album=usearch&amp;suid=' . $submitter->getVar('uid') . '" title="' . _MD_DIS_VIEW_MORE_BY . ' ' . $submitter->getVar('uname') . '"><img src="images/more.gif" align="middle" alt=""/></a></span>';
 	}
 
 	if ($CURRENT_PIC_DATA['votes'] > 0) {
@@ -495,7 +495,7 @@ if (isset($_GET['fullsize'])) {
 	main_menu();
 	// $xoopsTpl->assign('xcgal_footer', pagefooter());
 	do_footer();
-	$xoopsTpl->assign('xoops_pagetitle', icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars($CURRENT_ALBUM_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars(icms::$module->name()));
+	$xoopsTpl->assign('icms_pagetitle', icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars($CURRENT_ALBUM_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars(icms::$module->getVar('name')));
 	include ICMS_ROOT_PATH . '/include/comment_view.php';
 	include_once "../../footer.php";
 }
