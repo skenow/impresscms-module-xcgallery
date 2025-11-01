@@ -30,11 +30,5 @@
 include '../../../include/cp_header.php';
 require ('../include/init.inc.php');
 
-if (file_exists("../language/" . $xoopsConfig['language'] . "/admin.php")) {
-	include_once "../language/" . $xoopsConfig['language'] . "/admin.php";
-} else {
-	include_once "../language/english/admin.php";
-}
-
 $myts = icms_core_Textsanitizer::getInstance();
 //$eh = new ErrorHandler;
