@@ -462,7 +462,9 @@ do_footer();
 if ($cat != 0) {
 	$categories = get_category_list();
 	$icmsTpl->assign('icms_pagetitle', icms_core_DataFilter::htmlSpecialchars($CURRENT_CAT_NAME) . ' : ' . icms_core_DataFilter::htmlSpecialchars(icms::$module->getVar('name')));
-	$xoTheme->addMeta('meta', 'description', icms_core_DataFilter::htmlSpecialchars($categories[$cat]['description']));
+	if (!empty($categories[$cat]['description'])) {
+		$xoTheme->addMeta('meta', 'description', icms_core_DataFilter::htmlSpecialchars($categories[$cat]['description']));
+	}
 } else {
 	$icmsTpl->assign('icms_pagetitle', icms_core_DataFilter::htmlSpecialchars(icms::$module->getVar('name')));
 	if (!empty(icms::$module->config['module_meta_keywords'])) {
