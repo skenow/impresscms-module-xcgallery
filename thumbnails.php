@@ -84,7 +84,7 @@ $cat_data = array ();
 if (!GALLERY_ADMIN_MODE && icms::$module->config['allow_private_albums']) get_private_album_set();
 
 if (is_numeric($album)) {
-	$result = icms::$xoopsDB->query("SELECT category, title FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album' $ALBUM_SET");
+	$result = icms::$xoopsDB->query("SELECT category, title, description FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='$album' $ALBUM_SET");
 	if (icms::$xoopsDB->getRowsNum($result) > 0) {
 		$CURRENT_ALBUM_DATA = icms::$xoopsDB->fetchArray($result);
 		$actual_cat = $CURRENT_ALBUM_DATA['category'];
@@ -94,7 +94,7 @@ if (is_numeric($album)) {
 		redirect_header("index.php", 3, _NOPERM);
 } elseif (isset($cat) && $cat) { // Meta albums, we need to restrict the albums to the current category
 	if ($cat < 0) {
-		$result = icms::$xoopsDB->query("SELECT category, title FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='" . (-$cat) . "'");
+		$result = icms::$xoopsDB->query("SELECT category, title, description FROM " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE aid='" . (-$cat) . "'");
 		if (icms::$xoopsDB->getRowsNum($result) > 0) {
 			$CURRENT_ALBUM_DATA = icms::$xoopsDB->fetchArray($result);
 			$actual_cat = $CURRENT_ALBUM_DATA['category'];
@@ -160,4 +160,7 @@ $xoopsTpl->assign('gallery', icms::$module->getVar('name'));
 main_menu();
 do_footer();
 $xoopsTpl->assign('icms_pagetitle', icms_core_DataFilter::htmlSpecialchars($CURRENT_ALBUM_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars(icms::$module->getVar('name')));
+if ($CURRENT_ALBUM_DATA['description'] != '') {
+	$xoTheme->addMeta('meta', 'description', icms_core_DataFilter::htmlSpecialchars($CURRENT_ALBUM_DATA['description']));
+}
 include_once "../../footer.php";
