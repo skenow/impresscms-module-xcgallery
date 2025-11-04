@@ -496,6 +496,11 @@ if (isset($_GET['fullsize'])) {
 	// $xoopsTpl->assign('xcgal_footer', pagefooter());
 	do_footer();
 	$xoopsTpl->assign('icms_pagetitle', icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars($CURRENT_ALBUM_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars(icms::$module->getVar('name')));
+	
+	if ($CURRENT_PIC_DATA['caption']) {
+		$xoTheme->addMeta('meta', 'description', icms_html2text($CURRENT_PIC_DATA['caption']));
+	}
+	
 	include ICMS_ROOT_PATH . '/include/comment_view.php';
 	include_once "../../footer.php";
 }
