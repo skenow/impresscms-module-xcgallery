@@ -160,7 +160,7 @@ $xoopsTpl->assign('gallery', icms::$module->getVar('name'));
 main_menu();
 do_footer();
 $xoopsTpl->assign('icms_pagetitle', icms_core_DataFilter::htmlSpecialchars($CURRENT_ALBUM_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars(icms::$module->getVar('name')));
-if ($CURRENT_ALBUM_DATA['description'] != '') {
+if (!empty($CURRENT_ALBUM_DATA['description'])) {
 	$xoTheme->addMeta('meta', 'description', icms_core_DataFilter::htmlSpecialchars($CURRENT_ALBUM_DATA['description']));
 }
 include_once "../../footer.php";
