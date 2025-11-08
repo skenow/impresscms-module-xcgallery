@@ -27,37 +27,56 @@
 // along with this program; if not, write to the Free Software //
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA //
 // ------------------------------------------------------------------------ //
-$modversion['name'] = 'xcGallery';
-$modversion['version'] = '2.1.0';
-$modversion['description'] = 'Gallery module for ImpressCMS based on xcgal 1.1 RC which is based on Coppermine 1.10 &copy; Gr�gory DEMAR (http://coppermine.sourceforge.net)';
-$modversion['credits'] = "http://dev.xoops.org";
-$modversion['author'] = "skenow, Vers. 1.1: Derya Kiran, edited for Xoops 2.2 by mcleines";
-$modversion['help'] = "";
-$modversion['license'] = "GPL see LICENSE";
-$modversion['official'] = 1;
-$modversion['image'] = "images/slogo.png";
-$modversion['dirname'] = basename(dirname(__FILE__));
+$modversion = array (
+	'name' => 'xcGallery',
+	'version' => '2.1.0',
+	'description' => 'Gallery module for ImpressCMS based on xcgal 1.1 RC which is based on Coppermine 1.10 &copy, Gr�gory DEMAR (http://coppermine.sourceforge.net)',
+	'credits' => "",
+	'author' => "skenow, Vers. 1.1: Derya Kiran, edited for Xoops 2.2 by mcleines",
+	'help' => "",
+	'license' => "GPL see LICENSE",
+	'official' => 0,
+	'image' => "images/slogo.png",
+	'dirname' => basename(__DIR__),
+
+/**  Development information */
+	'status_version' => "RC",
+	'status' => "RC",
+	'date' => "2025-11-08",
+	'author_word' => "",
+	
+	'developer_website_url' => "",
+	'developer_website_name' => "",
+	'developer_email' => "",
+	'warning' => _CO_ICMS_WARNING_RC,
 
 // Admin things
-$modversion['hasAdmin'] = 1;
-$modversion['adminindex'] = "admin/index.php";
-$modversion['adminmenu'] = "admin/menu.php";
+	'hasAdmin' => 1,
+	'adminindex' => "admin/index.php",
+	'adminmenu' => "admin/menu.php",
 
 // Menu
-$modversion['hasMain'] = 1;
+	'hasMain' => 1,
 // search
-$modversion['hasSearch'] = 1;
-$modversion['search']['file'] = "include/search.php";
-$modversion['search']['func'] = "xcgal_search";
+	'hasSearch' => 1,
+);
+
+$modversion['search'] = array (
+	'file' => "include/search.php",
+	'func' => "xcgal_search",
+);
+
 // DB
 $modversion['sqlfile']['mysql'] = "sql/mysql.sql";
 
-$modversion['tables'][0] = "xcgal_albums";
-$modversion['tables'][1] = "xcgal_categories";
-$modversion['tables'][2] = "xcgal_pictures";
-$modversion['tables'][3] = "xcgal_usergroups";
-$modversion['tables'][4] = "xcgal_votes";
-$modversion['tables'][5] = "xcgal_ecard";
+$modversion['tables'] = array (
+	0 => "xcgal_albums",
+	1 => "xcgal_categories",
+	2 => "xcgal_pictures",
+	3 => "xcgal_usergroups",
+	4 => "xcgal_votes",
+	5 => "xcgal_ecard",
+);
 
 // Blocks
 $modversion['blocks'][1] = array (
@@ -73,7 +92,7 @@ $modversion['blocks'][1] = array (
 $modversion['blocks'][] = array (
 	'file' => "xcgal_blocks.php",
 	'name' => _MI_XCGAL_CATMENU,
-	'description' => "xcGallery categorie menu",
+	'description' => "xcGallery category menu",
 	'show_func' => "xcgal_catmenu_block_func",
 	'template' => 'xcgal_block_catmenu.html'
 );
@@ -176,8 +195,10 @@ $modversion['templates'][] = array (
 
 // $modversion['templates'][1]['file'] = 'coppermine.html';
 $modversion['hasComments'] = 1;
-$modversion['comments']['itemName'] = 'pid';
-$modversion['comments']['pageName'] = 'displayimage.php';
+$modversion['comments'] = array (
+	'itemName' => 'pid',
+	'pageName' => 'displayimage.php',
+);
 
 $modversion['config'][1] = array (
 	'name' => 'anosee',
@@ -185,24 +206,26 @@ $modversion['config'][1] = array (
 	'description' => '',
 	'formtype' => 'yesno',
 	'valuetype' => 'int',
-	'default' => 1
+	'default' => 1,
 );
 
 $modversion['config'][] = array(
-		'name' => 'module_meta_keywords',
-		'title' => '_MI_GALLERY_KEYWORDS',
-		'description' => '_MI_GALLERY_KEYWORDS_DSC',
-		'formtype' => 'textbox',
-		'valuetype' => 'text',
-		'default' => '');
+	'name' => 'module_meta_keywords',
+	'title' => '_MI_GALLERY_KEYWORDS',
+	'description' => '_MI_GALLERY_KEYWORDS_DSC',
+	'formtype' => 'textbox',
+	'valuetype' => 'text',
+	'default' => '',
+);
 
 $modversion['config'][] = array(
-		'name' => 'module_meta_description',
-		'title' => '_MI_GALLERY_METADESC',
-		'description' => '_MI_GALLERY_METADESC_DSC',
-		'formtype' => 'textbox',
-		'valuetype' => 'text',
-		'default' => '');
+	'name' => 'module_meta_description',
+	'title' => '_MI_GALLERY_METADESC',
+	'description' => '_MI_GALLERY_METADESC_DSC',
+	'formtype' => 'textbox',
+	'valuetype' => 'text',
+	'default' => ''
+);
 
 $modversion['config'][] = array (
 	'name' => 'subcat_level',
