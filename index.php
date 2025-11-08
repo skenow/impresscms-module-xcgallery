@@ -67,7 +67,7 @@ function get_subcat_data($parent, &$cat_data, &$album_set_array, $level, $ident 
 				$result = icms::$xoopsDB->query("SELECT * FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . ", " . icms::$xoopsDB->prefix("xcgal_albums") . " WHERE " . icms::$xoopsDB->prefix("xcgal_pictures") . ".aid = " . icms::$xoopsDB->prefix("xcgal_albums") . ".aid AND category >= " . FIRST_USER_CAT);
 				$pic_count = icms::$xoopsDB->getRowsNum($result);
 				icms::$xoopsDB->freeRecordSet($result);
-				$subcat['description'] = preg_replace("/<br \/>/i", '<br />' . $ident, $myts->displayTarea($subcat['description']));
+				$subcat['description'] = preg_replace("/<br \/>/i", '<br />' . $ident, $myts->displayTarea($subcat['description'],1));
 				$link = $ident . "<a href=index.php?cat={$subcat['cid']}>" . icms_core_DataFilter::htmlSpecialchars($subcat['name']) . "</a>";
 				if ($album_count) {
 					$cat_data[] = array (
@@ -93,7 +93,7 @@ function get_subcat_data($parent, &$cat_data, &$album_set_array, $level, $ident 
 				icms::$xoopsDB->freeRecordSet($result);
 	
 				$subcat['name'] = icms_core_DataFilter::htmlSpecialchars($subcat['name']);
-				$subcat['description'] = preg_replace("/<br \/>/i", '<br />' . $ident, $myts->displayTarea($subcat['description']));
+				$subcat['description'] = preg_replace("/<br \/>/i", '<br />' . $ident, $myts->displayTarea($subcat['description'],1));
 				$link = $ident . "<a href=\"index.php?cat={$subcat['cid']}\">{$subcat['name']}</a>";
 				if ($pic_count == 0 && $album_count == 0) {
 					$cat_data[] = array (

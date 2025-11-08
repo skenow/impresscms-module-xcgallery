@@ -41,7 +41,7 @@ $modversion = array (
 
 /**  Development information */
 	'status_version' => "RC",
-	'status' => "RC",
+	'status' => "Build 11.08.2025",
 	'date' => "2025-11-08",
 	'author_word' => "",
 	
