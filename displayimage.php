@@ -426,8 +426,7 @@ if (isset($CURRENT_PIC_DATA)) {
 if (isset($_GET['fullsize'])) {
 
 	display_fullsize_pic();
-	require_once ICMS_ROOT_PATH . '/class/template.php';
-	$xoopsTpl = new XoopsTpl();
+	$xoopsTpl = new icms_view_Tpl();
 	$xoopsTpl->assign('sitename', $xoopsConfig['sitename']);
 	$xoopsTpl->assign('gallery', icms::$module->getVar('name'));
 	$xoopsTpl->assign('pic_out', $pic_out);

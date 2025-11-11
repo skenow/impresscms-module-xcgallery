@@ -53,8 +53,7 @@ if (icms::$module->config['make_intermediate'] && max($row['pwidth'], $row['phei
 
 $msg_content = $myts->displayTarea($row['message'], 0);
 if (!stristr($n_picname, 'http:')) $n_picname = ICMS_URL . "/modules/" . $xcgalDir . "/" . $n_picname;
-require_once ICMS_ROOT_PATH . '/class/template.php';
-$xoopsTpl = new XoopsTpl();
+$xoopsTpl = new icms_view_Tpl();
 $xoopsTpl->assign('sitename', $xoopsConfig['sitename']);
 $xoopsTpl->assign('ecard_title', sprintf(_MD_CARD_ECARD_TITLE, icms_core_DataFilter::htmlSpecialchars($row['sender_name'])));
 $xoopsTpl->assign('charset', _CHARSET);

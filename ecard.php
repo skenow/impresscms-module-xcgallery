@@ -130,8 +130,7 @@ function build_html_card($sender_name, $sender_email, $n_picname, $message, $gre
 
 	$msg_content = $myts->displayTarea($message, 0);
 
-	require_once ICMS_ROOT_PATH . '/class/template.php';
-	$ecardTpl = new XoopsTpl();
+	$ecardTpl = new icms_view_Tpl();
 	$ecardTpl->assign('sitename', $xoopsConfig['sitename']);
 	$ecardTpl->assign('ecard_title', sprintf(_MD_CARD_ECARD_TITLE, icms_core_DataFilter::htmlSpecialchars($sender_name)));
 	$ecardTpl->assign('charset', _CHARSET);
