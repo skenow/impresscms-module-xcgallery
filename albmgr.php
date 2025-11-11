@@ -51,15 +51,15 @@ function get_subcat_data($parent, $ident = '') {
 }
 $xoopsOption['template_main'] = 'xcgal_albmgr.html';
 include ICMS_ROOT_PATH . "/header.php";
-$xoopsTpl->assign('icms_module_header', $xcgal_module_header);
-$xoopsTpl->assign('alb_need_name', _MD_ALBMGR_NEED_NAME);
-$xoopsTpl->assign('confirm_modifs', _MD_ALBMGR_CONF_MOD);
-$xoopsTpl->assign('no_change', _MD_ALBMGR_NO_CHANGE);
-$xoopsTpl->assign('new_album', _MD_ALBMGR_NEW_ALB);
-$xoopsTpl->assign('confirm_delete1', _MD_ALBMGR_CONF_DEL1);
-$xoopsTpl->assign('confirm_delete2', _MD_ALBMGR_CONF_DEL2);
-$xoopsTpl->assign('select_first', _MD_ALBMGR_SELECT_FIRST);
-$xoopsTpl->assign('alb_mrg', _MD_ALBMGR_ALB_MGR);
+$icmsTpl->assign('icms_module_header', $xcgal_module_header);
+$icmsTpl->assign('alb_need_name', _MD_ALBMGR_NEED_NAME);
+$icmsTpl->assign('confirm_modifs', _MD_ALBMGR_CONF_MOD);
+$icmsTpl->assign('no_change', _MD_ALBMGR_NO_CHANGE);
+$icmsTpl->assign('new_album', _MD_ALBMGR_NEW_ALB);
+$icmsTpl->assign('confirm_delete1', _MD_ALBMGR_CONF_DEL1);
+$icmsTpl->assign('confirm_delete2', _MD_ALBMGR_CONF_DEL2);
+$icmsTpl->assign('select_first', _MD_ALBMGR_SELECT_FIRST);
+$icmsTpl->assign('alb_mrg', _MD_ALBMGR_ALB_MGR);
 
 $cat = isset($_GET['cat']) ? ($_GET['cat']) : 0;
 if ($cat == 1) $cat = 0;
@@ -76,7 +76,7 @@ $sort_order = '';
 if (count($rowset) > 0) foreach ($rowset as $album) {
 	$sort_order .= $album['aid'] . '@' . ($i++ ) . ',';
 }
-$xoopsTpl->assign('sort_order', $sort_order);
+$icmsTpl->assign('sort_order', $sort_order);
 
 if (GALLERY_ADMIN_MODE) {
 
@@ -91,30 +91,30 @@ if (GALLERY_ADMIN_MODE) {
 	);
 	get_subcat_data(0, '');
 
-	$xoopsTpl->assign('select_category', _MD_ALBMGR_SELECT);
+	$icmsTpl->assign('select_category', _MD_ALBMGR_SELECT);
 	$options = '';
 	foreach ($CAT_LIST as $category) {
 		$options .= '<option value="' . $category[0] . '"' . ($cat == $category[0] ? ' selected="selected"' : '') . ">" . $category[1] . " </option>\n";
 	}
-	$xoopsTpl->assign('options', $options);
-	$xoopsTpl->assign('admin_mo', 1);
+	$icmsTpl->assign('options', $options);
+	$icmsTpl->assign('admin_mo', 1);
 } else
-	$xoopsTpl->assign('admin_mo', 0);
-$xoopsTpl->assign('size', min(max(count($rowset) + 3, 15), 40));
+	$icmsTpl->assign('admin_mo', 0);
+$icmsTpl->assign('size', min(max(count($rowset) + 3, 15), 40));
 
 $i = 100;
 $lb = '';
 if (count($rowset) > 0) foreach ($rowset as $album) {
 	$lb .= '                                        <option value="album_no=' . $album['aid'] . ',album_nm=\'' . $album['title'] . '\',album_sort=' . ($i++ ) . ',action=0">' . stripslashes($album['title']) . "</option>\n";
 }
-$xoopsTpl->assign('lb', $lb);
-$xoopsTpl->assign('delete', _MD_ALBMGR_DEL);
-$xoopsTpl->assign('new', _MD_ALBMGR_NEW);
-$xoopsTpl->assign('apply_modifs', _MD_ALBMGR_APPLY);
+$icmsTpl->assign('lb', $lb);
+$icmsTpl->assign('delete', _MD_ALBMGR_DEL);
+$icmsTpl->assign('new', _MD_ALBMGR_NEW);
+$icmsTpl->assign('apply_modifs', _MD_ALBMGR_APPLY);
 user_save_profile();
-$xoopsTpl->assign('gallery', icms::$module->getVar('name'));
+$icmsTpl->assign('gallery', icms::$module->getVar('name'));
 include_once "include/theme_func.php";
 main_menu();
-// $xoopsTpl->assign('xcgal_footer', pagefooter());
+// $icmsTpl->assign('xcgal_footer', pagefooter());
 do_footer();
 include_once "../../footer.php";

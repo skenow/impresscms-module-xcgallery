@@ -58,7 +58,7 @@ $myts = icms_core_Textsanitizer::getInstance();
 function html_img_nav_menu() {
 	global $CURRENT_PIC_DATA, $PHP_SELF;
 	global $album, $cat, $pos, $pic_count;
-	global $xoopsTpl, $album_name;
+	global $icmsTpl, $album_name;
 	$cat_link = is_numeric($album) ? '' : '&amp;cat=' . $cat;
 
 	$human_pos = $pos + 1;
@@ -101,25 +101,25 @@ function html_img_nav_menu() {
 
 	$pic_pos = sprintf(_MD_DIS_PICPOS, $human_pos, $pic_count);
 
-	$xoopsTpl->assign('thumb_tgt', $thumb_tgt);
-	$xoopsTpl->assign('thumb_title', _MD_DIS_BACK_TNPAGE);
-	$xoopsTpl->assign('pic_info_title', _MD_DIS_SHOW_PIC_INFO);
-	$xoopsTpl->assign('slideshow_tgt', $slideshow_tgt);
-	$xoopsTpl->assign('slideshow_title', _MD_DIS_SLIDE);
-	$xoopsTpl->assign('pic_pos', $pic_pos);
-	$xoopsTpl->assign('ecard_tgt', $ecard_tgt);
-	$xoopsTpl->assign('ecard_title', $ecard_title);
-	$xoopsTpl->assign('prev_tgt', $prev_tgt);
-	$xoopsTpl->assign('prev_title', $prev_title);
-	$xoopsTpl->assign('next_tgt', $next_tgt);
-	$xoopsTpl->assign('next_title', $next_title);
+	$icmsTpl->assign('thumb_tgt', $thumb_tgt);
+	$icmsTpl->assign('thumb_title', _MD_DIS_BACK_TNPAGE);
+	$icmsTpl->assign('pic_info_title', _MD_DIS_SHOW_PIC_INFO);
+	$icmsTpl->assign('slideshow_tgt', $slideshow_tgt);
+	$icmsTpl->assign('slideshow_title', _MD_DIS_SLIDE);
+	$icmsTpl->assign('pic_pos', $pic_pos);
+	$icmsTpl->assign('ecard_tgt', $ecard_tgt);
+	$icmsTpl->assign('ecard_title', $ecard_title);
+	$icmsTpl->assign('prev_tgt', $prev_tgt);
+	$icmsTpl->assign('prev_title', $prev_title);
+	$icmsTpl->assign('next_tgt', $next_tgt);
+	$icmsTpl->assign('next_title', $next_title);
 }
 
 // Displays a picture
 function html_picture() {
 	global $CURRENT_PIC_DATA, $CURRENT_ALBUM_DATA, $USER, $_COOKIE;
 	global $album, $comment_date_fmt;
-	global $xoopsTpl, $myts;
+	global $icmsTpl, $myts;
 
 	$pid = $CURRENT_PIC_DATA['pid'];
 
@@ -141,76 +141,76 @@ function html_picture() {
 	}
 
 	$image_size = compute_img_size($CURRENT_PIC_DATA['pwidth'], $CURRENT_PIC_DATA['pheight'], icms::$module->config['picture_width']);
-	$xoopsTpl->assign('pid', $pid);
-	$xoopsTpl->assign('picture_url', $picture_url);
-	$xoopsTpl->assign('image_size', $image_size['geom']);
+	$icmsTpl->assign('pid', $pid);
+	$icmsTpl->assign('picture_url', $picture_url);
+	$icmsTpl->assign('image_size', $image_size['geom']);
 
 	if (is_image($CURRENT_PIC_DATA['filename'])) {
-		$xoopsTpl->assign('file_type', 'image');
+		$icmsTpl->assign('file_type', 'image');
 		if (isset($image_size['reduced'])) {
 			$winsizeX = $CURRENT_PIC_DATA['pwidth'] + 16;
 			$winsizeY = $CURRENT_PIC_DATA['pheight'] + 16;
-			$xoopsTpl->assign('reduced', 1);
-			$xoopsTpl->assign('winsizeX', $winsizeX);
-			$xoopsTpl->assign('winsizeY', $winsizeY);
-			$xoopsTpl->assign('uniqid_rand', uniqid(rand()));
-			$xoopsTpl->assign('lang_view_fs', _MD_DIS_FULL);
+			$icmsTpl->assign('reduced', 1);
+			$icmsTpl->assign('winsizeX', $winsizeX);
+			$icmsTpl->assign('winsizeY', $winsizeY);
+			$icmsTpl->assign('uniqid_rand', uniqid(rand()));
+			$icmsTpl->assign('lang_view_fs', _MD_DIS_FULL);
 		} else {
-			$xoopsTpl->assign('reduced', 0);
+			$icmsTpl->assign('reduced', 0);
 		}
 	} else if (is_movie($CURRENT_PIC_DATA['filename'])) {
-		$xoopsTpl->assign('file_type', 'movie');
+		$icmsTpl->assign('file_type', 'movie');
 	}
 
 	if ($CURRENT_PIC_DATA['title']) {
-		$xoopsTpl->assign('pic_title', icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC_DATA['title']));
+		$icmsTpl->assign('pic_title', icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC_DATA['title']));
 	} else {
-		$xoopsTpl->assign('pic_title', '');
+		$icmsTpl->assign('pic_title', '');
 	}
 
 	if ($CURRENT_PIC_DATA['caption']) {
-		$xoopsTpl->assign('pic_caption', $myts->displayTarea($CURRENT_PIC_DATA['caption'], 0));
+		$icmsTpl->assign('pic_caption', $myts->displayTarea($CURRENT_PIC_DATA['caption'], 0));
 	} else {
-		$xoopsTpl->assign('pic_caption', '');
+		$icmsTpl->assign('pic_caption', '');
 	}
 
 	if ((USER_ADMIN_MODE && $CURRENT_ALBUM_DATA['category'] == FIRST_USER_CAT + USER_ID) || GALLERY_ADMIN_MODE) {
-		$xoopsTpl->assign('lang_confirm_del', _MD_DIS_CONF_DEL);
-		$xoopsTpl->assign('lang_del_pic', _MD_DIS_DEL_PIC);
+		$icmsTpl->assign('lang_confirm_del', _MD_DIS_CONF_DEL);
+		$icmsTpl->assign('lang_del_pic', _MD_DIS_DEL_PIC);
 	} else {
-		$xoopsTpl->assign('lang_del_pic', '');
+		$icmsTpl->assign('lang_del_pic', '');
 	}
 
 	if (!USER_CAN_SEE_FULL) {
-		$xoopsTpl->assign('lang_no_full', 'Full-size images are available only for registered users!');
+		$icmsTpl->assign('lang_no_full', 'Full-size images are available only for registered users!');
 	} else {
-		$xoopsTpl->assign('lang_no_full', '');
+		$icmsTpl->assign('lang_no_full', '');
 	}
 }
 
 function html_rating_box() {
 	global $CURRENT_PIC_DATA, $CURRENT_ALBUM_DATA;
-	global $xoopsTpl;
+	global $icmsTpl;
 	if (!(USER_CAN_RATE_PICTURES && $CURRENT_ALBUM_DATA['votes'] == 'YES')) return '';
 
 	$votes = $CURRENT_PIC_DATA['votes'] ? sprintf(_MD_DIS_RATINGCUR, round($CURRENT_PIC_DATA['pic_rating'] / 2000, 1), $CURRENT_PIC_DATA['votes']) : _MD_DIS_NO_VOTE;
 	$pid = $CURRENT_PIC_DATA['pid'];
 
-	$xoopsTpl->assign('lang_rate_this_pic', _MD_DIS_RATE_THIS);
-	$xoopsTpl->assign('votes', $votes);
-	$xoopsTpl->assign('lang_rubbish', _MD_DIS_RUBBISH);
-	$xoopsTpl->assign('lang_poor', _MD_DIS_POOR);
-	$xoopsTpl->assign('lang_fair', _MD_DIS_FAIR);
-	$xoopsTpl->assign('lang_good', _MD_DIS_GOOD);
-	$xoopsTpl->assign('lang_excellent', _MD_DIS_EXCELLENT);
-	$xoopsTpl->assign('lang_great', _MD_DIS_GREAT);
+	$icmsTpl->assign('lang_rate_this_pic', _MD_DIS_RATE_THIS);
+	$icmsTpl->assign('votes', $votes);
+	$icmsTpl->assign('lang_rubbish', _MD_DIS_RUBBISH);
+	$icmsTpl->assign('lang_poor', _MD_DIS_POOR);
+	$icmsTpl->assign('lang_fair', _MD_DIS_FAIR);
+	$icmsTpl->assign('lang_good', _MD_DIS_GOOD);
+	$icmsTpl->assign('lang_excellent', _MD_DIS_EXCELLENT);
+	$icmsTpl->assign('lang_great', _MD_DIS_GREAT);
 }
 
 // Display picture information
 function html_picinfo() {
 	global $CURRENT_PIC_DATA, $CURRENT_ALBUM_DATA;
 	global $album, $myts;
-	global $xoopsTpl;
+	global $icmsTpl;
 
 	$info[_MD_DIS_FNAME] = icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC_DATA['filename']);
 	$info[_MD_DIS_ANAME] = '<span class="alblink"><a href="thumbnails.php?album=' . $CURRENT_PIC_DATA['aid'] . '">' . icms_core_DataFilter::htmlSpecialchars($CURRENT_ALBUM_DATA['title']) . '</a></span>';
@@ -264,10 +264,10 @@ function html_picinfo() {
 	}
 
 	if (USER_IS_ADMIN) $info[_MD_DIS_SUBIP] = $CURRENT_PIC_DATA['ip'];
-	$xoopsTpl->assign('lang_picinfo_title', _MD_DIS_TITLE);
-	$xoopsTpl->assign('picinfo', isset($_COOKIE['picinfo']) ? $_COOKIE['picinfo'] : (icms::$module->config['display_pic_info'] ? 'block' : 'none'));
+	$icmsTpl->assign('lang_picinfo_title', _MD_DIS_TITLE);
+	$icmsTpl->assign('picinfo', isset($_COOKIE['picinfo']) ? $_COOKIE['picinfo'] : (icms::$module->config['display_pic_info'] ? 'block' : 'none'));
 	foreach ($info as $key => $value) {
-		$xoopsTpl->append('infos', array (
+		$icmsTpl->append('infos', array (
 				'key' => $key,
 				'value' => $value
 		));
@@ -426,17 +426,17 @@ if (isset($CURRENT_PIC_DATA)) {
 if (isset($_GET['fullsize'])) {
 
 	display_fullsize_pic();
-	$xoopsTpl = new icms_view_Tpl();
-	$xoopsTpl->assign('sitename', $xoopsConfig['sitename']);
-	$xoopsTpl->assign('gallery', icms::$module->getVar('name'));
-	$xoopsTpl->assign('pic_out', $pic_out);
-	$xoopsTpl->display('db:xcgal_fullsize.html');
+	$icmsTpl = new icms_view_Tpl();
+	$icmsTpl->assign('sitename', $xoopsConfig['sitename']);
+	$icmsTpl->assign('gallery', icms::$module->getVar('name'));
+	$icmsTpl->assign('pic_out', $pic_out);
+	$icmsTpl->display('db:xcgal_fullsize.html');
 	exit();
 } elseif (isset($_GET['slideshow'])) {
 	$xoopsOption['template_main'] = 'xcgal_slideshow.html';
 	include ICMS_ROOT_PATH . "/header.php";
-	$xoopsTpl->assign('icms_module_header', $xcgal_module_header);
-	$xoopsTpl->assign('speed', (int) $_GET['slideshow']);
+	$icmsTpl->assign('icms_module_header', $xcgal_module_header);
+	$icmsTpl->assign('speed', (int) $_GET['slideshow']);
 	$i = 0;
 	$j = 0;
 	$pid = $_GET['pid'];
@@ -450,7 +450,7 @@ if (isset($_GET['fullsize'])) {
 			$picture_url = get_pic_url($picture, 'fullsize');
 		}
 
-		$xoopsTpl->append('pics', array (
+		$icmsTpl->append('pics', array (
 				'pic_url' => $picture_url,
 				'i' => $i
 		));
@@ -460,19 +460,19 @@ if (isset($_GET['fullsize'])) {
 		}
 		$i++ ;
 	}
-	$xoopsTpl->assign('j', $j);
-	$xoopsTpl->assign('album', isset($_GET['album']) ? $_GET['album'] : '');
-	$xoopsTpl->assign('cat', isset($_GET['cat']) ? $_GET['cat'] : '');
-	$xoopsTpl->assign('tab_width', icms::$module->config['picture_width']);
-	$xoopsTpl->assign('cell_height', icms::$module->config['picture_width'] + 100);
-	$xoopsTpl->assign('start_img', $start_img);
-	$xoopsTpl->assign('lang_stop_slideshow', _MD_DIS_STOP_SLIDE);
+	$icmsTpl->assign('j', $j);
+	$icmsTpl->assign('album', isset($_GET['album']) ? $_GET['album'] : '');
+	$icmsTpl->assign('cat', isset($_GET['cat']) ? $_GET['cat'] : '');
+	$icmsTpl->assign('tab_width', icms::$module->config['picture_width']);
+	$icmsTpl->assign('cell_height', icms::$module->config['picture_width'] + 100);
+	$icmsTpl->assign('start_img', $start_img);
+	$icmsTpl->assign('lang_stop_slideshow', _MD_DIS_STOP_SLIDE);
 
 	user_save_profile();
-	$xoopsTpl->assign('gallery', icms::$module->getVar('name'));
+	$icmsTpl->assign('gallery', icms::$module->getVar('name'));
 	include_once "include/theme_func.php";
 	main_menu();
-	// $xoopsTpl->assign('xcgal_footer', pagefooter());
+	// $icmsTpl->assign('xcgal_footer', pagefooter());
 	do_footer();
 	include_once "../../footer.php";
 } else {
@@ -480,21 +480,21 @@ if (isset($_GET['fullsize'])) {
 	$picture_title = $CURRENT_PIC_DATA['title'] ? $CURRENT_PIC_DATA['title'] : strtr(preg_replace("/(.+)\..*?\Z/", "\\1", htmlspecialchars($CURRENT_PIC_DATA['filename'])), "_", " ");
 	$xoopsOption['template_main'] = 'xcgal_display.html';
 	include ICMS_ROOT_PATH . "/header.php";
-	$xoopsTpl->assign('icms_module_header', $xcgal_module_header);
-	$xoopsTpl->assign('album_title', $album_title);
+	$icmsTpl->assign('icms_module_header', $xcgal_module_header);
+	$icmsTpl->assign('album_title', $album_title);
 	html_img_nav_menu();
 	html_picture();
 	html_rating_box();
 	html_picinfo();
 	user_save_profile();
-	$xoopsTpl->assign('gallery', icms::$module->getVar('name'));
+	$icmsTpl->assign('gallery', icms::$module->getVar('name'));
 	$pic_url = get_fullsize_pic();
-	$xoopsTpl->assign('pic_url', $pic_url);
+	$icmsTpl->assign('pic_url', $pic_url);
 	include_once "include/theme_func.php";
 	main_menu();
-	// $xoopsTpl->assign('xcgal_footer', pagefooter());
+	// $icmsTpl->assign('xcgal_footer', pagefooter());
 	do_footer();
-	$xoopsTpl->assign('icms_pagetitle', icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars($CURRENT_ALBUM_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars(icms::$module->getVar('name')));
+	$icmsTpl->assign('icms_pagetitle', icms_core_DataFilter::htmlSpecialchars($CURRENT_PIC_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars($CURRENT_ALBUM_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars(icms::$module->getVar('name')));
 	
 	if ($CURRENT_PIC_DATA['caption']) {
 		$xoTheme->addMeta('meta', 'description', icms_html2text($CURRENT_PIC_DATA['caption']));

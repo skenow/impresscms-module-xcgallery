@@ -142,24 +142,24 @@ if (is_numeric($album)) {
 
 $xoopsOption['template_main'] = 'xcgal_index.html';
 include ICMS_ROOT_PATH . "/header.php";
-$xoopsTpl->assign('icms_module_header', $xcgal_module_header);
-$xoopsTpl->assign('display_alb_list', '');
+$icmsTpl->assign('icms_module_header', $xcgal_module_header);
+$icmsTpl->assign('display_alb_list', '');
 user_save_profile();
 include_once "include/theme_func.php";
 if ($breadcrumb)
 	theme_display_cat_list($breadcrumb, $cat_data, '');
 else {
-	$xoopsTpl->assign('breadcrumb', '<a href="index.php">' . icms::$module->getVar('name') . '</a>');
-	$xoopsTpl->assign('lang_category', 0);
-	$xoopsTpl->assign('set_stat', 0);
+	$icmsTpl->assign('breadcrumb', '<a href="index.php">' . icms::$module->getVar('name') . '</a>');
+	$icmsTpl->assign('lang_category', 0);
+	$icmsTpl->assign('set_stat', 0);
 }
 display_thumbnails($album, (isset($cat) ? $cat : 0), $page, icms::$module->config['thumbcols'], icms::$module->config['thumbrows'], true);
 
-$xoopsTpl->assign('gallery', icms::$module->getVar('name'));
+$icmsTpl->assign('gallery', icms::$module->getVar('name'));
 
 main_menu();
 do_footer();
-$xoopsTpl->assign('icms_pagetitle', icms_core_DataFilter::htmlSpecialchars($CURRENT_ALBUM_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars(icms::$module->getVar('name')));
+$icmsTpl->assign('icms_pagetitle', icms_core_DataFilter::htmlSpecialchars($CURRENT_ALBUM_DATA['title']) . ' : ' . icms_core_DataFilter::htmlSpecialchars(icms::$module->getVar('name')));
 if (!empty($CURRENT_ALBUM_DATA['description'])) {
 	$xoTheme->addMeta('meta', 'description', icms_core_DataFilter::htmlSpecialchars($CURRENT_ALBUM_DATA['description']));
 }

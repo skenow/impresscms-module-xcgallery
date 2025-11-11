@@ -366,38 +366,38 @@ switch ($what) {
 if ($out_caption) {
 	$xoopsOption['template_main'] = 'xcgal_delete.html';
 	include ICMS_ROOT_PATH . "/header.php";
-	$xoopsTpl->assign('icms_module_header', $xcgal_module_header);
-	$xoopsTpl->assign('table_header', $out_caption);
+	$icmsTpl->assign('icms_module_header', $xcgal_module_header);
+	$icmsTpl->assign('table_header', $out_caption);
 	// alb pic
 	foreach ($data as $dels) {
-		$xoopsTpl->append('deletes', array (
+		$icmsTpl->append('deletes', array (
 				'del_message' => $dels['del_message'],
 				'pic_del' => $dels['pic_del']
 		));
 	}
 	if ($header_printed) {
-		$xoopsTpl->assign('lang_pictures', _MD_PICS);
+		$icmsTpl->assign('lang_pictures', _MD_PICS);
 	}
-	$xoopsTpl->assign('create_update', $create_update);
+	$icmsTpl->assign('create_update', $create_update);
 	if ($need_caption) {
 		// output_caption();
-		$xoopsTpl->assign('need_caption', 1);
-		$xoopsTpl->assign('lang_caption', _MD_DEL_CAPTION);
-		$xoopsTpl->assign('lang_fs_pic', _MD_DEL_FS_PIC);
-		$xoopsTpl->assign('lang_del_success', _MD_DEL_DEL_SUCCESS);
-		$xoopsTpl->assign('lang_ns_pic', _MD_DEL_NS_PIC);
-		$xoopsTpl->assign('lang_err_del', _MD_DEL_ERR_DEL);
-		$xoopsTpl->assign('lang_thumb_pic', _MD_DEL_THUMB);
-		$xoopsTpl->assign('lang_comment', _MD_DEL_COMMENT);
-		$xoopsTpl->assign('lang_im_in_alb', _MD_DEL_IMGALB);
+		$icmsTpl->assign('need_caption', 1);
+		$icmsTpl->assign('lang_caption', _MD_DEL_CAPTION);
+		$icmsTpl->assign('lang_fs_pic', _MD_DEL_FS_PIC);
+		$icmsTpl->assign('lang_del_success', _MD_DEL_DEL_SUCCESS);
+		$icmsTpl->assign('lang_ns_pic', _MD_DEL_NS_PIC);
+		$icmsTpl->assign('lang_err_del', _MD_DEL_ERR_DEL);
+		$icmsTpl->assign('lang_thumb_pic', _MD_DEL_THUMB);
+		$icmsTpl->assign('lang_comment', _MD_DEL_COMMENT);
+		$icmsTpl->assign('lang_im_in_alb', _MD_DEL_IMGALB);
 	}
-	$xoopsTpl->assign('continue_url', $continueURL);
-	$xoopsTpl->assign('lang_continue', _MD_CONTINUE);
+	$icmsTpl->assign('continue_url', $continueURL);
+	$icmsTpl->assign('lang_continue', _MD_CONTINUE);
 	user_save_profile();
-	$xoopsTpl->assign('gallery', icms::$module->getVar('name'));
+	$icmsTpl->assign('gallery', icms::$module->getVar('name'));
 	include_once "include/theme_func.php";
 	main_menu();
-	// $xoopsTpl->assign('xcgal_footer', pagefooter());
+	// $icmsTpl->assign('xcgal_footer', pagefooter());
 	do_footer();
 	include ICMS_ROOT_PATH . "/footer.php";
 }

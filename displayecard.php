@@ -53,22 +53,22 @@ if (icms::$module->config['make_intermediate'] && max($row['pwidth'], $row['phei
 
 $msg_content = $myts->displayTarea($row['message'], 0);
 if (!stristr($n_picname, 'http:')) $n_picname = ICMS_URL . "/modules/" . $xcgalDir . "/" . $n_picname;
-$xoopsTpl = new icms_view_Tpl();
-$xoopsTpl->assign('sitename', $xoopsConfig['sitename']);
-$xoopsTpl->assign('ecard_title', sprintf(_MD_CARD_ECARD_TITLE, icms_core_DataFilter::htmlSpecialchars($row['sender_name'])));
-$xoopsTpl->assign('charset', _CHARSET);
-$xoopsTpl->assign('view_ecard_tgt', 0);
-$xoopsTpl->assign('view_ecard_lnk', _MD_CARD_VIEW_ECARD);
-$xoopsTpl->assign('pic_url', $n_picname);
-// $xoopsTpl->assign('url_prefix',$gallery_url_prefix);
-$xoopsTpl->assign('greetings', $row['greetings']);
-$xoopsTpl->assign('message', $msg_content);
-$xoopsTpl->assign('sender_email', icms_core_DataFilter::htmlSpecialchars($row['sender_email']));
-$xoopsTpl->assign('sender_name', icms_core_DataFilter::htmlSpecialchars($row['sender_name']));
-$xoopsTpl->assign('view_more_tgt', icms::$module->config['ecards_more_pic_target']);
-$xoopsTpl->assign('view_more_lnk', _MD_CARD_VIEW_MORE_PICS);
-$xoopsTpl->assign('icms_module_header', $xcgal_module_header);
-$xoopsTpl->display('db:xcgal_discard.html');
+$ecardTpl = new icms_view_Tpl();
+$ecardTpl->assign('sitename', $xoopsConfig['sitename']);
+$ecardTpl->assign('ecard_title', sprintf(_MD_CARD_ECARD_TITLE, icms_core_DataFilter::htmlSpecialchars($row['sender_name'])));
+$ecardTpl->assign('charset', _CHARSET);
+$ecardTpl->assign('view_ecard_tgt', 0);
+$ecardTpl->assign('view_ecard_lnk', _MD_CARD_VIEW_ECARD);
+$ecardTpl->assign('pic_url', $n_picname);
+// $ecardTpl->assign('url_prefix',$gallery_url_prefix);
+$ecardTpl->assign('greetings', $row['greetings']);
+$ecardTpl->assign('message', $msg_content);
+$ecardTpl->assign('sender_email', icms_core_DataFilter::htmlSpecialchars($row['sender_email']));
+$ecardTpl->assign('sender_name', icms_core_DataFilter::htmlSpecialchars($row['sender_name']));
+$ecardTpl->assign('view_more_tgt', icms::$module->config['ecards_more_pic_target']);
+$ecardTpl->assign('view_more_lnk', _MD_CARD_VIEW_MORE_PICS);
+$ecardTpl->assign('icms_module_header', $xcgal_module_header);
+$ecardTpl->display('db:xcgal_discard.html');
 icms::$xoopsDB->queryf("UPDATE " . icms::$xoopsDB->prefix("xcgal_ecard") . " SET picked=1 WHERE e_id='" . $data . "'");
 
 exit();

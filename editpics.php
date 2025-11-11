@@ -304,31 +304,31 @@ if ($start > 0) {
 $pic_count_text = sprintf(_MD_NPICS, $pic_count);
 $xoopsOption['template_main'] = 'xcgal_editpics.html';
 include ICMS_ROOT_PATH . "/header.php";
-$xoopsTpl->assign('icms_module_header', $xcgal_module_header);
-// $xoopsTpl->assign('xcgal_header',pageheader($title));
-$xoopsTpl->assign('title', $title);
-$xoopsTpl->assign('form_target', $form_target);
-$xoopsTpl->assign('pic_count_text', $pic_count_text);
-$xoopsTpl->assign('prev_link', $prev_link);
-$xoopsTpl->assign('next_link', $next_link);
-$xoopsTpl->assign('n_of_pic_to_disp', _MD_EDITPICS_NUMDIS);
-$xoopsTpl->assign('album_id', $album_id);
-$xoopsTpl->assign('start', $start);
-$xoopsTpl->assign('s50', $s50);
-$xoopsTpl->assign('s75', $s75);
-$xoopsTpl->assign('s100', $s100);
+$icmsTpl->assign('icms_module_header', $xcgal_module_header);
+// $icmsTpl->assign('xcgal_header',pageheader($title));
+$icmsTpl->assign('title', $title);
+$icmsTpl->assign('form_target', $form_target);
+$icmsTpl->assign('pic_count_text', $pic_count_text);
+$icmsTpl->assign('prev_link', $prev_link);
+$icmsTpl->assign('next_link', $next_link);
+$icmsTpl->assign('n_of_pic_to_disp', _MD_EDITPICS_NUMDIS);
+$icmsTpl->assign('album_id', $album_id);
+$icmsTpl->assign('start', $start);
+$icmsTpl->assign('s50', $s50);
+$icmsTpl->assign('s75', $s75);
+$icmsTpl->assign('s100', $s100);
 
 $form = '';
-$xoopsTpl->assign('lang_pic_info', _MD_EDITPICS_PIC_INFO);
-$xoopsTpl->assign('rowspan', $THUMB_ROWSPAN);
-$xoopsTpl->assign('lang_album', _MD_ALBUM);
-$xoopsTpl->assign('lang_title', _MD_EDITPICS_TITLE);
-$xoopsTpl->assign('lang_desc', _MD_EDITPICS_DESC);
-$xoopsTpl->assign('lang_keywords', _MD_KEYS);
-$xoopsTpl->assign('user1', icms::$module->config['user_field1_name']);
-$xoopsTpl->assign('user2', icms::$module->config['user_field2_name']);
-$xoopsTpl->assign('user3', icms::$module->config['user_field3_name']);
-$xoopsTpl->assign('user4', icms::$module->config['user_field4_name']);
+$icmsTpl->assign('lang_pic_info', _MD_EDITPICS_PIC_INFO);
+$icmsTpl->assign('rowspan', $THUMB_ROWSPAN);
+$icmsTpl->assign('lang_album', _MD_ALBUM);
+$icmsTpl->assign('lang_title', _MD_EDITPICS_TITLE);
+$icmsTpl->assign('lang_desc', _MD_EDITPICS_DESC);
+$icmsTpl->assign('lang_keywords', _MD_KEYS);
+$icmsTpl->assign('user1', icms::$module->config['user_field1_name']);
+$icmsTpl->assign('user2', icms::$module->config['user_field2_name']);
+$icmsTpl->assign('user3', icms::$module->config['user_field3_name']);
+$icmsTpl->assign('user4', icms::$module->config['user_field4_name']);
 
 while ($CURRENT_PIC = icms::$xoopsDB->fetchArray($result)) {
 	if (USER_IS_ADMIN) {
@@ -355,7 +355,7 @@ while ($CURRENT_PIC = icms::$xoopsDB->fetchArray($result)) {
 	$name_field4 = 'user4' . $CURRENT_PIC['pid'];
 	form_options();
 
-	$xoopsTpl->append('pics', array (
+	$icmsTpl->append('pics', array (
 			'current' => $CURRENT_PIC['pid'],
 			'filename' => $filename,
 			'pic_info' => $pic_info,
@@ -380,12 +380,12 @@ while ($CURRENT_PIC = icms::$xoopsDB->fetchArray($result)) {
 	));
 } // while
 icms::$xoopsDB->freeRecordSet($result);
-$xoopsTpl->assign('form', $form);
-$xoopsTpl->assign('apply', _MD_EDITPICS_APPLY);
+$icmsTpl->assign('form', $form);
+$icmsTpl->assign('apply', _MD_EDITPICS_APPLY);
 user_save_profile();
-$xoopsTpl->assign('gallery', icms::$module->getVar('name'));
+$icmsTpl->assign('gallery', icms::$module->getVar('name'));
 include_once "include/theme_func.php";
 main_menu();
-// $xoopsTpl->assign('xcgal_footer', pagefooter());
+// $icmsTpl->assign('xcgal_footer', pagefooter());
 do_footer();
 include_once "../../footer.php";

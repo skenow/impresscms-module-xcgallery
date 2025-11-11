@@ -104,20 +104,20 @@ if (!GALLERY_ADMIN_MODE && $ALBUM_DATA['category'] != FIRST_USER_CAT + USER_ID) 
 }
 $xoopsOption['template_main'] = 'xcgal_modifyalb.html';
 include ICMS_ROOT_PATH . "/header.php";
-$xoopsTpl->assign('icms_module_header', $xcgal_module_header);
+$icmsTpl->assign('icms_module_header', $xcgal_module_header);
 $album_lb = alb_list_box();
-$xoopsTpl->assign('update', _MD_MODIFYALB_UPDATE);
-$xoopsTpl->assign('album_lb', $album_lb);
-$xoopsTpl->assign('album', $album);
+$icmsTpl->assign('update', _MD_MODIFYALB_UPDATE);
+$icmsTpl->assign('album_lb', $album_lb);
+$icmsTpl->assign('album', $album);
 
-$xoopsTpl->assign('general_settings', _MD_MODIFYALB_GEN_SET);
-$xoopsTpl->assign('alb_title', _MD_MODIFYALB_ALB_TITLE);
-$xoopsTpl->assign('album_data_title', $ALBUM_DATA['title']);
-$xoopsTpl->assign('alb_cat', _MD_MODIFYALB_ALB_CAT);
+$icmsTpl->assign('general_settings', _MD_MODIFYALB_GEN_SET);
+$icmsTpl->assign('alb_title', _MD_MODIFYALB_ALB_TITLE);
+$icmsTpl->assign('album_data_title', $ALBUM_DATA['title']);
+$icmsTpl->assign('alb_cat', _MD_MODIFYALB_ALB_CAT);
 if (!GALLERY_ADMIN_MODE || $ALBUM_DATA['category'] > FIRST_USER_CAT) {
-	$xoopsTpl->assign('user_galleries', 1);
-	$xoopsTpl->assign('user_gal', _MD_MODIFYALB_USER_GAL);
-	$xoopsTpl->assign('album_data_category', $ALBUM_DATA['category']);
+	$icmsTpl->assign('user_galleries', 1);
+	$icmsTpl->assign('user_gal', _MD_MODIFYALB_USER_GAL);
+	$icmsTpl->assign('album_data_category', $ALBUM_DATA['category']);
 } else {
 	$CAT_LIST = array ();
 	$CAT_LIST[] = array (
@@ -129,47 +129,47 @@ if (!GALLERY_ADMIN_MODE || $ALBUM_DATA['category'] > FIRST_USER_CAT) {
 	foreach ($CAT_LIST as $category) {
 		$cat_list .= '<option value="' . $category[0] . '"' . ($ALBUM_DATA['category'] == $category[0] ? ' selected="selected"' : '') . ">" . $category[1] . "</option>\n";
 	}
-	$xoopsTpl->assign('cat_list', $cat_list);
-	$xoopsTpl->assign('user_galleries', 0);
-	$xoopsTpl->assign('user_gal', '');
-	$xoopsTpl->assign('album_data_category', '');
+	$icmsTpl->assign('cat_list', $cat_list);
+	$icmsTpl->assign('user_galleries', 0);
+	$icmsTpl->assign('user_gal', '');
+	$icmsTpl->assign('album_data_category', '');
 }
 
-$xoopsTpl->assign('alb_desc', _MD_MODIFYALB_ALB_DESC);
-$xoopsTpl->assign('album_data_description', $ALBUM_DATA['description']);
-$xoopsTpl->assign('alb_thumb', _MD_MODIFYALB_ALB_THUMB);
+$icmsTpl->assign('alb_desc', _MD_MODIFYALB_ALB_DESC);
+$icmsTpl->assign('album_data_description', $ALBUM_DATA['description']);
+$icmsTpl->assign('alb_thumb', _MD_MODIFYALB_ALB_THUMB);
 $results = icms::$xoopsDB->query("SELECT pid, filepath, filename, url_prefix FROM " . icms::$xoopsDB->prefix("xcgal_pictures") . " WHERE aid='$album' AND approved='YES' ORDER BY filename");
 if (icms::$xoopsDB->getRowsNum($results) == 0) {
-	$xoopsTpl->assign('no_pic', 1);
-	$xoopsTpl->assign('alb_empty', _MD_MODIFYALB_ALB_EMPTY);
+	$icmsTpl->assign('no_pic', 1);
+	$icmsTpl->assign('alb_empty', _MD_MODIFYALB_ALB_EMPTY);
 } else {
 	$initial_thumb_url = 'images/nopic.jpg';
 	$img_list = array (
 			0 => _MD_MODIFYALB_LAST_UPL
 	);
 	$pic_url = '';
-	$xoopsTpl->assign('no_pic', '');
+	$icmsTpl->assign('no_pic', '');
 	while ($picture = icms::$xoopsDB->fetchArray($results)) {
 		$thumb_url = get_pic_url($picture, 'thumb');
 		$pic_url .= "Pic[{$picture['pid']}] = '" . $thumb_url . "'\n";
 		if ($picture['pid'] == $ALBUM_DATA['thumb']) $initial_thumb_url = $thumb_url;
 		$img_list[$picture['pid']] = htmlspecialchars($picture['filename']);
 	}
-	$xoopsTpl->assign('pic_url', $pic_url);
-	$xoopsTpl->assign('thumb_cell_height', icms::$module->config['thumb_width'] + 17);
-	$xoopsTpl->assign('initial_thumb_url', $initial_thumb_url);
+	$icmsTpl->assign('pic_url', $pic_url);
+	$icmsTpl->assign('thumb_cell_height', icms::$module->config['thumb_width'] + 17);
+	$icmsTpl->assign('initial_thumb_url', $initial_thumb_url);
 	$thumbs = '';
 	foreach ($img_list as $pid => $pic_name) {
 		$thumbs .= '<option value="' . $pid . '"' . ($pid == $ALBUM_DATA['thumb'] ? ' selected="selected"' : '') . '>' . $pic_name . "</option>\n";
 	}
-	$xoopsTpl->assign('thumbs', $thumbs);
+	$icmsTpl->assign('thumbs', $thumbs);
 }
-$xoopsTpl->assign('alb_perm', _MD_MODIFYALB_ALB_PERM);
-$xoopsTpl->assign('can_view', _MD_MODIFYALB_CAN_VIEW);
+$icmsTpl->assign('alb_perm', _MD_MODIFYALB_ALB_PERM);
+$icmsTpl->assign('can_view', _MD_MODIFYALB_CAN_VIEW);
 if (!icms::$module->config['allow_private_albums']) {
-	$xoopsTpl->assign('no_private', 1);
+	$icmsTpl->assign('no_private', 1);
 } else {
-	$xoopsTpl->assign('no_private', '');
+	$icmsTpl->assign('no_private', '');
 	if (GALLERY_ADMIN_MODE) {
 		$options = array (
 				0 => _MD_MODIFYALB_PUB_ALB,
@@ -204,41 +204,41 @@ if (!icms::$module->config['allow_private_albums']) {
 	foreach ($options as $value => $caption) {
 		$view_options .= '<option value ="' . $value . '"' . ($ALBUM_DATA['visibility'] == $value ? ' selected="selected"' : '') . '>' . $caption . "</option>\n";
 	}
-	$xoopsTpl->assign('view_options', $view_options);
+	$icmsTpl->assign('view_options', $view_options);
 }
-$xoopsTpl->assign('can_upload_pic', _MD_MODIFYALB_CAN_UPLOAD);
+$icmsTpl->assign('can_upload_pic', _MD_MODIFYALB_CAN_UPLOAD);
 if (USER_ADMIN_MODE) {
-	$xoopsTpl->assign('user_admin_mode', 1);
-	$xoopsTpl->assign('album_data_uploads', $ALBUM_DATA['uploads']);
+	$icmsTpl->assign('user_admin_mode', 1);
+	$icmsTpl->assign('album_data_uploads', $ALBUM_DATA['uploads']);
 } else {
-	$xoopsTpl->assign('user_admin_mode', '');
+	$icmsTpl->assign('user_admin_mode', '');
 	$value = isset($ALBUM_DATA['uploads']) ? $ALBUM_DATA['uploads'] : false;
 	$yes_selected_upload = $value == 'YES' ? 'selected="selected"' : '';
 	$no_selected_upload = $value == 'NO' ? 'selected="selescted"' : '';
-	$xoopsTpl->assign('yes_selected_upload', $yes_selected_upload);
-	$xoopsTpl->assign('no_selected_upload', $no_selected_upload);
+	$icmsTpl->assign('yes_selected_upload', $yes_selected_upload);
+	$icmsTpl->assign('no_selected_upload', $no_selected_upload);
 }
-$xoopsTpl->assign('lang_yes', _YES);
-$xoopsTpl->assign('lang_no', _NO);
+$icmsTpl->assign('lang_yes', _YES);
+$icmsTpl->assign('lang_no', _NO);
 
-$xoopsTpl->assign('can_post_comments', _MD_MODIFYALB_CAN_COM);
+$icmsTpl->assign('can_post_comments', _MD_MODIFYALB_CAN_COM);
 $value = isset($ALBUM_DATA['comments']) ? $ALBUM_DATA['comments'] : false;
 $yes_selected_comments = $value == 'YES' ? 'selected="selected"' : '';
 $no_selected_comments = $value == 'NO' ? 'selected="selescted"' : '';
-$xoopsTpl->assign('yes_selected_comments', $yes_selected_comments);
-$xoopsTpl->assign('no_selected_comments', $no_selected_comments);
+$icmsTpl->assign('yes_selected_comments', $yes_selected_comments);
+$icmsTpl->assign('no_selected_comments', $no_selected_comments);
 
-$xoopsTpl->assign('can_rate', _MD_MODIFYALB_CAN_RATE);
+$icmsTpl->assign('can_rate', _MD_MODIFYALB_CAN_RATE);
 $value = isset($ALBUM_DATA['votes']) ? $ALBUM_DATA['votes'] : false;
 $yes_selected_votes = $value == 'YES' ? 'selected="selected"' : '';
 $no_selected_votes = $value == 'NO' ? 'selected="selescted"' : '';
-$xoopsTpl->assign('yes_selected_votes', $yes_selected_votes);
-$xoopsTpl->assign('no_selected_votes', $no_selected_votes);
+$icmsTpl->assign('yes_selected_votes', $yes_selected_votes);
+$icmsTpl->assign('no_selected_votes', $no_selected_votes);
 
 user_save_profile();
-$xoopsTpl->assign('gallery', icms::$module->getVar('name'));
+$icmsTpl->assign('gallery', icms::$module->getVar('name'));
 include_once "include/theme_func.php";
 main_menu();
-// $xoopsTpl->assign('xcgal_footer', pagefooter());
+// $icmsTpl->assign('xcgal_footer', pagefooter());
 do_footer();
 include_once "../../footer.php";

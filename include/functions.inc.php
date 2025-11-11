@@ -572,7 +572,7 @@ function compute_img_size($width, $height, $max) {
 
 // Prints thumbnails of pictures in an album
 function display_thumbnails($album, $cat, $page, $thumbcols, $thumbrows, $display_tabs) {
-	global $xoopsTpl, $CURRENT_CAT_NAME;
+	global $icmsTpl, $CURRENT_CAT_NAME;
 	$myts = icms_core_Textsanitizer::getInstance();
 
 	$albums = get_album_list();
@@ -604,12 +604,12 @@ function display_thumbnails($album, $cat, $page, $thumbcols, $thumbrows, $displa
 			$thumb_list[$i]['pic_title'] = $row['title'];
 			$thumb_list[$i]['album_title'] = $albums[$row['aid']]['title'];
 		}
-		$xoopsTpl->assign('no_img', 0);
+		$icmsTpl->assign('no_img', 0);
 		theme_display_thumbnails($thumb_list, $thumb_count, $album_name, $album, $cat, $page, $total_pages, is_numeric($album), $display_tabs);
 	} else {
-		$xoopsTpl->assign('no_img', 1);
-		$xoopsTpl->assign('lang_no_img', _MD_NO_IMG_TO_DISPLAY);
-		$xoopsTpl->assign('album_name', icms_core_DataFilter::htmlSpecialchars($album_name));
+		$icmsTpl->assign('no_img', 1);
+		$icmsTpl->assign('lang_no_img', _MD_NO_IMG_TO_DISPLAY);
+		$icmsTpl->assign('album_name', icms_core_DataFilter::htmlSpecialchars($album_name));
 	}
 }
 
