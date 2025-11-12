@@ -179,7 +179,7 @@ function form_pic_info() {
 		$user_handler = icms::handler('icms_member');
 		$pic_owner = &$user_handler->getUser($CURRENT_PIC['owner_id']);
 		if (is_object($pic_owner)) {
-			$pic_info .= ' - <a href ="' . ICMS_URL . '/userinfo.php?uid=' . $pic_owner->uid() . '" target="_blank">' . $pic_owner->uname() . '</a>';
+			$pic_info .= ' - <a href ="' . ICMS_URL . '/userinfo.php?uid=' . $pic_owner->uid() . '" target="_blank">' . $pic_owner->getVar('uname') . '</a>';
 		} else
 			$pic_info .= ' - ' . $xoopsConfig['anonymous'];
 	} else {

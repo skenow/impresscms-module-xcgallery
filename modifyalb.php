@@ -69,7 +69,7 @@ function alb_list_box() {
 		while ($row = icms::$xoopsDB->fetchArray($result)) {
 			if ($row['category'] > FIRST_USER_CAT) {
 				$alb_owner = &$user_handler->getUser($row['category'] - FIRST_USER_CAT);
-				if (is_object($alb_owner)) $row['title'] = "(" . $alb_owner->uname() . ") " . $row['title'];
+				if (is_object($alb_owner)) $row['title'] = "(" . $alb_owner->gatVar('uname') . ") " . $row['title'];
 			} else
 				$row['title'] = "-" . $row['title'];
 			$selected = ($row['aid'] == $album) ? "selected=\"seleceted\"" : "";

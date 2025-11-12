@@ -361,7 +361,7 @@ function pic_data_block($album, $count, $set_caption, $category = "") {
 				$user_handler = icms::handler('icms_member');
 				$pic_owner = &$user_handler->getUser($row['owner_id']);
 				if (is_object($pic_owner)) {
-					$user_link = '<br /><a href ="' . XOOPS_URL . '/userinfo.php?uid=' . $pic_owner->uid() . '">' . $pic_owner->uname() . '</a>';
+					$user_link = '<br /><a href ="' . XOOPS_URL . '/userinfo.php?uid=' . $pic_owner->uid() . '">' . $pic_owner->getVar('uname') . '</a>';
 				} else {
 					$user_link = '';
 				}

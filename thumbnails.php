@@ -117,7 +117,7 @@ if (is_numeric($album)) {
 			$user_handler = icms::handler('icms_member');
 			$alb_owner = &$user_handler->getUser($cat - FIRST_USER_CAT);
 			if (is_object($alb_owner))
-				$CURRENT_CAT_NAME = sprintf(_MD_INDEX_USERS_GAL, $alb_owner->uname());
+				$CURRENT_CAT_NAME = sprintf(_MD_INDEX_USERS_GAL, $alb_owner->getVar('uname'));
 			else
 				redirect_header('index.php', 2, _MD_NO_EXIST_CAT);
 		} else {

@@ -77,7 +77,7 @@ function list_users() {
 			$usr_link_end = '</a>';
 			$ulink = "<a href=\"" . ICMS_URL . "/userinfo.php?uid={$user['owner_id']}\" target=\"_blank\">";
 			$ulink_end = "</a>";
-			$user['uname'] = $pic_owner->uname();
+			$user['uname'] = $pic_owner->getVar('uname');
 		} else {
 			$usr_link_start = '';
 			$usr_link_end = '';

@@ -67,7 +67,7 @@ function albumselect($id = "album") {
 		$user_handler = icms::handler('icms_member');
 		while ($row = icms::$xoopsDB->fetchArray($result)) {
 			$alb_owner = &$user_handler->getUser($row['category'] - FIRST_USER_CAT);
-			if (is_object($alb_owner)) $row["title"] = "- (" . $alb_owner->uname() . ")" . $row["title"];
+			if (is_object($alb_owner)) $row["title"] = "- (" . $alb_owner->getVar('uname') . ")" . $row["title"];
 			$select .= "<option value=\"" . $row["aid"] . "\">" . icms_core_DataFilter::htmlSpecialchars($row["title"]) . "</option>";
 		}
 		icms::$xoopsDB->freeRecordSet($result);

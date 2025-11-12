@@ -99,7 +99,7 @@ while ($row = icms::$xoopsDB->fetchArray($result)) {
 	echo "<tr><td class=\"$tdstyle\"><input type='checkbox' id='ecard[]' name='ecard[]' value='" . $row['e_id'] . "' /></td><td class=\"$tdstyle\">" . formatTimestamp($row['s_time'], 'm') . "</td>";
 	if ($row['sender_uid'] > 0) {
 		$sender = &$user_handler->getUser($row['sender_uid']);
-		echo "<td class=\"$tdstyle\"><a href=\"" . ICMS_URL . "/userinfo.php?uid=" . $row['sender_uid'] . "\" target=\"_blank\">" . $sender->uname() . "</a></td>";
+		echo "<td class=\"$tdstyle\"><a href=\"" . ICMS_URL . "/userinfo.php?uid=" . $row['sender_uid'] . "\" target=\"_blank\">" . $sender->getVar('uname') . "</a></td>";
 	} else
 		echo "<td class=\"$tdstyle\">" . $xoopsConfig['anonymous'] . "</td>";
 	echo "<td class=\"$tdstyle\">" . $row['sender_email'] . "</td><td class=\"$tdstyle\">" . $row['sender_ip'] . "</td>";

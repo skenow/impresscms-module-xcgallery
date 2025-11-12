@@ -62,7 +62,7 @@ function form_alb_list_box() {
 		foreach ($other_user_albums_list as $album) {
 			$alb_owner = &$user_handler->getUser($album['category'] - FIRST_USER_CAT);
 			if (is_object($alb_owner)) {
-				$box .= "<option label=\"" . $album['title'] . "(" . $alb_owner->uname() . ")\" value=\"" . $album['aid'] . "\"" . ($album['aid'] == $sel_album ? ' selected' : '') . ">" . $album['title'] . "(" . $alb_owner->uname() . ")</option>";
+				$box .= "<option label=\"" . $album['title'] . "(" . $alb_owner->getVar('uname') . ")\" value=\"" . $album['aid'] . "\"" . ($album['aid'] == $sel_album ? ' selected' : '') . ">" . $album['title'] . "(" . $alb_owner->getVar('uname') . ")</option>";
 			}
 		}
 		$box .= "</optgroup>";

@@ -266,7 +266,7 @@ function list_users() {
 		$user_handler = icms::handler('icms_member');
 		$alb_owner = &$user_handler->getUser($user['category'] - FIRST_USER_CAT);
 		if (is_object($alb_owner)) {
-			$caption['u_name'] = $alb_owner->uname();
+			$caption['u_name'] = $alb_owner->getVar('uname');
 			$caption['u_id'] = $alb_owner->uid();
 			$caption['albums'] = $albums_txt;
 			$caption['pictures'] = $pictures_txt;
