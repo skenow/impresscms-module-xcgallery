@@ -115,13 +115,13 @@ function process_post_data() {
 		}
 
 		$update = "aid = '" . $aid . "'";
-		$update .= ", title = '" . icms_core_DataFilter::addSlashes($title) . "'";
-		$update .= ", caption = '" . icms_core_DataFilter::addSlashes($caption, 0) . "'";
-		$update .= ", keywords = '" .icms_core_DataFilter::addSlashes($keywords) . "'";
-		$update .= ", user1 = '" . icms_core_DataFilter::addSlashes($user1) . "'";
-		$update .= ", user2 = '" . icms_core_DataFilter::addSlashes($user2) . "'";
-		$update .= ", user3 = '" . icms_core_DataFilter::addSlashes($user3) . "'";
-		$update .= ", user4 = '" . icms_core_DataFilter::addSlashes($user4) . "'";
+		$update .= ", title = " . icms::$xoopsDB->quote($title);
+		$update .= ", caption = " . icms::$xoopsDB->quote($caption);
+		$update .= ", keywords = " . icms::$xoopsDB->quote($keywords);
+		$update .= ", user1 = " . icms::$xoopsDB->quote($user1);
+		$update .= ", user2 = " . icms::$xoopsDB->quote($user2);
+		$update .= ", user3 = " . icms::$xoopsDB->quote($user3);
+		$update .= ", user4 = " . icms::$xoopsDB->quote($user4);
 
 		if ($reset_vcount) $update .= ", hits = '0'";
 		if ($reset_votes) $update .= ", pic_rating = '0', votes = '0'";
