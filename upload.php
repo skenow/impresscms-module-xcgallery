@@ -39,7 +39,7 @@ function form_alb_list_box() {
 	global $user_albums_list, $public_albums_list, $other_user_albums_list;
 	$text = _MD_ALBUM;
 	$name = 'album';
-	$sel_album = isset($_GET['album']) ? $_GET['album'] : 0;
+	$sel_album = isset($_GET['album']) ? (int) $_GET['album'] : 0;
 	// var_dump($other_user_albums_list);
 	$box = "<select name=\"$name\" class=\"listbox\">";
 	if (count($user_albums_list) > 0) {
