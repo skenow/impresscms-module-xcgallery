@@ -37,7 +37,7 @@ function xcgal_search($queryarray, $andor, $limit, $offset, $userid) {
 
 function search_album_set() {
 	global $ALBUM_SET_SEARCH;
-	$xcgalDir = basename(dirname(dirname(__FILE__)));
+	$xcgalDir = basename(dirname(__DIR__));
 	if (is_object(icms::$user)) {
 		$usergroups = icms::$user->getgroups();
 		$usergroup = implode(",", $usergroups);
@@ -47,9 +47,9 @@ function search_album_set() {
 		$buid = 0;
 	}
 	$user_cat = 10000;
-	$module_handler = &xoops_gethandler('module');
+	$module_handler = icms::handler('icms_module');
 	$xcgalModule = $module_handler->getByDirname($xcgalDir);
-	$config_handler = &xoops_gethandler('config');
+	$config_handler = icms::handler('icms_config');
 	$xcgalCon = &$config_handler->getConfigsByCat(0, $xcgalModule->mid());
 	if (is_object(icms::$user) && icms::$user->isAdmin($xcgalModule->mid()))
 		$ALBUM_SET_SEARCH = "";
