@@ -29,7 +29,7 @@
 // ------------------------------------------------------------------------ //
 define('IN_XCGALLERY', true);
 include "header.php";
-$myts = icms_core_Textsanitizer::getInstance();
+//$myts = icms_core_Textsanitizer::getInstance();
 
 // Fix categories that have an invalid parent
 function fix_cat_table() {

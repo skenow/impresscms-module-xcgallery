@@ -47,9 +47,9 @@ switch ($event) {
 		if (!(USER_ADMIN_MODE || GALLERY_ADMIN_MODE)) redirect_header('index.php', 2, _MD_PERM_DENIED);
 
 		$aid = (int) $_POST['aid'];
-		$title = icms_core_DataFilter::addSlashes(trim($_POST['title']));
+		$title = icms::$xoopsDB->quote(trim($_POST['title']));
 		$category = (int) $_POST['category'];
-		$description = icms_core_DataFilter::addSlashes(trim($_POST['description']), 0);
+		$description = icms::$xoopsDB->quote(trim($_POST['description']), 0);
 		$thumb = (int) $_POST['thumb'];
 		$visibility = (int) $_POST['visibility'];
 		$uploads = $_POST['uploads'] == 'YES' ? 'YES' : 'NO';
@@ -59,11 +59,11 @@ switch ($event) {
 		if (!$title) redirect_header('index.php', 2, _MD_DB_ALB_NEED_TITLE);
 
 		if (GALLERY_ADMIN_MODE) {
-			$query = "UPDATE " . icms::$xoopsDB->prefix("xcgal_albums") . " SET title='$title', description='$description', category='$category', thumb='$thumb', uploads='$uploads', comments='$comments', votes='$votes', visibility='$visibility' WHERE aid='$aid' LIMIT 1";
+			$query = "UPDATE " . icms::$xoopsDB->prefix("xcgal_albums") . " SET title=$title, description=$description, category=$category, thumb=$thumb, uploads='$uploads', comments='$comments', votes='$votes', visibility=$visibility WHERE aid=$aid LIMIT 1";
 		} else {
 			$category = FIRST_USER_CAT + USER_ID;
 			if ($visibility != $category && (is_array($USER_DATA['group_id']) && in_array($visibility, $USER_DATA['group_id']))) $visibility = 0;
-			$query = "UPDATE " . icms::$xoopsDB->prefix("xcgal_albums") . " SET title='$title', description='$description', thumb='$thumb',  comments='$comments', votes='$votes', visibility='$visibility' WHERE aid='$aid' AND category='$category' LIMIT 1";
+			$query = "UPDATE " . icms::$xoopsDB->prefix("xcgal_albums") . " SET title=$title, description=$description, thumb=$thumb,  comments='$comments', votes='$votes', visibility=$visibility WHERE aid=$aid AND category=$category LIMIT 1";
 		}
 		$update = icms::$xoopsDB->query($query);
 		if (!icms::$xoopsDB->getAffectedRows()) redirect_header("modifyalb.php?album=$aid", 2, _MD_DB_NO_NEED);
